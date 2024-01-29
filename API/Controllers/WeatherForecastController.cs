@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace api.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("[tichu/api]")]
 public class WeatherForecastController : ControllerBase
 {
     private static readonly string[] Summaries = new[]
@@ -18,6 +18,7 @@ public class WeatherForecastController : ControllerBase
         _logger = logger;
     }
 
+    [Route("/play")]
     [HttpGet(Name = "GetWeatherForecast")]
     public IEnumerable<WeatherForecast> Get()
     {

@@ -59,3 +59,8 @@ Het doel voor week 1 is om de front-end en back-end draaiende te krijgen en met 
 * Checken of een set te spelen kaarten aan de regels voldoet
 * Meerdere spelers die na elkaar spelen
 * Gespeelde set moet hoger zijn dan de vorige set
+
+# References
+
+* A tutorial for setting up a basic controller API in C#: [link](https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-8.0&tabs=visual-studio-code)
+* A basic tutorial for XUnit: [link](https://xunit.net/docs/getting-started/netcore/cmdline)
