@@ -1,0 +1,8 @@
+image: mcr.microsoft.com/dotnet/sdk:8.0
+
+stages:
+    - testing-stage
+
+testing-job:
+    stage: testing-stage
+    script: dotnet test
