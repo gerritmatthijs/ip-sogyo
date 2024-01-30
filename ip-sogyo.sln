@@ -11,6 +11,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Tichu", "Domain\Tichu\Tichu
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Tichu.Test", "Domain\Tichu.Test\Tichu.Test.fsproj", "{6654A87B-19D3-4BCB-AFA1-46C3BE43C4C0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence", "Persistence\Persistence.csproj", "{F6B34957-B253-43B3-B06C-3AFAF9CF28F1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,10 +22,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7A226802-DB52-4BB9-8749-9F94D6778CE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7A226802-DB52-4BB9-8749-9F94D6778CE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7A226802-DB52-4BB9-8749-9F94D6778CE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7A226802-DB52-4BB9-8749-9F94D6778CE3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2995242A-FCE7-467A-9F05-067C0A9C903B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2995242A-FCE7-467A-9F05-067C0A9C903B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2995242A-FCE7-467A-9F05-067C0A9C903B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -36,6 +34,10 @@ Global
 		{6654A87B-19D3-4BCB-AFA1-46C3BE43C4C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6654A87B-19D3-4BCB-AFA1-46C3BE43C4C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6654A87B-19D3-4BCB-AFA1-46C3BE43C4C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6B34957-B253-43B3-B06C-3AFAF9CF28F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6B34957-B253-43B3-B06C-3AFAF9CF28F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6B34957-B253-43B3-B06C-3AFAF9CF28F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6B34957-B253-43B3-B06C-3AFAF9CF28F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8B10F3AC-C5C5-4898-AFE1-EE4E773CB509} = {F0FB1FBB-10F9-49D2-A1D6-971AE9DC0153}
