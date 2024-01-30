@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+// If the Tichu import fails to resolve in Visual Studio Code, build the project and restart VS Code.
+using Tichu;
 
 namespace api.Controllers;
 

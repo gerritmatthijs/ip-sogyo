@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tichu.Test", "Domain\Tichu.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "api", "API\api.csproj", "{2995242A-FCE7-467A-9F05-067C0A9C903B}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Tichu", "Domain\Tichu\Tichu.fsproj", "{8B10F3AC-C5C5-4898-AFE1-EE4E773CB509}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,8 +28,13 @@ Global
 		{2995242A-FCE7-467A-9F05-067C0A9C903B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2995242A-FCE7-467A-9F05-067C0A9C903B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2995242A-FCE7-467A-9F05-067C0A9C903B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B10F3AC-C5C5-4898-AFE1-EE4E773CB509}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B10F3AC-C5C5-4898-AFE1-EE4E773CB509}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B10F3AC-C5C5-4898-AFE1-EE4E773CB509}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B10F3AC-C5C5-4898-AFE1-EE4E773CB509}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7A226802-DB52-4BB9-8749-9F94D6778CE3} = {F0FB1FBB-10F9-49D2-A1D6-971AE9DC0153}
+		{8B10F3AC-C5C5-4898-AFE1-EE4E773CB509} = {F0FB1FBB-10F9-49D2-A1D6-971AE9DC0153}
 	EndGlobalSection
 EndGlobal
