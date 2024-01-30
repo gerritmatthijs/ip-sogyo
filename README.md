@@ -51,6 +51,22 @@ Dit project heeft als doelstelling het ontwikkelen van een full-stack web-applic
 
 Het voorlopige idee is om C# (misschien F#) te gebruiken voor de backend, React of Vue voor de front-end, en MySQL voor de database.
 
+Om de back-end server op te starten run je het volgende commando vanuit de API folder:
+```bash
+dotnet run
+```
+Deze luistert vanuit poort 5036. 
+
+De front-end server start je op door eerst naar de Client folder te gaan. Om de dependencies te installeren (alleen de eerste keer) run je het volgende commando:
+```bash
+npm install
+```
+Vervolgens start je de server als volgt:
+```bash
+npm run dev
+```
+De front-end server luistert op poort 5173.
+
 # Planning
 
 Het doel voor week 1 is om de front-end en back-end draaiende te krijgen en met elkaar te laten praten. Daarna kunnen de volgende 'vertical slices' stap voor stap worden toegevoegd:
