@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 // If the Tichu import fails to resolve in Visual Studio Code, build the project and restart VS Code.
 using Tichu;
+using Persistence;
 
 namespace api.Controllers;
 
@@ -8,11 +9,11 @@ namespace api.Controllers;
 [Route("[controller]")]
 public class TichuController : ControllerBase
 {
-    private readonly ILogger<TichuController> _logger;
+    private readonly ITichuRepository _repository;
 
-    public TichuController(ILogger<TichuController> logger)
+    public TichuController(ITichuRepository repository)
     {
-        _logger = logger;
+        _repository = repository;
     }
 
     [HttpPost("play")]
