@@ -80,3 +80,7 @@ Het doel voor week 1 is om de front-end en back-end draaiende te krijgen en met 
 
 * A tutorial for setting up a basic controller API in C#: [link](https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-8.0&tabs=visual-studio-code)
 * A basic tutorial for XUnit: [link](https://xunit.net/docs/getting-started/netcore/cmdline)
+
+# Trivia
+
+My favourite piece in F# (minor) is Rachmaninoff's 1st piano concerto - especially the [cadenza](https://youtu.be/y6EX3t2Mdnw?t=650)!
