@@ -1,5 +1,5 @@
 export async function sendGreetings(){
-    const response = await fetch("tichu/tichu/play", {
+    const response = await fetch("tichu/play", {
         method: "POST",
         headers: {
             Accept: "application/json",

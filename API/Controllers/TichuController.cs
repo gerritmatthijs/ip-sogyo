@@ -13,7 +13,7 @@ public class TichuController : ControllerBase
         _logger = logger;
     }
 
-    [HttpPost("tichu/play")]
+    [HttpPost("play")]
     [Consumes("application/json")]
     public IActionResult GetGreeting(Dictionary<String, String> body)
     {
