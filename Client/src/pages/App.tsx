@@ -1,17 +1,14 @@
 import { useState } from 'react'
 import '../style/App.css'
 import '../style/card.css'
-import { sendGreetings } from '../services/api.ts'
-import { Card } from '../components/card.tsx'
+import { Hand } from '../components/hand.tsx'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <h1>Vite + React</h1>
+      <h1>Tichu</h1>
       <div>
-        <Card card="2"/>
+        <Hand hand="2357TJKA"/>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>

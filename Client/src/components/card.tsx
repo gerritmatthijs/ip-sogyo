@@ -1,19 +1,17 @@
 import { ChangeEventHandler } from "react";
-import { sendGreetings } from '../services/api.ts'
+import { playCard } from '../services/api.ts'
 
 type Props = {
-    card: String
+    card: string
 };
 
 export const Card = (props: Props) => {
     const {card} = props;
-    const backgroundPos = getPosition(card);
-    console.log(backgroundPos);
-    return <button className="card" style={{'backgroundPosition': getPosition(card)}} onClick={() => sendGreetings()}>
+    return <button className="card" style={{'backgroundPosition': getPicture(card)}} onClick={() => playCard(card)}>
     </button>
 }
 
-function getPosition(card: String) {
+function getPicture(card: string) {
     switch(card) {
         case "T": return "-900% 0%";
         case "J": return "-1000% 0%";

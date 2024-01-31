@@ -1,4 +1,4 @@
-export async function sendGreetings(){
+export async function playCard(cardPlayed: String){
     const response = await fetch("tichu/play", {
         method: "POST",
         headers: {
@@ -6,7 +6,7 @@ export async function sendGreetings(){
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            name:"Gerrit"
+            card:cardPlayed
         })
     });
     if (response.ok){
