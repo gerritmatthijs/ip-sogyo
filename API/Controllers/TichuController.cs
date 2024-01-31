@@ -7,14 +7,9 @@ namespace api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class TichuController : ControllerBase
+public class TichuController(ITichuRepository repository) : ControllerBase
 {
-    private readonly ITichuRepository _repository;
-
-    public TichuController(ITichuRepository repository)
-    {
-        _repository = repository;
-    }
+    private readonly ITichuRepository _repository = repository;
 
     [HttpPost("play")]
     [Consumes("application/json")]

@@ -1,0 +1,7 @@
+.card{
+    width: 100px;
+    height: 150px;
+    background-image: url("https://x.boardgamearena.net/data/themereleases/current/games/tichu/210609-1237/img/tichu-cards.png");
+    /* background-image: url("../assets/tichucards.png"); */
+    background-position: -700% 0%;
+}
