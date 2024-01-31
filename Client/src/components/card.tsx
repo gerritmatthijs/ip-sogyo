@@ -1,13 +1,24 @@
-import { ChangeEventHandler } from "react";
 import { playCard } from '../services/api.ts'
+import { useState } from 'react';
 
 type Props = {
-    card: string
+    value: string
 };
 
+
 export const Card = (props: Props) => {
-    const {card} = props;
-    return <button className="card" style={{'backgroundPosition': getPicture(card)}} onClick={() => playCard(card)}>
+    const {value} = props;
+    // const [clicked, setClicked] = useState(false);
+    // function cardClicked(){
+    //     if (clicked){
+    //         setClicked(false)
+    //     }
+    //     else{
+    //         setClicked(true)
+    //     }
+    // }
+
+    return <button className="card" style={{'backgroundPosition': getPicture(value)}} onClick={() => playCard(value)}>
     </button>
 }
 
