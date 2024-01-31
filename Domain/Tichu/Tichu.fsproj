@@ -8,6 +8,9 @@
   <ItemGroup>
     <Compile Include="ITichu.fs" />
     <Compile Include="ITichuFactory.fs" />
+    <Compile Include="Tichu.fs" />
+    <Compile Include="Card.fs" />
+
   </ItemGroup>
 
 </Project>
