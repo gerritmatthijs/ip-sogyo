@@ -15,6 +15,6 @@ public class TichuController(ITichuRepository repository) : ControllerBase
     [Consumes("application/json")]
     public IActionResult GetGreeting(Dictionary<String, String> body)
     {
-        return Ok("Hello " + body["name"] + "!");
+        return Ok("You played card " + body["card"] + "!");
     }
 }
