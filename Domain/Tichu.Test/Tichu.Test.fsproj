@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <Compile Include="TichuTests.fs" />
+    <Compile Include="TichuFactoryTests.fs" />
     <Compile Include="CardTests.fs" />
   </ItemGroup>
 

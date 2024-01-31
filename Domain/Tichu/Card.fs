@@ -1,7 +1,7 @@
 namespace Tichu
 
 // [<CustomComparison>]
-type Card=
+type Card = 
     {value: char}
     member this.intValue () = 
         match this.value with 
