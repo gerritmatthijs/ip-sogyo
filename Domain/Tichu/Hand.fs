@@ -12,3 +12,6 @@ module Hand =
         | hand, [] -> hand
         | handcard::tailhand, setcard::tailset -> if handcard.Equals(setcard) then RemoveCards(tailhand, tailset) else handcard::RemoveCards(tailhand, set)
         | [], _ -> failwith "Card set is not contained in hand."
+
+    let RemoveCardsStringVersion(hand: string, set: string): string = 
+        CardListToString(RemoveCards(StringToCardList(hand), StringToCardList(set)))
