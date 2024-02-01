@@ -12,5 +12,5 @@ let ``Card creation`` () =
 let ``Card has correct integer Value`` () = 
     let jack = {value = 'J'}
     let two = {value = '2'}
-    Assert.Equal(11, jack.intValue())
-    Assert.Equal(2, two.intValue())
+    Assert.Equal(11, jack.IntValue())
+    Assert.Equal(2, two.IntValue())
