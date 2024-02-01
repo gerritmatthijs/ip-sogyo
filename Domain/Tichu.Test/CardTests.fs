@@ -4,12 +4,12 @@ open Xunit
 open Tichu
 
 [<Fact>]
-let CardCreation() =
+let ``Card creation`` () =
     let jack = {value = 'J'}
     Assert.Equal('J', jack.value)
 
 [<Fact>]
-let CardIntValue() = 
+let ``Card has correct integer Value`` () = 
     let jack = {value = 'J'}
     let two = {value = '2'}
     Assert.Equal(11, jack.intValue())

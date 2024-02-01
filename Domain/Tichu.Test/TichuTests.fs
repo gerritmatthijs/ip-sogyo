@@ -4,16 +4,16 @@ open Xunit
 open Tichu
 
 [<Fact>]
-let PassingTest () =
+let ``Passing Test`` () =
     Assert.True(true)
 
 [<Fact>]
-let TichuCreation() = 
+let ``Tichu Creation`` () = 
     let tichu = new TichuGame("2357TK") :> ITichu
     Assert.Equal("2357TK", tichu.getPlayerHand("Gerrit"))
 
 [<Fact>]
-let PlaySingleCardRemovesItFromHand() = 
+let ``Play single card removes it from hand`` () = 
     let handstring = "2346TTK"
     let tichu = new TichuGame(handstring) :> ITichu
     let tryNewTichu = tichu.doTurn("Gerrit", "T")
