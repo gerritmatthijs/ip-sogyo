@@ -1,5 +1,5 @@
 namespace Tichu
 
 type ITichuFactory = 
-    abstract member createNewGame: playerNames: list<string> -> ITichu
+    abstract member createNewGame: playerNames: seq<string> -> ITichu
 

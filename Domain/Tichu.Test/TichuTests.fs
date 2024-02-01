@@ -16,10 +16,10 @@ let ``Tichu Creation`` () =
 let ``Play single card removes it from hand`` () = 
     let handstring = "2346TTK"
     let tichu = new TichuGame(handstring) :> ITichu
-    let tryNewTichu = tichu.DoTurn("Gerrit", "T")
-    let hand = 
-        match tryNewTichu with 
-        | Ok newTichu -> newTichu.GetPlayerHand("Gerrit")
-        | Error e -> handstring
-    Assert.True(Result.isOk tryNewTichu)
-    Assert.Equal("2346TK", hand)
+    let newTichu = tichu.DoTurn("Gerrit", "T")
+    // let hand = 
+    //     match tryNewTichu with 
+    //     | Ok newTichu -> newTichu.GetPlayerHand("Gerrit")
+    //     | Error e -> handstring
+    // Assert.True(Result.isOk tryNewTichu)
+    Assert.Equal("2346TK", newTichu.GetPlayerHand("Gerrit"))

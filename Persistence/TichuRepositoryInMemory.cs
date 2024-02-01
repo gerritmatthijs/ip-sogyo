@@ -7,10 +7,7 @@ public class TichuRepositoryInMemory : ITichuRepository
 
     public void SaveGame(string key, ITichu tichu)
     {
-        if (storage.ContainsKey(key)){
-            storage.Add(key, tichu);
-        }
-        else {
+        if (!storage.TryAdd(key, tichu)){
             storage[key] = tichu;
         }
         Console.WriteLine(storage);

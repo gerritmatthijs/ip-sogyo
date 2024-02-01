@@ -1,11 +1,27 @@
-import { Card } from './card.tsx'
+// import { Card } from './card.tsx'
+import { createGame, playCard } from '../services/api.ts'
+import { useEffect, useState } from 'react';
 
-type Props = {
-    hand: string
-};
+// type Props = {
+//     startingHand: string
+// };
 
-export const Hand = (props: Props) => {
-    const {hand} = props;
+export const Hand = () => {
+    // const {startingHand} = props;
+    const [hand, setHand] = useState("");
+
+    useEffect(() => {getStartingHand();}, [])
+
+    const onCardPlayed = async (cardPlayed: string) => {
+        const result = await playCard(cardPlayed);
+        if (typeof result == 'string'){
+            setHand(result);
+        }
+        else {
+            console.log("Invalid result obtained:" + result.statusCode + result.statusText);
+        }
+    }
+
     return <div className="hand">
         {createCards(hand)}
         {/* <br/>
@@ -13,12 +29,38 @@ export const Hand = (props: Props) => {
             Play cards
         </button> */}
     </div>
+
+    function createCards(hand: string){
+        const cardList = [];
+        for (let i = 0; i < hand.length; i++){
+            cardList.push(<button className="card" key = {i} style={{'backgroundPosition': getPicture(hand[i])}} onClick={() => onCardPlayed(hand[i])}/>);
+        }
+        return cardList;
+    }
+
+    async function getStartingHand(){
+        const result = await createGame("Gerrit");
+        if (typeof result == 'string'){
+            setHand(result);
+        }
+        else {
+            console.log("Invalid result obtained:" + result.statusCode + result.statusText);
+            return "";
+        }
+    }
 }
 
-function createCards(hand: string){
-    const cardList = [];
-    for (let i = 0; i < hand.length; i++){
-        cardList.push(<Card value={hand[i]} key={i}/>);
+
+function getPicture(card: string) {
+    switch(card) {
+        case "T": return "-900% 0%";
+        case "J": return "-1000% 0%";
+        case "Q": return "-1100% 0%";
+        case "K": return "-1200% 0%";
+        case "A": return "-1300% 0%";
+        default: 
+            const numberValue = Number(card);
+            const horizontalPosition = (numberValue - 1) * -100;
+            return horizontalPosition + "% 0%";
     }
-    return cardList;
 }

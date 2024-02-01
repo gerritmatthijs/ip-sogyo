@@ -16,10 +16,10 @@ type TichuGame(hand: Card list) =
         member this.HasTurn(name: string): bool = 
             failwith "Not Implemented"
 
-        member this.DoTurn(name: string, setstring: string): Result<ITichu, string> = 
+        member this.DoTurn(name: string, setstring: string): ITichu = 
             let set = Hand.StringToCardList(setstring)
             let newHand = Hand.RemoveCards(hand, set)
-            Ok(new TichuGame(newHand))
+            new TichuGame(newHand)
 
 
         member this.IsEndOfGame(): bool = 
