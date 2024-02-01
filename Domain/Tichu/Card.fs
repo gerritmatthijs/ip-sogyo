@@ -3,7 +3,7 @@ namespace Tichu
 // [<CustomComparison>]
 type Card = 
     {value: char}
-    member this.intValue () = 
+    member this.IntValue () = 
         match this.value with 
         | 'T' -> 10
         | 'J' -> 11

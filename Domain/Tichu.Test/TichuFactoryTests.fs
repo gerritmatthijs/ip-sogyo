@@ -7,4 +7,4 @@ open Tichu
 let ``Create game through factory`` () = 
     let factory = new TichuFactory() :> ITichuFactory
     let tichuGame = factory.createNewGame(["Gerrit"])
-    Assert.Equal("23357KA", tichuGame.getPlayerHand("Gerrit"))
+    Assert.Equal("23357KA", tichuGame.GetPlayerHand("Gerrit"))

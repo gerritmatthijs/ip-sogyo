@@ -5,22 +5,22 @@ type TichuGame(hand: Card list) =
     new(handstring: string) = new TichuGame(Hand.StringToCardList(handstring))
        
     interface ITichu with
-        member this.getPlayerName(playerNumber: int): string = "Gerrit"
+        member this.GetPlayerName(playerNumber: int): string = "Gerrit"
 
-        member this.getPlayerHand(name: string): string = 
+        member this.GetPlayerHand(name: string): string = 
             Hand.CardListToString(hand)
 
-        member this.getLastPlayed(): string = 
+        member this.GetLastPlayed(): string = 
             failwith "Not Implemented"
 
-        member this.hasTurn(name: string): bool = 
+        member this.HasTurn(name: string): bool = 
             failwith "Not Implemented"
 
-        member this.doTurn(name: string, setstring: string): Result<ITichu, string> = 
+        member this.DoTurn(name: string, setstring: string): ITichu = 
             let set = Hand.StringToCardList(setstring)
             let newHand = Hand.RemoveCards(hand, set)
-            Ok(new TichuGame(newHand))
+            new TichuGame(newHand)
 
 
-        member this.isEndOfGame(): bool = 
+        member this.IsEndOfGame(): bool = 
             failwith "Not Implemented"

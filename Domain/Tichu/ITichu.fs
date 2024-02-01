@@ -1,14 +1,14 @@
 ﻿namespace Tichu
 
 type ITichu = 
-    abstract member getPlayerName: playerNumber: int -> string
+    abstract member GetPlayerName: playerNumber: int -> string
 
-    abstract member getPlayerHand: name: string -> string
+    abstract member GetPlayerHand: name: string -> string
 
-    abstract member getLastPlayed: unit -> string
+    abstract member GetLastPlayed: unit -> string
 
-    abstract member hasTurn: name: string -> bool
+    abstract member HasTurn: name: string -> bool
 
-    abstract member doTurn: name: string * set: string -> Result<ITichu, string>
+    abstract member DoTurn: name: string * set: string -> ITichu
     
-    abstract member isEndOfGame: unit -> bool
+    abstract member IsEndOfGame: unit -> bool
