@@ -9,8 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Tests.fs" />
-    <Compile Include="Program.fs" />
+    <Compile Include="TichuTests.fs" />
+    <Compile Include="TichuFactoryTests.fs" />
+    <Compile Include="CardTests.fs" />
+    <Compile Include="HandTests.fs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,6 +26,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Tichu\Tichu.fsproj" />
   </ItemGroup>
 
 </Project>

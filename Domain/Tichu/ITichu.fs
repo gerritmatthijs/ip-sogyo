@@ -5,10 +5,10 @@ type ITichu =
 
     abstract member getPlayerHand: name: string -> string
 
-    abstract member hasTurn: name: string -> bool
-
     abstract member getLastPlayed: unit -> string
 
-    abstract member doTurn: name: string * set: string -> ITichu
+    abstract member hasTurn: name: string -> bool
+
+    abstract member doTurn: name: string * set: string -> Result<ITichu, string>
     
     abstract member isEndOfGame: unit -> bool
