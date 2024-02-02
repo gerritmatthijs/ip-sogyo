@@ -9,6 +9,8 @@ type ITichu =
 
     abstract member HasTurn: name: string -> bool
 
+    abstract member CheckAllowed: name: string * set: string -> string
+
     abstract member DoTurn: name: string * set: string -> ITichu
     
     abstract member IsEndOfGame: unit -> bool
