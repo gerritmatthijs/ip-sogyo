@@ -12,13 +12,11 @@ export const Hand = () => {
     const [hand, setHand] = useState("");
     const [lastPlayed, setLastPlayed] = useState("");
 
-    console.log("Last played: " + lastPlayed);
     useEffect(() => {getStartingHand();}, [])
 
     const onCardPlayed = async (cardPlayed: string) => {
         const result = await playCard(cardPlayed);
         if (isTichuGameState(result)){
-            console.log(result);
             setHand(result["hand"]);
             setLastPlayed(result.lastPlayed);
         }
