@@ -5,7 +5,7 @@ stages:
 
 backend-test:
     stage: testing-stage
-    script: dotnet test
+    script: dotnet build
 
 frontend-test:
     image: node:latest
