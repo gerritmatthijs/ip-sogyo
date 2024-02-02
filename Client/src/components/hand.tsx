@@ -10,13 +10,17 @@ import { isTichuGameState } from '../types.ts';
 export const Hand = () => {
     // const {startingHand} = props;
     const [hand, setHand] = useState("");
+    const [lastPlayed, setLastPlayed] = useState("");
 
+    console.log("Last played: " + lastPlayed);
     useEffect(() => {getStartingHand();}, [])
 
     const onCardPlayed = async (cardPlayed: string) => {
         const result = await playCard(cardPlayed);
         if (isTichuGameState(result)){
+            console.log(result);
             setHand(result["hand"]);
+            setLastPlayed(result.lastPlayed);
         }
         else {
             console.log("Invalid result obtained:" + result.statusCode + result.statusText);
@@ -24,6 +28,7 @@ export const Hand = () => {
     }
 
     return <div className="hand">
+        <button className="card" disabled={true} style={{'display':lastPlayed ? 'inline':'none', 'backgroundPosition': getPicture(lastPlayed)}} /> <br/>
         {createCards(hand)}
         {/* <br/>
         <button className='playCardsButton'>
@@ -43,6 +48,7 @@ export const Hand = () => {
         const result = await createGame("Gerrit");
         if (isTichuGameState(result)){
             setHand(result.hand);
+            setLastPlayed("");
         }
         else {
             console.log("Invalid result obtained:" + result.statusCode + result.statusText);

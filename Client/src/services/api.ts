@@ -35,7 +35,6 @@ export async function createGame(playerName: String){
     });
     if (response.ok){
         const result = await response.json();
-        console.log(result);
         return result as TichuGameState;
     } else {
         return {
