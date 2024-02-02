@@ -7,7 +7,7 @@ Deze repository bevat mijn individuele project als afsluiting van het trainee tr
 Dit project heeft als doelstelling het ontwikkelen van een full-stack web-applicatie voor het spelen van het spel presidenten of tichu. Tichu is een uitgebreidere variant van het spel presidenten, dus het doel is in eerste instantie om het spel presidenten te implementeren en daarna extra tichu regels toe te voegen, voor zover de tijd dat toelaat. 
 
 **Persoonlijke leerdoelen**
-* consistenter TDD toepassen
+* Consistenter TDD toepassen
 * Handiger worden met nieuwe frameworks aan de praat krijgen
 
 **Technische leerdoelen**

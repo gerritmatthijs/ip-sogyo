@@ -3,6 +3,14 @@ image: mcr.microsoft.com/dotnet/sdk:8.0
 stages:
     - testing-stage
 
-testing-job:
+backend-test:
     stage: testing-stage
     script: dotnet test
+
+frontend-test:
+    image: node:latest
+    stage: testing-stage
+    script: 
+        - cd Client
+        - npm install
+        - npm run build

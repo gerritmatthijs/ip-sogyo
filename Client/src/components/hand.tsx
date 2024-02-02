@@ -2,6 +2,7 @@
 import { createGame, playCard } from '../services/api.ts'
 import { useEffect, useState } from 'react';
 import { isTichuGameState } from '../types.ts';
+import { Alert } from './alert.tsx';
 
 // type Props = {
 //     startingHand: string
@@ -11,6 +12,7 @@ export const Hand = () => {
     // const {startingHand} = props;
     const [hand, setHand] = useState("");
     const [lastPlayed, setLastPlayed] = useState("");
+    const [alert, setAlert] = useState<string | null>(null);
 
     useEffect(() => {getStartingHand();}, [])
 
@@ -20,14 +22,19 @@ export const Hand = () => {
             setHand(result["hand"]);
             setLastPlayed(result.lastPlayed);
         }
+        else if (typeof result == 'string'){
+            setAlert(result);
+        }
         else {
-            console.log("Invalid result obtained:" + result.statusCode + result.statusText);
+            setAlert(`${result.statusCode} ${result.statusText}`);
         }
     }
 
     return <div className="hand">
-        <button className="card" disabled={true} style={{'display':lastPlayed ? 'inline':'none', 'backgroundPosition': getPicture(lastPlayed)}} /> <br/>
+        {lastPlayed && <button className="card" disabled={true} style={{'backgroundPosition': getPicture(lastPlayed)}} />} 
+        <br/>
         {createCards(hand)}
+        {alert && <Alert text = {alert} onClick={() => setAlert(null)}/>}
         {/* <br/>
         <button className='playCardsButton'>
             Play cards

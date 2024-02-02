@@ -3,19 +3,17 @@ module TichuTests
 open Xunit
 open Tichu
 
-[<Fact>]
-let ``Passing Test`` () =
-    Assert.True(true)
+let SetUpGame () = 
+    new TichuGame("2346TTK", None) :> ITichu
 
 [<Fact>]
 let ``Tichu Creation`` () = 
-    let tichu = new TichuGame("2357TK", None) :> ITichu
-    Assert.Equal("2357TK", tichu.GetPlayerHand("Gerrit"))
+    let tichu = SetUpGame()
+    Assert.Equal("2346TTK", tichu.GetPlayerHand("Gerrit"))
 
 [<Fact>]
 let ``Play single card removes it from hand`` () = 
-    let handstring = "2346TTK"
-    let tichu = new TichuGame(handstring, None) :> ITichu
+    let tichu = SetUpGame()
     let newTichu = tichu.DoTurn("Gerrit", "T")
     // let hand = 
     //     match tryNewTichu with 
@@ -26,8 +24,25 @@ let ``Play single card removes it from hand`` () =
 
 [<Fact>]
 let ``Get last played card before and after a turn`` () = 
-    let handstring = "2346TTK"
-    let tichu = new TichuGame(handstring, None) :> ITichu
+    let tichu = SetUpGame()
     let newTichu = tichu.DoTurn("Gerrit", "T")
     Assert.Equal("", tichu.GetLastPlayed())
     Assert.Equal("T", newTichu.GetLastPlayed())
+
+[<Fact>]
+let ``Play higher card is allowed`` () = 
+    let tichu = SetUpGame()
+    let tichu1 = tichu.DoTurn("Gerrit", "T")
+    Assert.Equal("OK", tichu1.CheckAllowed("Gerrit", "K"))
+
+[<Fact>]
+let ``Play lower card is not allowed`` () = 
+    let tichu = SetUpGame()
+    let tichu1 = tichu.DoTurn("Gerrit", "K")
+    Assert.Equal("Your card has to be higher than the last played card.", tichu1.CheckAllowed("Gerrit", "T"))
+
+[<Fact>]
+let ``DoTurn throws exception if move is not allowed`` () = 
+    let tichu = SetUpGame()
+    let tichu1 = tichu.DoTurn("Gerrit", "4")
+    Assert.Throws<System.Exception>(fun () -> tichu1.DoTurn("Gerrit", "3") :> obj)
