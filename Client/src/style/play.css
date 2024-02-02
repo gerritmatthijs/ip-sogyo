@@ -9,6 +9,13 @@ body {
   text-align: center;
 }
 
+.alert {
+  border-style: solid;
+  border-color: black;
+  color: red;
+  background-color: white;
+}
+
 .read-the-docs {
   color: #888;
 }

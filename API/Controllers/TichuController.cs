@@ -20,9 +20,16 @@ public class TichuController(ITichuRepository repository, ITichuFactory factory)
     {
         String gameID = HttpContext.Session.GetString(SessionClientID) ?? throw new Exception("Game ID not found in session.");
         ITichu tichu = _repository.GetGame(gameID);
-        ITichu newTichu  = tichu.DoTurn("Gerrit", body["card"]);
-        _repository.SaveGame(gameID, newTichu);
-        return Ok(new TichuDTO(newTichu));
+        String moveAllowed = tichu.CheckAllowed("Gerrit", body["card"]);
+        if (moveAllowed.Equals("OK"))
+        {
+            ITichu newTichu  = tichu.DoTurn("Gerrit", body["card"]);
+            _repository.SaveGame(gameID, newTichu);
+            return Ok(new TichuDTO(newTichu));
+        }
+        else {
+            return Ok(moveAllowed);
+        }
     }
 
     [HttpPost("newgame")]

@@ -10,7 +10,6 @@ public class TichuRepositoryInMemory : ITichuRepository
         if (!storage.TryAdd(key, tichu)){
             storage[key] = tichu;
         }
-        Console.WriteLine(storage);
     }
 
     public ITichu GetGame(string key)
