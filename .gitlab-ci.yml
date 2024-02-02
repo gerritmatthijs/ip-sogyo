@@ -13,4 +13,4 @@ frontend-test:
     script: 
         - cd Client
         - npm install
-        - npm run dev
+        - npm run build
