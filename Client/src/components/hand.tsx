@@ -1,6 +1,7 @@
 // import { Card } from './card.tsx'
 import { createGame, playCard } from '../services/api.ts'
 import { useEffect, useState } from 'react';
+import { isTichuGameState } from '../types.ts';
 
 // type Props = {
 //     startingHand: string
@@ -14,8 +15,8 @@ export const Hand = () => {
 
     const onCardPlayed = async (cardPlayed: string) => {
         const result = await playCard(cardPlayed);
-        if (typeof result == 'string'){
-            setHand(result);
+        if (isTichuGameState(result)){
+            setHand(result["hand"]);
         }
         else {
             console.log("Invalid result obtained:" + result.statusCode + result.statusText);
@@ -40,8 +41,8 @@ export const Hand = () => {
 
     async function getStartingHand(){
         const result = await createGame("Gerrit");
-        if (typeof result == 'string'){
-            setHand(result);
+        if (isTichuGameState(result)){
+            setHand(result.hand);
         }
         else {
             console.log("Invalid result obtained:" + result.statusCode + result.statusText);
