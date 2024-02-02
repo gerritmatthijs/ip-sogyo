@@ -1,6 +1,7 @@
 // import { Card } from './card.tsx'
 import { createGame, playCard } from '../services/api.ts'
 import { useEffect, useState } from 'react';
+import { isTichuGameState } from '../types.ts';
 
 // type Props = {
 //     startingHand: string
@@ -9,13 +10,15 @@ import { useEffect, useState } from 'react';
 export const Hand = () => {
     // const {startingHand} = props;
     const [hand, setHand] = useState("");
+    const [lastPlayed, setLastPlayed] = useState("");
 
     useEffect(() => {getStartingHand();}, [])
 
     const onCardPlayed = async (cardPlayed: string) => {
         const result = await playCard(cardPlayed);
-        if (typeof result == 'string'){
-            setHand(result);
+        if (isTichuGameState(result)){
+            setHand(result["hand"]);
+            setLastPlayed(result.lastPlayed);
         }
         else {
             console.log("Invalid result obtained:" + result.statusCode + result.statusText);
@@ -23,6 +26,7 @@ export const Hand = () => {
     }
 
     return <div className="hand">
+        <button className="card" disabled={true} style={{'display':lastPlayed ? 'inline':'none', 'backgroundPosition': getPicture(lastPlayed)}} /> <br/>
         {createCards(hand)}
         {/* <br/>
         <button className='playCardsButton'>
@@ -40,8 +44,9 @@ export const Hand = () => {
 
     async function getStartingHand(){
         const result = await createGame("Gerrit");
-        if (typeof result == 'string'){
-            setHand(result);
+        if (isTichuGameState(result)){
+            setHand(result.hand);
+            setLastPlayed("");
         }
         else {
             console.log("Invalid result obtained:" + result.statusCode + result.statusText);

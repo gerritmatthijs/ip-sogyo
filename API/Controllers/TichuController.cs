@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 // If the Tichu import fails to resolve in Visual Studio Code, build the project and restart VS Code.
 using Tichu;
 using Persistence;
-using Microsoft.EntityFrameworkCore.Metadata;
+using api.Models;
 
 namespace api.Controllers;
 
@@ -21,10 +21,8 @@ public class TichuController(ITichuRepository repository, ITichuFactory factory)
         String gameID = HttpContext.Session.GetString(SessionClientID) ?? throw new Exception("Game ID not found in session.");
         ITichu tichu = _repository.GetGame(gameID);
         ITichu newTichu  = tichu.DoTurn("Gerrit", body["card"]);
-        Console.WriteLine("Old hand: " + tichu.GetPlayerHand("Gerrit"));
-        Console.WriteLine("New hand: " + newTichu.GetPlayerHand("Gerrit"));
         _repository.SaveGame(gameID, newTichu);
-        return Ok(newTichu.GetPlayerHand("Gerrit"));
+        return Ok(new TichuDTO(newTichu));
     }
 
     [HttpPost("newgame")]
@@ -35,6 +33,6 @@ public class TichuController(ITichuRepository repository, ITichuFactory factory)
         String gameID = Guid.NewGuid().ToString();
         HttpContext.Session.SetString(SessionClientID, gameID);
         _repository.SaveGame(gameID, tichu);
-        return Ok(tichu.GetPlayerHand(body["name"]));
+        return Ok(new TichuDTO(tichu));
     }
 }

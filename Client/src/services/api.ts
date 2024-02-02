@@ -1,3 +1,5 @@
+import { TichuGameState } from "../types";
+
 export async function playCard(cardPlayed: String){
     const response = await fetch("tichu/play", {
         method: "POST",
@@ -11,7 +13,7 @@ export async function playCard(cardPlayed: String){
     });
     if (response.ok){
         const result = await response.json();
-        return result as string
+        return result as TichuGameState;
     } else {
         return {
             statusCode: response.status,
@@ -33,7 +35,7 @@ export async function createGame(playerName: String){
     });
     if (response.ok){
         const result = await response.json();
-        return result as string
+        return result as TichuGameState;
     } else {
         return {
             statusCode: response.status,

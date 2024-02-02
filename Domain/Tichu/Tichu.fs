@@ -1,8 +1,8 @@
 namespace Tichu
 
-type TichuGame(hand: Card list) = 
+type TichuGame(hand: Card list, lastPlayed: Option<Card>) = 
     
-    new(handstring: string) = new TichuGame(Hand.StringToCardList(handstring))
+    new(handstring: string, lastPlayed: Option<char>) = new TichuGame(Hand.StringToCardList(handstring), lastPlayed |> Option.map(fun c -> {value = c}))
        
     interface ITichu with
         member this.GetPlayerName(playerNumber: int): string = "Gerrit"
@@ -11,7 +11,9 @@ type TichuGame(hand: Card list) =
             Hand.CardListToString(hand)
 
         member this.GetLastPlayed(): string = 
-            failwith "Not Implemented"
+            match lastPlayed with 
+            | None -> ""
+            | Some(card) -> card.value.ToString()
 
         member this.HasTurn(name: string): bool = 
             failwith "Not Implemented"
@@ -19,7 +21,7 @@ type TichuGame(hand: Card list) =
         member this.DoTurn(name: string, setstring: string): ITichu = 
             let set = Hand.StringToCardList(setstring)
             let newHand = Hand.RemoveCards(hand, set)
-            new TichuGame(newHand)
+            new TichuGame(newHand, Some(set[0]))
 
 
         member this.IsEndOfGame(): bool = 
