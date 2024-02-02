@@ -4,7 +4,7 @@ open Xunit
 open Tichu
 
 let SetUpGame () = 
-    new TichuGame("2346TTK", None) :> ITichu
+    new TichuGame("Gerrit", "2346TTK", None) :> ITichu
 
 [<Fact>]
 let ``Tichu Creation`` () = 
@@ -33,13 +33,13 @@ let ``Get last played card before and after a turn`` () =
 let ``Play higher card is allowed`` () = 
     let tichu = SetUpGame()
     let tichu1 = tichu.DoTurn("Gerrit", "T")
-    Assert.Equal("OK", tichu1.CheckAllowed("Gerrit", "K"))
+    Assert.Equal("OK", tichu1.CheckAllowed "K")
 
 [<Fact>]
 let ``Play lower card is not allowed`` () = 
     let tichu = SetUpGame()
     let tichu1 = tichu.DoTurn("Gerrit", "K")
-    Assert.Equal("Your card has to be higher than the last played card.", tichu1.CheckAllowed("Gerrit", "T"))
+    Assert.Equal("Your card has to be higher than the last played card.", tichu1.CheckAllowed("T"))
 
 [<Fact>]
 let ``DoTurn throws exception if move is not allowed`` () = 
