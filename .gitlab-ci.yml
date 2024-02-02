@@ -3,6 +3,12 @@ image: mcr.microsoft.com/dotnet/sdk:8.0
 stages:
     - testing-stage
 
-testing-job:
+backend-test:
     stage: testing-stage
     script: dotnet test
+
+frontend-test:
+    stage: testing-stage
+    script: 
+        - npm install
+        - npm run dev
