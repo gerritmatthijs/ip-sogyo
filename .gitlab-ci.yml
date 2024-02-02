@@ -8,7 +8,9 @@ backend-test:
     script: dotnet test
 
 frontend-test:
+    image: node:latest
     stage: testing-stage
     script: 
+        - cd Client
         - npm install
         - npm run dev
