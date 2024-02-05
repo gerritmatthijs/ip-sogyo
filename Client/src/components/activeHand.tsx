@@ -1,8 +1,9 @@
 // import { Card } from './card.tsx'
 import { createGame, playCard } from '../services/api.ts'
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { TichuGameState, isTichuGameState } from '../types.ts';
 import { Alert } from './alert.tsx';
+import { useTichuContext } from '../context/TichuGameContext.tsx';
 
 // type Props = {
 //     startingHand: string
@@ -10,9 +11,10 @@ import { Alert } from './alert.tsx';
 
 export const ActiveHand = () => {
     // const {startingHand} = props;
-    const [hand, setHand] = useState("");
-    const [player, setPlayer] = useState("");
-    const [lastPlayed, setLastPlayed] = useState("");
+    const { gameState, setGameState } = useTichuContext();
+    const hand = gameState? gameState.player.hand : "";
+    const player = gameState? gameState.player.name : "";
+    const lastPlayed = gameState? gameState.lastPlayed : "";
     const [alert, setAlert] = useState<string | null>(null);
 
     useEffect(() => {getStartingHand();}, [])
@@ -24,9 +26,7 @@ export const ActiveHand = () => {
     
     function updateState(result: string | TichuGameState | {statusCode: number; statusText: string;}) {
         if (isTichuGameState(result)) {
-            setHand(result["player"]["hand"]);
-            setPlayer(result.player.name);
-            setLastPlayed(result.lastPlayed);
+            setGameState(result);
         }
         else if (typeof result == 'string') {
             setAlert(result);
