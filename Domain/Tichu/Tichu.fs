@@ -4,10 +4,6 @@ type TichuGame(players: Player list, lastPlayed: Option<Card>) =
     
     let getPlayer(name: string): Player = 
         players |> List.find(fun player -> player.name.Equals name)
-
-    // new(name: string, handstring: string, lastPlayed: Option<char>) = 
-    //     let player = {name = name; hand = handstring |> Hand.StringToCardList}
-    //     new TichuGame(player, lastPlayed |> Option.map(fun c -> {value = c}))
        
     interface ITichu with
         member this.GetPlayerName(playerNumber: int): string = 
@@ -36,10 +32,9 @@ type TichuGame(players: Player list, lastPlayed: Option<Card>) =
             if not ((this :> ITichu).CheckAllowed(setstring) = "OK") 
                 then failwith "Move not allowed: call CheckAllowed function first."
             let set = setstring |> Hand.StringToCardList 
-            let currentPlayer = getPlayer name
-            let newHand = currentPlayer.hand |> Hand.RemoveCards(set)
-            let newCurrentPlayer = {currentPlayer with hand = newHand}
-            new TichuGame(newCurrentPlayer, Some(set[0]))
+            let updatedPlayer = getPlayer name |> Player.PlayCards(set)
+            let updatePlayerList = players |> List.map(fun p -> if p.name.Equals name then updatedPlayer else p)
+            new TichuGame(updatePlayerList, Some(set[0]))
 
         member this.IsEndOfGame(): bool = 
             failwith "Not Implemented"
