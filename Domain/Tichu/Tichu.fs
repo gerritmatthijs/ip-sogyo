@@ -6,7 +6,7 @@ type TichuGame(player: Player, lastPlayed: Option<Card>) =
         player
 
     new(name: string, handstring: string, lastPlayed: Option<char>) = 
-        let player = {name = name; hand = Hand.StringToCardList(handstring)}
+        let player = {name = name; hand = handstring |> Hand.StringToCardList}
         new TichuGame(player, lastPlayed |> Option.map(fun c -> {value = c}))
        
     interface ITichu with
