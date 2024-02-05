@@ -1,17 +1,17 @@
 namespace Tichu
 
-type TichuGame(player: Player, lastPlayed: Option<Card>) = 
+type TichuGame(players: Player list, lastPlayed: Option<Card>) = 
     
     let getPlayer(name: string): Player = 
-        player
+        players |> List.find(fun player -> player.name.Equals name)
 
-    new(name: string, handstring: string, lastPlayed: Option<char>) = 
-        let player = {name = name; hand = handstring |> Hand.StringToCardList}
-        new TichuGame(player, lastPlayed |> Option.map(fun c -> {value = c}))
+    // new(name: string, handstring: string, lastPlayed: Option<char>) = 
+    //     let player = {name = name; hand = handstring |> Hand.StringToCardList}
+    //     new TichuGame(player, lastPlayed |> Option.map(fun c -> {value = c}))
        
     interface ITichu with
         member this.GetPlayerName(playerNumber: int): string = 
-            player.name
+            players[playerNumber].name
 
         member this.GetPlayerHand(name: string): string = 
             Hand.CardListToString(getPlayer(name).hand)

@@ -12,6 +12,16 @@ let ``Tichu Creation`` () =
     Assert.Equal("2346TTK", tichu.GetPlayerHand("Gerrit"))
 
 [<Fact>]
+let ``Get player name`` () = 
+    let tichu = SetUpGame()
+    Assert.Equal("Gerrit", tichu.GetPlayerName(0))
+
+[<Fact>]
+let ``Get player hand`` () = 
+    let tichu = SetUpGame()
+    Assert.Equal("2346TTK", tichu.GetPlayerHand("Gerrit"))
+
+[<Fact>]
 let ``Play single card removes it from hand`` () = 
     let tichu = SetUpGame()
     let newTichu = tichu.DoTurn("Gerrit", "T")
