@@ -13,8 +13,6 @@ export const ActiveHand = () => {
     // const {startingHand} = props;
     const { gameState, setGameState } = useTichuContext();
     const hand = gameState? gameState.player.hand : "";
-    const player = gameState? gameState.player.name : "";
-    const lastPlayed = gameState? gameState.lastPlayed : "";
     const [alert, setAlert] = useState<string | null>(null);
 
     useEffect(() => {getStartingHand();}, [])
@@ -36,9 +34,6 @@ export const ActiveHand = () => {
         }
     }
     return <div className="hand">
-        {lastPlayed && <button className="card" disabled={true} style={{'backgroundPosition': getPicture(lastPlayed)}} />} 
-        <br/>
-        <div className='playername'> {player}'s hand</div>  
         {createCards(hand)}
         {alert && <Alert text = {alert} onClick={() => setAlert(null)}/>}
         {/* <br/>
@@ -60,7 +55,6 @@ export const ActiveHand = () => {
         updateState(result);
     }
 }
-
 
 function getPicture(card: string) {
     switch(card) {
