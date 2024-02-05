@@ -2,9 +2,9 @@ using Tichu;
 
 namespace api.Models
 {
-    public class PlayerDTO(ITichu tichu)
+    public class PlayerDTO(ITichu tichu, String name)
     {
-        public string Name { get; set; } = tichu.GetPlayerName(0);
-        public string Hand { get; set; } = tichu.GetPlayerHand(Name);
+        public string Name { get; set; } = name;
+        public string Hand { get; set; } = tichu.GetPlayerHand(name);
     }
 }

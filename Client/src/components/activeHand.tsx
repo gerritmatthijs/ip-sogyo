@@ -1,16 +1,17 @@
 // import { Card } from './card.tsx'
 import { createGame, playCard } from '../services/api.ts'
 import { useEffect, useState } from 'react';
-import { isTichuGameState } from '../types.ts';
+import { TichuGameState, isTichuGameState } from '../types.ts';
 import { Alert } from './alert.tsx';
 
 // type Props = {
 //     startingHand: string
 // };
 
-export const Hand = () => {
+export const ActiveHand = () => {
     // const {startingHand} = props;
     const [hand, setHand] = useState("");
+    const [player, setPlayer] = useState("");
     const [lastPlayed, setLastPlayed] = useState("");
     const [alert, setAlert] = useState<string | null>(null);
 
@@ -18,21 +19,26 @@ export const Hand = () => {
 
     const onCardPlayed = async (cardPlayed: string) => {
         const result = await playCard(cardPlayed);
-        if (isTichuGameState(result)){
-            setHand(result["hand"]);
+        updateState(result);
+    }
+    
+    function updateState(result: string | TichuGameState | {statusCode: number; statusText: string;}) {
+        if (isTichuGameState(result)) {
+            setHand(result["player"]["hand"]);
+            setPlayer(result.player.name);
             setLastPlayed(result.lastPlayed);
         }
-        else if (typeof result == 'string'){
+        else if (typeof result == 'string') {
             setAlert(result);
         }
         else {
             setAlert(`${result.statusCode} ${result.statusText}`);
         }
     }
-
     return <div className="hand">
         {lastPlayed && <button className="card" disabled={true} style={{'backgroundPosition': getPicture(lastPlayed)}} />} 
         <br/>
+        <div className='playername'> {player}'s hand</div>  
         {createCards(hand)}
         {alert && <Alert text = {alert} onClick={() => setAlert(null)}/>}
         {/* <br/>
@@ -51,14 +57,7 @@ export const Hand = () => {
 
     async function getStartingHand(){
         const result = await createGame("Gerrit");
-        if (isTichuGameState(result)){
-            setHand(result.hand);
-            setLastPlayed("");
-        }
-        else {
-            console.log("Invalid result obtained:" + result.statusCode + result.statusText);
-            return "";
-        }
+        updateState(result);
     }
 }
 
