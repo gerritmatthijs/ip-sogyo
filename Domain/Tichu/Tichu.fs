@@ -35,10 +35,10 @@ type TichuGame(player: Player, lastPlayed: Option<Card>) =
         member this.DoTurn(name: string, setstring: string): ITichu = 
             if not ((this :> ITichu).CheckAllowed(setstring) = "OK") 
                 then failwith "Move not allowed: call CheckAllowed function first."
-            let set = Hand.StringToCardList(setstring)
-            let currentPlayer = getPlayer(name)
-            let newHand = Hand.RemoveCards(currentPlayer.hand, set)
-            let newCurrentPlayer = {name = name; hand = newHand}
+            let set = setstring |> Hand.StringToCardList 
+            let currentPlayer = getPlayer name
+            let newHand = currentPlayer.hand |> Hand.RemoveCards(set)
+            let newCurrentPlayer = {currentPlayer with hand = newHand}
             new TichuGame(newCurrentPlayer, Some(set[0]))
 
         member this.IsEndOfGame(): bool = 
