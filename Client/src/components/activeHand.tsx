@@ -1,9 +1,10 @@
 // import { Card } from './card.tsx'
 import { createGame, playCard } from '../services/api.ts'
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TichuGameState, isTichuGameState } from '../types.ts';
 import { Alert } from './alert.tsx';
 import { useTichuContext } from '../context/TichuGameContext.tsx';
+import { getPicture } from './card.tsx';
 
 // type Props = {
 //     startingHand: string
@@ -53,19 +54,5 @@ export const ActiveHand = () => {
     async function getStartingHand(){
         const result = await createGame("Gerrit");
         updateState(result);
-    }
-}
-
-function getPicture(card: string) {
-    switch(card) {
-        case "T": return "-900% 0%";
-        case "J": return "-1000% 0%";
-        case "Q": return "-1100% 0%";
-        case "K": return "-1200% 0%";
-        case "A": return "-1300% 0%";
-        default: 
-            const numberValue = Number(card);
-            const horizontalPosition = (numberValue - 1) * -100;
-            return horizontalPosition + "% 0%";
     }
 }
