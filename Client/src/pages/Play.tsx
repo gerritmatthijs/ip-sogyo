@@ -7,7 +7,7 @@ import { getPicture } from '../components/card.tsx';
 function Play() {
     const { gameState } = useTichuContext();
     const lastPlayed = gameState? gameState.lastPlayed : "";
-    const player = gameState? gameState.player.name : "";
+    const player = gameState? gameState.players[0].name : "";
 
     return (
         <div className='environment' >

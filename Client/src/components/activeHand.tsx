@@ -13,7 +13,7 @@ import { getPicture } from './card.tsx';
 export const ActiveHand = () => {
     // const {startingHand} = props;
     const { gameState, setGameState } = useTichuContext();
-    const hand = gameState? gameState.player.hand : "";
+    const hand = gameState? gameState.players[0].hand : "";
     const [alert, setAlert] = useState<string | null>(null);
 
     useEffect(() => {getStartingHand();}, [])
@@ -24,6 +24,7 @@ export const ActiveHand = () => {
     }
     
     function updateState(result: string | TichuGameState | {statusCode: number; statusText: string;}) {
+        console.log(result);
         if (isTichuGameState(result)) {
             setGameState(result);
         }
@@ -52,7 +53,7 @@ export const ActiveHand = () => {
     }
 
     async function getStartingHand(){
-        const result = await createGame("Gerrit");
+        const result = await createGame(["Gerrit", "Daniel", "Wesley", "Hanneke"]);
         updateState(result);
     }
 }

@@ -11,10 +11,11 @@ type TichuFactory() =
             let pom = array.[i]
             array.[i] <- array.[j]
             array.[j] <- pom
-        array |> Array.toSeq |> Seq.sortBy(fun c -> {value = c}.IntValue()) |> String.Concat
+        array |> Array.toSeq |> String.Concat
     
     interface ITichuFactory with
         member this.createNewGame(playerNames: string seq): ITichu = 
-            let hands = generateRandomInput() |> Seq.chunkBySize(13) |> Seq.map(Seq.map(fun c -> {value = c}) >> Seq.toList)
+            printfn $"Random input: {generateRandomInput()}"
+            let hands = generateRandomInput() |> Seq.chunkBySize(13) |> Seq.map(Seq.map(fun c -> {value = c}) >> Seq.sortBy(fun card -> card.IntValue()) >> Seq.toList)
             let players = Seq.map2(fun name hand -> {name = name; hand = hand}) playerNames hands |> Seq.toList
             new TichuGame(players, None)

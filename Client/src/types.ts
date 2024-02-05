@@ -1,5 +1,5 @@
 export type TichuGameState = {
-    player: Player
+    players: Player[]
     lastPlayed: string
 }
 
@@ -9,5 +9,5 @@ export type Player = {
 }
 
 export function isTichuGameState(gameState: unknown): gameState is TichuGameState {
-    return (gameState as TichuGameState).player !== undefined;
+    return (gameState as TichuGameState).players !== undefined;
 }
