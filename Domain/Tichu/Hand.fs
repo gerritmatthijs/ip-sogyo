@@ -5,13 +5,14 @@ module Hand =
         handstring |> Seq.map(fun c -> {value = c}) |> Seq.toList
 
     let CardListToString(hand: Card list): string = 
-        System.String.Concat(hand |> List.map(fun card -> card.value))
+        hand |> List.map(fun card -> card.value) |> System.String.Concat
 
-    let rec RemoveCards(hand: Card list, set: Card list): Card list = 
+    let rec RemoveCards(set: Card list)(hand: Card list): Card list = 
         match hand, set with
         | hand, [] -> hand
-        | handcard::tailhand, setcard::tailset -> if handcard.Equals(setcard) then RemoveCards(tailhand, tailset) else handcard::RemoveCards(tailhand, set)
+        | handcard::tailhand, setcard::tailset -> 
+        if handcard.Equals setcard then RemoveCards tailset tailhand else handcard::RemoveCards set tailhand
         | [], _ -> failwith "Card set is not contained in hand."
 
     let RemoveCardsStringVersion(hand: string, set: string): string = 
-        CardListToString(RemoveCards(StringToCardList(hand), StringToCardList(set)))
+        hand |> StringToCardList |> RemoveCards(StringToCardList set) |> CardListToString

@@ -14,6 +14,6 @@ type TichuFactory() =
         array[..13] |> Array.toSeq |> Seq.sortBy(fun c -> {value = c}.IntValue()) |> String.Concat
     
     interface ITichuFactory with
-        member this.createNewGame(playerNames: seq<string>): ITichu = 
+        member this.createNewGame(playerNames: string seq): ITichu = 
             let hand = generateRandomInput()
-            new TichuGame(hand, None)
+            new TichuGame(playerNames |> Seq.head, hand, None)

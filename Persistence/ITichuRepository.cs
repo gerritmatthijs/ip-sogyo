@@ -3,11 +3,11 @@ using Tichu;
 
 public interface ITichuRepository
 {
-    public void SaveGame(String key, ITichu tichu);
+    public void SaveGame(string key, ITichu tichu);
 
-    ITichu GetGame(String key);
+    ITichu GetGame(string key);
 
-    void DeleteGame(String key);
+    void DeleteGame(string key);
 
-    Boolean ContainsGame(String key);
+    Boolean ContainsGame(string key);
 }
