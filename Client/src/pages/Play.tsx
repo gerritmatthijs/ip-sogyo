@@ -50,10 +50,11 @@ function Play() {
                 {lastPlayed && <button className="card" disabled={true} 
                 style={{'backgroundPosition': getPicture(lastPlayed), 'justifySelf': 'center',
                     'gridColumnStart': 2, 'gridColumnEnd': 3, 'gridRowStart': 2, 'gridRowEnd': 3}} />} 
+                <div className="line"></div>
             </div>
  
             <br/>
-            <div className='activeplayername'> {activePlayer}'s hand</div>  
+            <h2>{activePlayer}'s hand</h2> 
             {alert && <Alert text = {alert} onClick={() => setAlert(null)}/>}
             <div>
                 <ActiveHand onClick={onCardPlayed}/>

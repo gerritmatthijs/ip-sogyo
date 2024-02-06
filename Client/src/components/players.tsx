@@ -11,11 +11,12 @@ export const Player = (props: Props) => {
     const name = player? player.name : "";
     const { columnStart, columnEnd, rowStart, rowEnd } = getGridPlacement(index);
     return <div className="player" 
-    style = {{'gridColumnStart': columnStart, 'gridColumnEnd': columnEnd, 'gridRowStart': rowStart, 'gridRowEnd': rowEnd}}
-    >
-        <h2>{name}</h2>
-        <span>Cards left: {player?.hand.length}</span>
-    </div>
+        style = {{'color': index === gameState?.turn? 'darkred': 'black', 
+            'gridColumnStart': columnStart, 'gridColumnEnd': columnEnd, 'gridRowStart': rowStart, 'gridRowEnd': rowEnd}}
+        >
+            <h2>{name}</h2>
+            <span>Cards left: {player?.hand.length}</span>
+        </div>
 }
 
 function getGridPlacement(index: number): { columnStart: number; columnEnd: number; rowStart: number; rowEnd: number; } {
