@@ -8,7 +8,6 @@ import { getPicture } from '../components/card.tsx';
 import { TichuGameState, isTichuGameState } from '../types.ts';
 import { createGame, playerAction } from '../services/api.ts'
 import { useEffect, useState } from 'react';
-import { act } from 'react-dom/test-utils';
 
 export default function Play() {
     useEffect(() => {getStartingHand();}, [])
@@ -36,6 +35,7 @@ export default function Play() {
     function updateState(result: string | TichuGameState | {statusCode: number; statusText: string;}) {
         if (isTichuGameState(result)) {
             setGameState(result);
+            setAlert(null);
         }
         else if (typeof result == 'string') {
             setAlert(result);
