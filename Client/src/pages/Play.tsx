@@ -14,11 +14,11 @@ function Play() {
 
     const { gameState, setGameState } = useTichuContext();
     const lastPlayed = gameState? gameState.lastPlayed : "";
-    const player = gameState? gameState.players[0].name : "";
+    const activePlayer = gameState? gameState.players[gameState.turn].name : "";
     const [alert, setAlert] = useState<string | null>(null);
 
     const onCardPlayed = async (cardPlayed: string) => {
-        const result = await playCard(cardPlayed);
+        const result = await playCard(activePlayer, cardPlayed);
         updateState(result);
     }
     
@@ -53,7 +53,7 @@ function Play() {
             </div>
  
             <br/>
-            <div className='activeplayername'> {player}'s hand</div>  
+            <div className='activeplayername'> {activePlayer}'s hand</div>  
             {alert && <Alert text = {alert} onClick={() => setAlert(null)}/>}
             <div>
                 <ActiveHand onClick={onCardPlayed}/>

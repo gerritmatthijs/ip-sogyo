@@ -9,7 +9,7 @@ type Props = {
 export const ActiveHand = (props: Props) => {
     const { onClick } = props;
     const { gameState } = useTichuContext();
-    const hand = gameState? gameState.players[0].hand : "";
+    const hand = gameState? gameState.players[gameState.turn].hand : "";
 
     return <div className="hand">
         {createCards(hand)}
