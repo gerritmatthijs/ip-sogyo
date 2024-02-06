@@ -17,16 +17,16 @@ export default function Play() {
     const activePlayer = gameState? gameState.players[gameState.turn].name : "";
     const [alert, setAlert] = useState<string | null>(null);
 
-    async function onCardPlayed(cardPlayed: string){
-        const result = await playCard(activePlayer, cardPlayed);
-        updateState(result);
-    }
-    
     async function getStartingHand(){
         const result = await createGame(["Gerrit", "Daniel", "Wesley", "Hanneke"]);
         updateState(result);
     }
 
+    async function onCardPlayed(cardPlayed: string){
+        const result = await playCard(activePlayer, cardPlayed);
+        updateState(result);
+    }
+    
     function updateState(result: string | TichuGameState | {statusCode: number; statusText: string;}) {
         if (isTichuGameState(result)) {
             setGameState(result);

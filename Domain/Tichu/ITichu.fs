@@ -7,6 +7,8 @@ type ITichu =
 
     abstract member GetLastPlayed: unit -> string
 
+    abstract member GetCurrentLeader: unit -> string
+
     abstract member GetTurn: unit -> int
 
     abstract member CheckAllowed: set: string -> string
