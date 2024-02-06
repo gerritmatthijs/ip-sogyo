@@ -6,7 +6,7 @@ import { Alert } from '../components/alert.tsx';
 import { useTichuContext } from '../context/TichuGameContext.tsx';
 import { getPicture } from '../components/card.tsx';
 import { TichuGameState, isTichuGameState } from '../types.ts';
-import { createGame, playCard } from '../services/api.ts'
+import { createGame, playerAction } from '../services/api.ts'
 import { useEffect, useState } from 'react';
 
 export default function Play() {
@@ -17,19 +17,25 @@ export default function Play() {
     const activePlayer = gameState? gameState.players[gameState.turn].name : "";
     const [alert, setAlert] = useState<string | null>(null);
 
-    async function onCardPlayed(cardPlayed: string){
-        const result = await playCard(activePlayer, cardPlayed);
-        updateState(result);
-    }
-    
     async function getStartingHand(){
         const result = await createGame(["Gerrit", "Daniel", "Wesley", "Hanneke"]);
         updateState(result);
     }
 
+    async function onCardPlayed(cardPlayed: string){
+        const result = await playerAction(activePlayer, cardPlayed);
+        updateState(result);
+    }
+
+    async function onPass(){
+        const result = await playerAction(activePlayer, "pass");
+        updateState(result);
+    }
+    
     function updateState(result: string | TichuGameState | {statusCode: number; statusText: string;}) {
         if (isTichuGameState(result)) {
             setGameState(result);
+            setAlert(null);
         }
         else if (typeof result == 'string') {
             setAlert(result);
@@ -59,6 +65,7 @@ export default function Play() {
             <div>
                 <ActiveHand onClick={onCardPlayed}/>
             </div>
+            <button className="pass-button" onClick={onPass}>Pass</button>
         </div>
     )
 }
