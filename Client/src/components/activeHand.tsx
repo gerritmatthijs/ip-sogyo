@@ -6,7 +6,7 @@ type Props = {
     onClick: (card: string) => void;
 };
 
-export const ActiveHand = (props: Props) => {
+export default function ActiveHand(props: Props) {
     const { onClick } = props;
     const { gameState } = useTichuContext();
     const hand = gameState? gameState.players[gameState.turn].hand : "";
@@ -23,7 +23,7 @@ export const ActiveHand = (props: Props) => {
         const cardList = [];
         for (let i = 0; i < hand.length; i++){
             cardList.push(<button className="card" key = {i} 
-                    style={{'backgroundPosition': getPicture(hand[i])}} 
+                    style={{backgroundPosition: getPicture(hand[i])}} 
                     onClick={() => onClick(hand[i])}/>
                     );
         }
