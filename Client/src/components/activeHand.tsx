@@ -24,7 +24,6 @@ export const ActiveHand = () => {
     }
     
     function updateState(result: string | TichuGameState | {statusCode: number; statusText: string;}) {
-        console.log(result);
         if (isTichuGameState(result)) {
             setGameState(result);
         }

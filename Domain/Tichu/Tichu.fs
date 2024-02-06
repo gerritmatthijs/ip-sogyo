@@ -27,7 +27,6 @@ type TichuGame(players: Player list, lastPlayed: Option<Card>) =
                 let cardPlayed = {value = setstring[0]};
                 if cardPlayed.IntValue() > card.IntValue() then "OK" else "Your card has to be higher than the last played card."
 
-
         member this.DoTurn(name: string, setstring: string): ITichu = 
             if not ((this :> ITichu).CheckAllowed(setstring) = "OK") 
                 then failwith "Move not allowed: call CheckAllowed function first."

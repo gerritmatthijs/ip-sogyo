@@ -18,9 +18,11 @@ function Play() {
                 <Player index={1}/>
                 <Player index={2}/>
                 <Player index={3}/>
+                {lastPlayed && <button className="card" disabled={true} 
+                style={{'backgroundPosition': getPicture(lastPlayed), 'justifySelf': 'center',
+                    'gridColumnStart': 2, 'gridColumnEnd': 3, 'gridRowStart': 2, 'gridRowEnd': 3}} />} 
             </div>
  
-            {lastPlayed && <button className="card" disabled={true} style={{'backgroundPosition': getPicture(lastPlayed)}} />} 
             <br/>
             <div className='activeplayername'> {player}'s hand</div>  
             <div>
