@@ -1,14 +1,43 @@
 import '../style/play.css'
 import '../style/card.css'
 import { ActiveHand } from '../components/activeHand.tsx'
+import { Alert } from '../components/alert.tsx';
 import { useTichuContext } from '../context/TichuGameContext.tsx';
 import { getPicture } from '../components/card.tsx';
 import { Player } from '../components/players.tsx';
+import { TichuGameState, isTichuGameState } from '../types.ts';
+import { createGame, playCard } from '../services/api.ts'
+import { useEffect, useState } from 'react';
 
 function Play() {
-    const { gameState } = useTichuContext();
+    useEffect(() => {getStartingHand();}, [])
+
+    const { gameState, setGameState } = useTichuContext();
     const lastPlayed = gameState? gameState.lastPlayed : "";
     const player = gameState? gameState.players[0].name : "";
+    const [alert, setAlert] = useState<string | null>(null);
+
+    const onCardPlayed = async (cardPlayed: string) => {
+        const result = await playCard(cardPlayed);
+        updateState(result);
+    }
+    
+    function updateState(result: string | TichuGameState | {statusCode: number; statusText: string;}) {
+        if (isTichuGameState(result)) {
+            setGameState(result);
+        }
+        else if (typeof result == 'string') {
+            setAlert(result);
+        }
+        else {
+            setAlert(`${result.statusCode} ${result.statusText}`);
+        }
+    }
+
+    async function getStartingHand(){
+        const result = await createGame(["Gerrit", "Daniel", "Wesley", "Hanneke"]);
+        updateState(result);
+    }
 
     return (
         <div className='environment' >
@@ -25,8 +54,9 @@ function Play() {
  
             <br/>
             <div className='activeplayername'> {player}'s hand</div>  
+            {alert && <Alert text = {alert} onClick={() => setAlert(null)}/>}
             <div>
-                <ActiveHand />
+                <ActiveHand onClick={onCardPlayed}/>
             </div>
         </div>
     )
