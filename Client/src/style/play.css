@@ -7,6 +7,12 @@ body {
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  color: black;
+}
+
+h2 {
+  margin-top: 0em;
+  margin-bottom: 0.2em;
 }
 
 .alert {
@@ -16,18 +22,25 @@ body {
   background-color: white;
 }
 
-.activeplayername {
-  font-size: large;
-}
-
 .player {
   font-size: large;
 }
 
 .grid-container {
   display: grid;
+  place-items: center;
+  row-gap: 15px;
+  grid-template-rows: [line1] auto [line2] 192px [line3] auto;
 }
 
 .read-the-docs {
   color: #888;
+}
+
+.line {
+  grid-column-start: 1;
+  grid-column-end: 4;
+  height: 2px;
+  border-bottom: 1px solid black;
+  width: 100%;
 }

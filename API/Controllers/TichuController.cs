@@ -23,7 +23,7 @@ public class TichuController(ITichuRepository repository, ITichuFactory factory)
         string moveAllowed = tichu.CheckAllowed(body["card"]);
         if (moveAllowed.Equals("OK"))
         {
-            ITichu newTichu  = tichu.DoTurn("Gerrit", body["card"]);
+            ITichu newTichu  = tichu.DoTurn(body["name"], body["card"]);
             _repository.SaveGame(gameID, newTichu);
             return Ok(new TichuDTO(newTichu));
         }

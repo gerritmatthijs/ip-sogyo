@@ -1,6 +1,7 @@
 export type TichuGameState = {
     players: Player[]
     lastPlayed: string
+    turn: number
 }
 
 export type Player = {
