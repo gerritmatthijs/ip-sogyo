@@ -17,4 +17,4 @@ type TichuFactory() =
         member this.createNewGame(playerNames: string seq): ITichu = 
             let hands = generateRandomInput() |> Seq.chunkBySize(13) |> Seq.map(Seq.map(fun c -> {value = c}) >> Seq.sortBy(fun card -> card.IntValue()) >> Seq.toList)
             let players = Seq.map2(fun name hand -> {name = name; hand = hand}) playerNames hands |> Seq.toList
-            new TichuGame(players, None)
+            new TichuGame(players, None, 0)
