@@ -5,11 +5,20 @@ type TichuGame(players: Player list, lastPlay: Option<Card * Player>, turn: int)
     let getPlayer(name: string): Player = 
         players |> List.find(fun player -> player.name.Equals name)
 
+    let nextTurn(): int = (turn + 1) % 4
+
     let PlaySet(name: string, setstring: string): ITichu = 
         let set = setstring |> Hand.StringToCardList 
         let updatedPlayer = getPlayer name |> Player.PlayCards(set)
         let updatedPlayerList = players |> List.map(fun p -> if p.name.Equals name then updatedPlayer else p)
-        new TichuGame(updatedPlayerList, Some(set[0], updatedPlayer), (turn + 1) % 4)
+        new TichuGame(updatedPlayerList, Some(set[0], updatedPlayer), nextTurn())
+
+    let Pass(name: string): ITichu = 
+        match lastPlay with
+        | None -> failwith "Cannot pass when starting a trick."
+        | Some(_, leader) -> 
+            let updatedLastPlay = if leader.Equals players[nextTurn()] then None else lastPlay
+            new TichuGame(players, updatedLastPlay, nextTurn())
 
     // Is there a way to make this a let binding (i.e. private function), while still being able to call an interface member?
     member this.checkErrors(name: string, setstring: string): unit = 
@@ -50,7 +59,7 @@ type TichuGame(players: Player list, lastPlay: Option<Card * Player>, turn: int)
             this.checkErrors(name, action)
 
             match action with 
-            | "pass" -> new TichuGame(players, lastPlay, (turn + 1) % 4)
+            | "pass" -> Pass(name)
             | setstring -> PlaySet(name, setstring)
 
 
