@@ -6,6 +6,7 @@ namespace api.Models
     {
         public PlayerDTO[] Players { get; set; } = new PlayerDTO[4];
         public string LastPlayed { get; set; }
+        public string CurrentLeader { get; set; }
         public int Turn {get; set; }
 
         public TichuDTO(ITichu tichu){
@@ -13,6 +14,7 @@ namespace api.Models
                 Players[i] = new PlayerDTO(tichu, tichu.GetPlayerName(i));
             }
             LastPlayed = tichu.GetLastPlayed();
+            CurrentLeader = tichu.GetCurrentLeader();
             Turn = tichu.GetTurn();
         }
     }

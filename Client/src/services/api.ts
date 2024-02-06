@@ -1,6 +1,6 @@
 import { TichuGameState, isTichuGameState } from "../types";
 
-export async function playCard(name: string, cardPlayed: string){
+export async function playerAction(name: string, action: string){
     const response = await fetch("tichu/play", {
         method: "POST",
         headers: {
@@ -9,7 +9,7 @@ export async function playCard(name: string, cardPlayed: string){
         },
         body: JSON.stringify({
             name:name,
-            card:cardPlayed
+            action:action
         })
     });
     if (response.ok){

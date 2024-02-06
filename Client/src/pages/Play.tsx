@@ -6,8 +6,9 @@ import { Alert } from '../components/alert.tsx';
 import { useTichuContext } from '../context/TichuGameContext.tsx';
 import { getPicture } from '../components/card.tsx';
 import { TichuGameState, isTichuGameState } from '../types.ts';
-import { createGame, playCard } from '../services/api.ts'
+import { createGame, playerAction } from '../services/api.ts'
 import { useEffect, useState } from 'react';
+import { act } from 'react-dom/test-utils';
 
 export default function Play() {
     useEffect(() => {getStartingHand();}, [])
@@ -23,7 +24,12 @@ export default function Play() {
     }
 
     async function onCardPlayed(cardPlayed: string){
-        const result = await playCard(activePlayer, cardPlayed);
+        const result = await playerAction(activePlayer, cardPlayed);
+        updateState(result);
+    }
+
+    async function onPass(){
+        const result = await playerAction(activePlayer, "pass");
         updateState(result);
     }
     
@@ -59,6 +65,7 @@ export default function Play() {
             <div>
                 <ActiveHand onClick={onCardPlayed}/>
             </div>
+            <button className="pass-button" onClick={onPass}>Pass</button>
         </div>
     )
 }
