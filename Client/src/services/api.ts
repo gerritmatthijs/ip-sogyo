@@ -27,7 +27,7 @@ export async function playCard(cardPlayed: string){
     }
 }
 
-export async function createGame(playerName: string){
+export async function createGame(playerNames: string[]){
     const response = await fetch("tichu/newgame", {
         method: "POST",
         headers: {
@@ -35,7 +35,7 @@ export async function createGame(playerName: string){
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            name:playerName
+            names:playerNames.join(",")
         })
     });
     if (response.ok){

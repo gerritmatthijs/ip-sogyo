@@ -16,8 +16,16 @@ body {
   background-color: white;
 }
 
-.playername {
+.activeplayername {
   font-size: large;
+}
+
+.player {
+  font-size: large;
+}
+
+.grid-container {
+  display: grid;
 }
 
 .read-the-docs {

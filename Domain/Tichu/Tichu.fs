@@ -1,17 +1,13 @@
 namespace Tichu
 
-type TichuGame(player: Player, lastPlayed: Option<Card>) = 
+type TichuGame(players: Player list, lastPlayed: Option<Card>) = 
     
     let getPlayer(name: string): Player = 
-        player
-
-    new(name: string, handstring: string, lastPlayed: Option<char>) = 
-        let player = {name = name; hand = handstring |> Hand.StringToCardList}
-        new TichuGame(player, lastPlayed |> Option.map(fun c -> {value = c}))
+        players |> List.find(fun player -> player.name.Equals name)
        
     interface ITichu with
         member this.GetPlayerName(playerNumber: int): string = 
-            player.name
+            players[playerNumber].name
 
         member this.GetPlayerHand(name: string): string = 
             Hand.CardListToString(getPlayer(name).hand)
@@ -31,15 +27,13 @@ type TichuGame(player: Player, lastPlayed: Option<Card>) =
                 let cardPlayed = {value = setstring[0]};
                 if cardPlayed.IntValue() > card.IntValue() then "OK" else "Your card has to be higher than the last played card."
 
-
         member this.DoTurn(name: string, setstring: string): ITichu = 
             if not ((this :> ITichu).CheckAllowed(setstring) = "OK") 
                 then failwith "Move not allowed: call CheckAllowed function first."
             let set = setstring |> Hand.StringToCardList 
-            let currentPlayer = getPlayer name
-            let newHand = currentPlayer.hand |> Hand.RemoveCards(set)
-            let newCurrentPlayer = {currentPlayer with hand = newHand}
-            new TichuGame(newCurrentPlayer, Some(set[0]))
+            let updatedPlayer = getPlayer name |> Player.PlayCards(set)
+            let updatePlayerList = players |> List.map(fun p -> if p.name.Equals name then updatedPlayer else p)
+            new TichuGame(updatePlayerList, Some(set[0]))
 
         member this.IsEndOfGame(): bool = 
             failwith "Not Implemented"
