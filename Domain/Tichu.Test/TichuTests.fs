@@ -94,6 +94,13 @@ let ``Trying to pass when opening a trick gives alert`` () =
     Assert.Equal("You cannot pass when opening a trick.", tichu.CheckAllowed("pass"))
 
 [<Fact>]
+let ``Play lower or equal card is not allowed`` () = 
+    let tichu = SetUpGame()
+    let tichu1 = tichu.DoTurn("Gerrit", "4")
+    Assert.Equal("Your card has to be higher than the last played card.", tichu1.CheckAllowed("3"))
+    Assert.Equal("Your card has to be higher than the last played card.", tichu1.CheckAllowed("4"))
+
+[<Fact>]
 let ``Passing doesn't change last action or player's hand but does change turn`` () =
     let tichu = SetUpGame()
     let gerritPlayed = tichu.DoTurn("Gerrit", "4")
@@ -104,11 +111,15 @@ let ``Passing doesn't change last action or player's hand but does change turn``
     Assert.Equal("4", danielPassed.GetLastPlayed())
 
 [<Fact>]
-let ``Play lower or equal card is not allowed`` () = 
+let ``When three people pass, the trick ends`` () = 
     let tichu = SetUpGame()
-    let tichu1 = tichu.DoTurn("Gerrit", "4")
-    Assert.Equal("Your card has to be higher than the last played card.", tichu1.CheckAllowed("3"))
-    Assert.Equal("Your card has to be higher than the last played card.", tichu1.CheckAllowed("4"))
+    let gerritPlayed = tichu.DoTurn("Gerrit", "4")
+    let danielPassed = gerritPlayed.DoTurn("Daniel", "pass")
+    let wesleyPassed = danielPassed.DoTurn("Wesley", "pass")
+    let everyonePassed = wesleyPassed.DoTurn("Hanneke", "pass")
+    Assert.Equal("", everyonePassed.GetCurrentLeader())
+    Assert.Equal("", everyonePassed.GetLastPlayed())
+    Assert.Equal(0, everyonePassed.GetTurn());
 
 [<Fact>]
 let ``DoTurn throws exception if move is not allowed`` () = 
