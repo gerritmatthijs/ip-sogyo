@@ -10,6 +10,7 @@ let SetUpGame () =
     let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
     new TichuGame([playerOne; playerTwo; playerThree; playerFour], None, 0) :> ITichu
 
+
 [<Fact>]
 let ``Get player name`` () = 
     let tichu = SetUpGame()
@@ -126,3 +127,41 @@ let ``DoTurn throws exception if move is not allowed`` () =
     let tichu = SetUpGame()
     let tichu1 = tichu.DoTurn("Gerrit", "4")
     Assert.Throws<System.Exception>(fun () -> tichu1.DoTurn("Gerrit", "3") :> obj)
+
+[<Fact>]
+let ``Player with empty hand does not get a turn`` () = 
+    let playerOne = {name = "Gerrit"; hand = "2222333344445" |> Hand.StringToCardList}
+    let playerTwo = {name = "Daniel"; hand = "" |> Hand.StringToCardList}
+    let playerThree = {name = "Wesley"; hand = "889999TTTTJJJ" |> Hand.StringToCardList}
+    let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
+    let tichu = new TichuGame([playerOne; playerTwo; playerThree; playerFour], None, 0) :> ITichu
+
+    let gerritPlayed = tichu.DoTurn("Gerrit", "4")
+    Assert.Equal(2, gerritPlayed.GetTurn())
+
+[<Fact>]
+let ``Two consecutive players with empty hands are both skipped`` () = 
+    let playerOne = {name = "Gerrit"; hand = "2222333344445" |> Hand.StringToCardList}
+    let playerTwo = {name = "Daniel"; hand = "" |> Hand.StringToCardList}
+    let playerThree = {name = "Wesley"; hand = "" |> Hand.StringToCardList}
+    let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
+    let tichu = new TichuGame([playerOne; playerTwo; playerThree; playerFour], None, 0) :> ITichu
+
+    let gerritPlayed = tichu.DoTurn("Gerrit", "4")
+    Assert.Equal(3, gerritPlayed.GetTurn())
+
+[<Fact>]
+let ``When a player wins the trick with their last cards, the next player starts the next trick`` () = 
+    let playerOne = {name = "Gerrit"; hand = "4" |> Hand.StringToCardList}
+    let playerTwo = {name = "Daniel"; hand = "5556666777788" |> Hand.StringToCardList}
+    let playerThree = {name = "Wesley"; hand = "889999TTTTJJJ" |> Hand.StringToCardList}
+    let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
+    let tichu = new TichuGame([playerOne; playerTwo; playerThree; playerFour], None, 0) :> ITichu
+
+    let gerritPlayed = tichu.DoTurn("Gerrit", "4")
+    let danielPassed = gerritPlayed.DoTurn("Daniel", "pass")
+    let wesleyPassed = danielPassed.DoTurn("Wesley", "pass")
+    let hannekePassed = wesleyPassed.DoTurn("Hanneke", "pass")
+    Assert.Equal(1, hannekePassed.GetTurn())
+    Assert.Equal("", hannekePassed.GetLastPlayed())
+    Assert.Equal("", hannekePassed.GetCurrentLeader())

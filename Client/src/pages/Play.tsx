@@ -1,16 +1,16 @@
-import '../style/play.css'
-import '../style/card.css'
-import ActiveHand from '../components/activeHand.tsx'
+import '../style/play.css';
+import '../style/card.css';
+import ActiveHand from '../components/activeHand.tsx';
 import Player from '../components/player.tsx';
 import { Alert, Message } from '../components/alert.tsx';
 import { useTichuContext } from '../context/TichuGameContext.tsx';
 import { getPicture } from '../components/card.tsx';
 import { TichuGameState, isTichuGameState } from '../types.ts';
-import { createGame, playerAction } from '../services/api.ts'
+import { createGame, playerAction } from '../services/api.ts';
 import { useEffect, useState } from 'react';
 
 export default function Play() {
-    useEffect(() => {getStartingHand();}, [])
+    useEffect(() => {getStartingHand();}, []);
 
     const { gameState, setGameState } = useTichuContext();
     const lastPlayed = gameState? gameState.lastPlayed : "";
