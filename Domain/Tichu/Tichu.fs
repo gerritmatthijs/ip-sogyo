@@ -7,19 +7,11 @@ type TichuGame(players: Player list, lastPlay: Option<Card * Player>, turn: int)
 
     let IncreasePlayerIndex(index: int) = (index + 1) % 4
 
-    let NextTurn(): int = 
-        let nextPlayerIndex = turn |> IncreasePlayerIndex
-        match players[nextPlayerIndex].hand.Length with
-        | 0 -> 
-                let opposingPlayerIndex = nextPlayerIndex |> IncreasePlayerIndex
-                match players[opposingPlayerIndex].hand.Length with
-                | 0 -> opposingPlayerIndex |> IncreasePlayerIndex
-                | _ -> opposingPlayerIndex
-        | _ -> nextPlayerIndex
+    let rec NextTurnHelper(index: int): int = 
+        if players[index] |> Player.isFinished then NextTurnHelper(index |> IncreasePlayerIndex)
+        else index
 
-    let NextPlayer(): Player = players[IncreasePlayerIndex turn]
-
-    let OppositePlayer(): Player = players[turn |> IncreasePlayerIndex |> IncreasePlayerIndex]
+    let NextTurn(): int = NextTurnHelper(IncreasePlayerIndex turn)
 
     let PlaySet(name: string, setstring: string): ITichu = 
         let set = setstring |> Hand.StringToCardList 
@@ -27,18 +19,19 @@ type TichuGame(players: Player list, lastPlay: Option<Card * Player>, turn: int)
         let updatedPlayerList = players |> List.map(fun p -> if p.name.Equals name then updatedPlayer else p)
         new TichuGame(updatedPlayerList, Some(set[0], updatedPlayer), NextTurn())
 
-    let rec TrickWonHelper(leader: Player, index: int): bool = 
+    let rec TrickWonHelper(index: int): bool = 
+        let (_, leader) = lastPlay.Value
         if players[index].Equals leader then true
-        else if players[index] |> Player.isFinished then TrickWonHelper(leader, IncreasePlayerIndex index)
+        else if players[index] |> Player.isFinished then TrickWonHelper(index |> IncreasePlayerIndex)
         else false
 
-    let TrickWon(leader: Player): bool = TrickWonHelper(leader, IncreasePlayerIndex turn)
+    let TrickWon(): bool = TrickWonHelper(IncreasePlayerIndex turn)
 
     let Pass(name: string): ITichu = 
         match lastPlay with
         | None -> failwith "Cannot pass when starting a trick."
-        | Some(_, leader) -> 
-            let updatedLastPlay = if TrickWon(leader) then None else lastPlay
+        | Some(_, _) -> 
+            let updatedLastPlay = if TrickWon() then None else lastPlay
             new TichuGame(players, updatedLastPlay, NextTurn())
 
     // Is there a way to make this a let binding (i.e. private function), while still being able to call an interface member?
