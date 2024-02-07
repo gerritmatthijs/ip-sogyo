@@ -1,23 +1,26 @@
 namespace Tichu
 
-type TichuGame(players: Player list, lastPlay: Option<Card * Player>, turn: int) = 
-    
-    let GetPlayer(name: string): Player = 
-        players |> List.find(fun player -> player.name.Equals name)
+type TichuGame = 
+    {players: Player list; lastPlay: Option<Card * Player>; turn: int}
 
-    let IncreasePlayerIndex(index: int) = (index + 1) % 4
+    member this.GetPlayer(name: string): Player = 
+        this.players |> List.find(fun player -> player.name.Equals name)
 
-    let rec NextTurnHelper(index: int): int = 
-        if players[index] |> Player.isFinished then NextTurnHelper(index |> IncreasePlayerIndex)
+    member this.NextTurn(): int = this.NextTurnHelper(TichuGame.IncreasePlayerIndex this.turn)
+
+    member this.NextTurnHelper(index: int): int = 
+        if this.players[index] |> Player.isFinished then this.NextTurnHelper(index |> TichuGame.IncreasePlayerIndex)
         else index
 
-    let NextTurn(): int = NextTurnHelper(IncreasePlayerIndex turn)
+    static member IncreasePlayerIndex(index: int) = (index + 1) % 4
+    
+module TichuGame = 
 
-    let PlaySet(name: string, setstring: string): ITichu = 
+    let PlaySet(name: string, setstring: string)(tichu: TichuGame): TichuGame = 
         let set = setstring |> Hand.StringToCardList 
-        let updatedPlayer = GetPlayer name |> Player.PlayCards(set)
-        let updatedPlayerList = players |> List.map(fun p -> if p.name.Equals name then updatedPlayer else p)
-        new TichuGame(updatedPlayerList, Some(set[0], updatedPlayer), NextTurn())
+        let updatedPlayer = tichu.GetPlayer name |> Player.PlayCards(set)
+        let updatedPlayerList = tichu.players |> List.map(fun p -> if p.name.Equals name then updatedPlayer else p)
+        {players = updatedPlayerList; lastPlay = Some(set[0], updatedPlayer); turn = tichu.NextTurn()}
 
     let rec TrickWonHelper(index: int): bool = 
         let (_, leader) = lastPlay.Value
