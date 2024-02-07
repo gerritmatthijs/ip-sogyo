@@ -10,6 +10,13 @@ let SetUpGame () =
     let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
     new TichuGame([playerOne; playerTwo; playerThree; playerFour], None, 0) :> ITichu
 
+let SetUpGameEmptyHand() = 
+    let playerOne = {name = "Gerrit"; hand = "2222333344445" |> Hand.StringToCardList}
+    let playerTwo = {name = "Daniel"; hand = "" |> Hand.StringToCardList}
+    let playerThree = {name = "Wesley"; hand = "889999TTTTJJJ" |> Hand.StringToCardList}
+    let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
+    new TichuGame([playerOne; playerTwo; playerThree; playerFour], None, 0) :> ITichu
+
 
 [<Fact>]
 let ``Get player name`` () = 
@@ -130,11 +137,7 @@ let ``DoTurn throws exception if move is not allowed`` () =
 
 [<Fact>]
 let ``Player with empty hand does not get a turn`` () = 
-    let playerOne = {name = "Gerrit"; hand = "2222333344445" |> Hand.StringToCardList}
-    let playerTwo = {name = "Daniel"; hand = "" |> Hand.StringToCardList}
-    let playerThree = {name = "Wesley"; hand = "889999TTTTJJJ" |> Hand.StringToCardList}
-    let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
-    let tichu = new TichuGame([playerOne; playerTwo; playerThree; playerFour], None, 0) :> ITichu
+    let tichu = SetUpGameEmptyHand()
 
     let gerritPlayed = tichu.DoTurn("Gerrit", "4")
     Assert.Equal(2, gerritPlayed.GetTurn())
@@ -165,3 +168,46 @@ let ``When a player wins the trick with their last cards, the next player starts
     Assert.Equal(1, hannekePassed.GetTurn())
     Assert.Equal("", hannekePassed.GetLastPlayed())
     Assert.Equal("", hannekePassed.GetCurrentLeader())
+
+[<Fact>]
+let ``Check situation: a player is out and the next player wins a trick`` () = 
+    let tichu = SetUpGameEmptyHand()
+    let gerritPlayed = tichu.DoTurn("Gerrit", "4")
+    let wesleyPlayed = gerritPlayed.DoTurn("Wesley", "T")
+    let hannekePassed = wesleyPlayed.DoTurn("Hanneke", "pass")
+    let gerritPassed = hannekePassed.DoTurn("Gerrit", "pass")
+    Assert.Equal(2, gerritPassed.GetTurn())
+    Assert.Equal("", gerritPassed.GetLastPlayed())
+    Assert.Equal("", gerritPassed.GetCurrentLeader())
+
+[<Fact>]
+let ``Check situation: a player is out and the next player wins a trick with their last cards`` () = 
+    let playerOne = {name = "Gerrit"; hand = "2222333344445" |> Hand.StringToCardList}
+    let playerTwo = {name = "Daniel"; hand = "" |> Hand.StringToCardList}
+    let playerThree = {name = "Wesley"; hand = "T" |> Hand.StringToCardList}
+    let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
+    let tichu = new TichuGame([playerOne; playerTwo; playerThree; playerFour], None, 0) :> ITichu
+
+    let gerritPlayed = tichu.DoTurn("Gerrit", "4")
+    let wesleyPlayed = gerritPlayed.DoTurn("Wesley", "T")
+    let hannekePassed = wesleyPlayed.DoTurn("Hanneke", "pass")
+    let gerritPassed = hannekePassed.DoTurn("Gerrit", "pass")
+    Assert.Equal(3, gerritPassed.GetTurn())
+    Assert.Equal("", gerritPassed.GetLastPlayed())
+    Assert.Equal("", gerritPassed.GetCurrentLeader())
+
+[<Fact>]
+let ``Check situation: a player is out and the previous player wins a trick with their last cards`` () = 
+    let playerOne = {name = "Gerrit"; hand = "2222333344445" |> Hand.StringToCardList}
+    let playerTwo = {name = "Daniel"; hand = "6" |> Hand.StringToCardList}
+    let playerThree = {name = "Wesley"; hand = "" |> Hand.StringToCardList}
+    let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
+    let tichu = new TichuGame([playerOne; playerTwo; playerThree; playerFour], None, 0) :> ITichu
+
+    let gerritPlayed = tichu.DoTurn("Gerrit", "4")
+    let danielPlayed = gerritPlayed.DoTurn("Daniel", "6")
+    let hannekePassed = danielPlayed.DoTurn("Hanneke", "pass")
+    let gerritPassed = hannekePassed.DoTurn("Gerrit", "pass")
+    Assert.Equal(3, gerritPassed.GetTurn())
+    Assert.Equal("", gerritPassed.GetLastPlayed())
+    Assert.Equal("", gerritPassed.GetCurrentLeader())
