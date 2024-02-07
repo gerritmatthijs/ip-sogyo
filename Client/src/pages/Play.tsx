@@ -2,7 +2,7 @@ import '../style/play.css'
 import '../style/card.css'
 import ActiveHand from '../components/activeHand.tsx'
 import Player from '../components/player.tsx';
-import { Alert } from '../components/alert.tsx';
+import { Alert, Message } from '../components/alert.tsx';
 import { useTichuContext } from '../context/TichuGameContext.tsx';
 import { getPicture } from '../components/card.tsx';
 import { TichuGameState, isTichuGameState } from '../types.ts';
@@ -16,6 +16,7 @@ export default function Play() {
     const lastPlayed = gameState? gameState.lastPlayed : "";
     const activePlayer = gameState? gameState.players[gameState.turn].name : "";
     const [alert, setAlert] = useState<string | null>(null);
+    const [message, setMessage] = useState<string | null>(null);
 
     async function getStartingHand(){
         const result = await createGame(["Gerrit", "Daniel", "Wesley", "Hanneke"]);
@@ -29,6 +30,9 @@ export default function Play() {
 
     async function onPass(){
         const result = await playerAction(activePlayer, "pass");
+        if (isTichuGameState(result) && result["lastPlayed"] == ""){
+            setMessage(gameState?.currentLeader + " has won the trick!")
+        }
         updateState(result);
     }
     
@@ -60,6 +64,7 @@ export default function Play() {
             </div>
  
             <br/>
+            {message && <Message text = {message} onClick = {() => setMessage(null)}/>}
             <h2>{activePlayer}'s hand</h2> 
             {alert && <Alert text = {alert} onClick={() => setAlert(null)}/>}
             <div>
