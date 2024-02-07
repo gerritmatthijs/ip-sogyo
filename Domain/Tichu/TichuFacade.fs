@@ -28,6 +28,7 @@ type TichuFacade(tichu: TichuGame) =
             action |> Card.CheckAllowed(tichu.lastPlay |> Option.map(fun (card, _) -> card))
 
         member this.DoTurn(name: string, action: string): ITichu = 
+            printfn $"Card received from server: {action}." 
             new TichuFacade(tichu |> TichuGame.DoTurn(name, action))
 
         member x.IsEndOfGame(): bool = 
