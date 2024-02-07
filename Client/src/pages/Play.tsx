@@ -25,13 +25,16 @@ export default function Play() {
 
     async function onCardPlayed(cardPlayed: string){
         const result = await playerAction(activePlayer, cardPlayed);
+        if (isTichuGameState(result) && gameState?.players[gameState.turn].hand == cardPlayed){
+            setMessage(activePlayer + " has played all their cards!");
+        }
         updateState(result);
     }
 
     async function onPass(){
         const result = await playerAction(activePlayer, "pass");
         if (isTichuGameState(result) && result["lastPlayed"] == ""){
-            setMessage(gameState?.currentLeader + " has won the trick!")
+            setMessage(gameState?.currentLeader + " has won the trick!");
         }
         updateState(result);
     }
