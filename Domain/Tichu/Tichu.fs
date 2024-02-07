@@ -2,23 +2,37 @@ namespace Tichu
 
 type TichuGame(players: Player list, lastPlay: Option<Card * Player>, turn: int) = 
     
-    let getPlayer(name: string): Player = 
+    let GetPlayer(name: string): Player = 
         players |> List.find(fun player -> player.name.Equals name)
 
-    let nextTurn(): int = (turn + 1) % 4
+    let IncreasePlayerIndex(index: int) = (index + 1) % 4
+
+    let rec NextTurnHelper(index: int): int = 
+        if players[index] |> Player.isFinished then NextTurnHelper(index |> IncreasePlayerIndex)
+        else index
+
+    let NextTurn(): int = NextTurnHelper(IncreasePlayerIndex turn)
 
     let PlaySet(name: string, setstring: string): ITichu = 
         let set = setstring |> Hand.StringToCardList 
-        let updatedPlayer = getPlayer name |> Player.PlayCards(set)
+        let updatedPlayer = GetPlayer name |> Player.PlayCards(set)
         let updatedPlayerList = players |> List.map(fun p -> if p.name.Equals name then updatedPlayer else p)
-        new TichuGame(updatedPlayerList, Some(set[0], updatedPlayer), nextTurn())
+        new TichuGame(updatedPlayerList, Some(set[0], updatedPlayer), NextTurn())
+
+    let rec TrickWonHelper(index: int): bool = 
+        let (_, leader) = lastPlay.Value
+        if players[index].Equals leader then true
+        else if players[index] |> Player.isFinished then TrickWonHelper(index |> IncreasePlayerIndex)
+        else false
+
+    let TrickWon(): bool = TrickWonHelper(IncreasePlayerIndex turn)
 
     let Pass(name: string): ITichu = 
         match lastPlay with
         | None -> failwith "Cannot pass when starting a trick."
-        | Some(_, leader) -> 
-            let updatedLastPlay = if leader.Equals players[nextTurn()] then None else lastPlay
-            new TichuGame(players, updatedLastPlay, nextTurn())
+        | Some(_, _) -> 
+            let updatedLastPlay = if TrickWon() then None else lastPlay
+            new TichuGame(players, updatedLastPlay, NextTurn())
 
     // Is there a way to make this a let binding (i.e. private function), while still being able to call an interface member?
     member this.checkErrors(name: string, setstring: string): unit = 
@@ -32,7 +46,7 @@ type TichuGame(players: Player list, lastPlay: Option<Card * Player>, turn: int)
             players[playerNumber].name
 
         member x.GetPlayerHand(name: string): string = 
-            Hand.CardListToString(getPlayer(name).hand)
+            Hand.CardListToString(GetPlayer(name).hand)
 
         member x.GetLastPlayed(): string = 
             match lastPlay with 

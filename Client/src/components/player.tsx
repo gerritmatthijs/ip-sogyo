@@ -9,11 +9,23 @@ export default function Player(props: Props) {
     const { gameState } = useTichuContext();
     const player = gameState?.players[index];
     const name = player? player.name : "";
-    const activePlayer = index === gameState?.turn;
+    const textColor = getColor();
     const { columnPlacement, rowPlacement } = getGridPlacement(index);
+
+    function getColor(){
+        const isActivePlayer = index === gameState?.turn;
+        const isCurrentLeader = name == gameState?.currentLeader;
+        if (isActivePlayer){
+            return 'darkred';
+        }
+        if (isCurrentLeader){
+            return 'green';
+        }
+        return 'black';
+    }
+
     return <div className="player" 
-        style = {{color: activePlayer? 'darkred': 'black', 
-            gridColumn: columnPlacement, gridRow: rowPlacement}}
+        style = {{color: textColor, gridColumn: columnPlacement, gridRow: rowPlacement}}
         >
             <h2>{name}</h2>
             <span>Cards left: {player?.hand.length}</span>

@@ -8,3 +8,5 @@ module Player =
         let newHand = player.hand |> Hand.RemoveCards(set)
         {player with hand = newHand}
 
+    let isFinished(player: Player): bool = player.hand.IsEmpty
+
