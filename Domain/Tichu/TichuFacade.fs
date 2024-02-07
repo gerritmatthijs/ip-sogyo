@@ -1,42 +1,34 @@
 namespace Tichu
 
+// The TichuFacade implements the ITichu interface and is mostly meant to translate F#-specific objects to C#-suitable objects
 type TichuFacade(tichu: TichuGame) = 
+
+    new(players: Player list) = new TichuFacade({players = players; lastPlay = None; turn = 0})
 
     interface ITichu with
         member x.GetPlayerName(playerNumber: int): string = 
             tichu.players[playerNumber].name
 
         member x.GetPlayerHand(name: string): string = 
-            Hand.CardListToString(GetPlayer(name).hand)
+            Hand.CardListToString(tichu.GetPlayer(name).hand)
 
         member x.GetLastPlayed(): string = 
-            match lastPlay with 
+            match tichu.lastPlay with 
             | None -> ""
             | Some(card, _) -> card.value.ToString()
 
         member x.GetCurrentLeader(): string = 
-            match lastPlay with
+            match tichu.lastPlay with
             | None -> ""
             | Some(_, player) -> player.name
 
-        member x.GetTurn(): int = turn
+        member x.GetTurn(): int = tichu.turn
 
         member x.CheckAllowed(action: string): string = 
-            match lastPlay, action with
-            | None, "pass" -> "You cannot pass when opening a trick."
-            | None, _ -> "OK"
-            | _, "pass" -> "OK"
-            | Some(card, _), setstring -> 
-                let cardPlayed = {value = setstring[0]};
-                if cardPlayed.IntValue() > card.IntValue() then "OK" else "Your card has to be higher than the last played card."
+            action |> Card.CheckAllowed(tichu.lastPlay |> Option.map(fun (card, _) -> card))
 
         member this.DoTurn(name: string, action: string): ITichu = 
-            this.checkErrors(name, action)
-
-            match action with 
-            | "pass" -> Pass(name)
-            | setstring -> PlaySet(name, setstring)
-
+            new TichuFacade(tichu |> TichuGame.DoTurn(name, action))
 
         member x.IsEndOfGame(): bool = 
             failwith "Not Implemented"
