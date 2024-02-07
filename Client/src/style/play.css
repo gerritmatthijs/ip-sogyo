@@ -22,6 +22,13 @@ h2 {
   background-color: white;
 }
 
+.message {
+  border-style: solid;
+  border-color: black;
+  color: green;
+  background-color: white;
+}
+
 .player {
   font-size: large;
 }
