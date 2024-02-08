@@ -6,7 +6,7 @@ This repository contains my individual project concluding my traineeship program
 
 # Project goal
 
-The goal of this project is the development of a full-stack web application for the game presidents or Tichu. Tichu is (almost) a more extensive version of the game presidents, hence the goal is to first implement Presidents and subsequently add Tichu rules as far as time allows. 
+The goal of this project is the development of a full-stack web application for the game presidents or Tichu. Tichu is (almost) a more complicated version of the game presidents, hence the goal is to first implement Presidents and subsequently add Tichu rules as far as time allows. 
 
 **Personal learning goals**
 * Apply TDD more consistently
