@@ -11,7 +11,7 @@ type ITichu =
 
     abstract member GetTurn: unit -> int
 
-    abstract member DoTurn: name: string * set: string -> ITichu
+    abstract member DoTurn: set: string -> ITichu
 
     abstract member GetMessage: unit -> string
 

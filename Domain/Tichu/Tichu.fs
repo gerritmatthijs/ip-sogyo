@@ -40,18 +40,10 @@ module TichuGame =
             let status: StatusText = if tichu.TrickIsWonUponPass() then Message(leader.name + " has won the trick!") else NoText
             {tichu with lastPlay = updatedLastPlay; turn = tichu.NextTurn(); status = status}
 
-    // Is there a way to make this a let binding (i.e. private function), while still being able to call an interface member?
-    let checkErrors(name: string, action: Action)(tichu: TichuGame): unit = 
-        if not (tichu.players[tichu.turn].name.Equals name)
-            then failwith "It is not allowed to play out of turn."
-        if not (action |> Action.CheckAllowed(tichu.lastPlay |> Option.map(fun (card, _) -> card)) = "OK") 
-            then failwith "Move not allowed: call CheckAllowed function first."
-
-    let DoTurn(name: string, action: Action)(tichu: TichuGame): TichuGame = 
+    let DoTurn(action: Action)(tichu: TichuGame): TichuGame = 
         let errorStatus = action |> Action.CheckAllowed(tichu.lastPlay |> Option.map(fun (card, _) -> card))
         if not (errorStatus.Equals "OK" )
             then {tichu with status = Alert(errorStatus)} else
-        tichu |> checkErrors(name, action)
 
         match action with 
         | Pass -> tichu |> Pass

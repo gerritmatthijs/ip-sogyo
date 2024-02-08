@@ -24,10 +24,10 @@ type TichuFacade(tichu: TichuGame) =
 
         member _.GetTurn(): int = tichu.turn
 
-        member _.DoTurn(name: string, actionstring: string): ITichu = 
+        member _.DoTurn(actionstring: string): ITichu = 
             printfn $"action received from server: {actionstring}." 
             let action = actionstring |> Action.ToAction
-            new TichuFacade(tichu |> TichuGame.DoTurn(name, action))
+            new TichuFacade(tichu |> TichuGame.DoTurn(action))
 
         member _.GetMessage(): string = 
             match tichu.status with
