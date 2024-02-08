@@ -10,15 +10,16 @@ import { createGame, playerAction } from '../services/api.ts';
 import { useEffect, useState } from 'react';
 
 export default function Play() {
-    useEffect(() => {getStartingHand();}, []);
+    useEffect(() => {getNewGame();}, []);
 
     const { gameState, setGameState } = useTichuContext();
     const lastPlayed = gameState? gameState.lastPlayed : "";
     const activePlayer = gameState? gameState.players[gameState.turn].name : "";
     const [alert, setAlert] = useState<string | null>(null);
     const [message, setMessage] = useState<string | null>(null);
+    const endOfGame = gameState? gameState.gameStatus.endOfGame: false;
 
-    async function getStartingHand(){
+    async function getNewGame(){
         const result = await createGame(["Gerrit", "Daniel", "Wesley", "Hanneke"]);
         updateState(result);
     }
@@ -66,20 +67,24 @@ export default function Play() {
                 <Player index={1}/>
                 <Player index={2}/>
                 <Player index={3}/>
-                {lastPlayed && <button className="card" disabled={true} 
+                {lastPlayed && !endOfGame &&  <button className="card" disabled={true} 
                 style={{backgroundPosition: getPicture(lastPlayed), 
                     gridColumn: '2 / span 1', gridRow: '2 / span 1'}} />} 
+                {endOfGame && <div style = {{gridColumn: '2 / span 1', gridRow: '2 / span 1'}}>
+                    <h2> Game finished! </h2>
+                    <button className='newGameButton' onClick={getNewGame}>Start New Game</button>
+                </div>}
                 <div className="line"></div>
             </div>
  
             <br/>
             {message && <Message text = {message} onClick = {() => setMessage(null)}/>}
-            <h2>{activePlayer}'s hand</h2> 
+            {!endOfGame && <h2>{activePlayer}'s hand</h2>}
             {alert && <Alert text = {alert} onClick={() => setAlert(null)}/>}
-            <div>
+            {!endOfGame && <div>
                 <ActiveHand onClick={onCardPlayed}/>
-            </div>
-            <button className="pass-button" onClick={onPass}>Pass</button>
+            </div>}
+            {!endOfGame && <button className="pass-button" onClick={onPass}>Pass</button>}
         </div>
     )
 }

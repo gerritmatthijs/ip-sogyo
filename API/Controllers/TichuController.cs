@@ -31,7 +31,8 @@ public class TichuController(ITichuRepository repository, ITichuFactory factory)
     public IActionResult CreateGame(Dictionary<string, string> body)
     {
         ITichu tichu = _factory.createNewGame(body["names"].Split(","));
-        string gameID = Guid.NewGuid().ToString();
+        string gameID = HttpContext.Session.GetString(SessionClientID) ?? Guid.NewGuid().ToString();
+        Console.WriteLine(gameID);
         HttpContext.Session.SetString(SessionClientID, gameID);
         _repository.SaveGame(gameID, tichu);
         return Ok(new TichuDTO(tichu));
