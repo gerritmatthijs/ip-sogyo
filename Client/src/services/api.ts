@@ -1,6 +1,6 @@
 import { TichuGameState, isTichuGameState } from "../types";
 
-export async function playerAction(name: string, action: string){
+export async function playerAction(action: string){
     const response = await fetch("tichu/play", {
         method: "POST",
         headers: {
@@ -8,7 +8,6 @@ export async function playerAction(name: string, action: string){
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            name:name,
             action:action
         })
     });
