@@ -14,6 +14,7 @@ export type Player = {
 export type GameStatus = {
     message: string
     alert: string
+    endOfGame: boolean
 }
 
 export function isTichuGameState(gameState: unknown): gameState is TichuGameState {
