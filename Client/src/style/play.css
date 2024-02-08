@@ -37,6 +37,7 @@ h2 {
   display: grid;
   place-items: center;
   row-gap: 15px;
+  column-gap: 60px;
   grid-template-rows: [line1] auto [line2] 192px [line3] auto;
 }
 
