@@ -33,12 +33,15 @@ module TichuGame =
         {players = updatedPlayerList; lastPlay = Some(card, updatedPlayer); turn = tichu.NextTurn(); status = status}
 
     let Pass(tichu: TichuGame): TichuGame = 
-        match tichu.lastPlay with
-        | None -> failwith "Cannot pass when starting a trick."
-        | Some(_, leader) -> 
-            let updatedLastPlay = if tichu.TrickIsWonUponPass() then None else tichu.lastPlay
-            let status: StatusText = if tichu.TrickIsWonUponPass() then Message(leader.name + " has won the trick!") else NoText
-            {tichu with lastPlay = updatedLastPlay; turn = tichu.NextTurn(); status = status}
+        if tichu.TrickIsWonUponPass() then
+            let (_, leader) = tichu.lastPlay.Value
+            let status = Message(leader.name + " has won the trick!")
+            {tichu with lastPlay = None; turn = tichu.NextTurn(); status = status}
+        else 
+            {tichu with turn = tichu.NextTurn(); status = NoText}
+        // let updatedLastPlay = if tichu.TrickIsWonUponPass() then None else tichu.lastPlay
+        // let status: StatusText = if tichu.TrickIsWonUponPass() then Message(leader.name + " has won the trick!") else NoText
+        // {tichu with lastPlay = updatedLastPlay; turn = tichu.NextTurn(); status = status}
 
     let DoTurn(action: Action)(tichu: TichuGame): TichuGame = 
         let errorStatus = action |> Action.CheckAllowed(tichu.lastPlay |> Option.map(fun (card, _) -> card))
