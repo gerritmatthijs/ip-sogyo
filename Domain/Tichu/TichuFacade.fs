@@ -40,4 +40,4 @@ type TichuFacade(tichu: TichuGame) =
                 | _ -> ""
     
         member _.IsEndOfGame(): bool = 
-            failwith "Not Implemented"
+            (tichu.players |> List.filter(Player.isFinished)).Length = 3

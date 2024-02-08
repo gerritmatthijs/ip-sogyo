@@ -246,3 +246,14 @@ let ``Get alert upon passing when starting a trick`` () =
     let tichu = SetUpGame()
     let gerritTriedPassing = tichu.DoTurn("pass")
     Assert.Equal("You cannot pass when opening a trick.", gerritTriedPassing.GetAlert())
+
+[<Fact>]
+let ``Game ends when 3 players play all their cards`` () = 
+    let playerOne = {name = "Gerrit"; hand = "5" |> Hand.StringToCardList}
+    let playerTwo = {name = "Daniel"; hand = "" |> Hand.StringToCardList}
+    let playerThree = {name = "Wesley"; hand = "" |> Hand.StringToCardList}
+    let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
+    let tichu = new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichu
+    let gerritFinished = tichu.DoTurn("5")
+    Assert.False(tichu.IsEndOfGame())
+    Assert.True(gerritFinished.IsEndOfGame())
