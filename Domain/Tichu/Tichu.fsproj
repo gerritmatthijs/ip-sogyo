@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
@@ -9,6 +9,7 @@
     <Compile Include="ITichu.fs" />
     <Compile Include="ITichuFactory.fs" />
     <Compile Include="Card.fs" />
+    <Compile Include="OtherTypes.fs" />
     <Compile Include="Hand.fs" />
     <Compile Include="Player.fs" />
     <Compile Include="Tichu.fs" />

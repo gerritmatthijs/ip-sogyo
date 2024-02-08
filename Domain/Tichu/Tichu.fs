@@ -1,10 +1,12 @@
 namespace Tichu
 
 type TichuGame = 
-    {players: Player list; lastPlay: Option<Card * Player>; turn: int}
+    {players: Player list; lastPlay: Option<Card * Player>; turn: int; status: StatusText}
 
     member x.GetPlayer(name: string): Player = 
         x.players |> List.find(fun player -> player.name.Equals name)
+
+    member x.GetActivePlayer(): Player = x.players[x.turn]
 
     member x.NextTurn(): int = x.NextTurnHelper(TichuGame.IncreasePlayerIndex x.turn)
 
@@ -24,29 +26,30 @@ type TichuGame =
     
 module TichuGame = 
 
-    let PlaySet(name: string, setstring: string)(tichu: TichuGame): TichuGame = 
-        let set = setstring |> Hand.StringToCardList 
-        let updatedPlayer = tichu.GetPlayer name |> Player.PlayCards(set)
-        let updatedPlayerList = tichu.players |> List.map(fun p -> if p.name.Equals name then updatedPlayer else p)
-        {players = updatedPlayerList; lastPlay = Some(set[0], updatedPlayer); turn = tichu.NextTurn()}
+    let PlaySet(card: Card)(tichu: TichuGame): TichuGame = 
+        let updatedPlayer = tichu.GetActivePlayer() |> Player.PlayCards(card)
+        let updatedPlayerList = tichu.players |> List.mapi(fun i p -> if i = tichu.turn then updatedPlayer else p)
+        let status: StatusText = if updatedPlayer.hand.IsEmpty then Message(tichu.GetActivePlayer().name + " has played all their cards!") else NoText
+        {players = updatedPlayerList; lastPlay = Some(card, updatedPlayer); turn = tichu.NextTurn(); status = status}
 
-    let Pass(name: string)(tichu: TichuGame): TichuGame = 
+    let Pass(tichu: TichuGame): TichuGame = 
         match tichu.lastPlay with
         | None -> failwith "Cannot pass when starting a trick."
-        | Some(_, _) -> 
+        | Some(_, leader) -> 
             let updatedLastPlay = if tichu.TrickIsWonUponPass() then None else tichu.lastPlay
-            {tichu with lastPlay = updatedLastPlay; turn = tichu.NextTurn()}
+            let status: StatusText = if tichu.TrickIsWonUponPass() then Message(leader.name + " has won the trick!") else NoText
+            {tichu with lastPlay = updatedLastPlay; turn = tichu.NextTurn(); status = status}
 
     // Is there a way to make this a let binding (i.e. private function), while still being able to call an interface member?
-    let checkErrors(name: string, action: string)(tichu: TichuGame): unit = 
+    let checkErrors(name: string, action: Action)(tichu: TichuGame): unit = 
         if not (tichu.players[tichu.turn].name.Equals name)
             then failwith "It is not allowed to play out of turn."
-        if not (action |> Card.CheckAllowed(tichu.lastPlay |> Option.map(fun (card, _) -> card)) = "OK") 
+        if not (action |> Action.CheckAllowed(tichu.lastPlay |> Option.map(fun (card, _) -> card)) = "OK") 
             then failwith "Move not allowed: call CheckAllowed function first."
 
-    let DoTurn(name: string, action: string)(tichu: TichuGame): TichuGame = 
+    let DoTurn(name: string, action: Action)(tichu: TichuGame): TichuGame = 
         tichu |> checkErrors(name, action)
 
         match action with 
-        | "pass" -> tichu |> Pass(name)
-        | setstring -> tichu |> PlaySet(name, setstring)
+        | Pass -> tichu |> Pass
+        | Set(card) -> tichu |> PlaySet(card)
