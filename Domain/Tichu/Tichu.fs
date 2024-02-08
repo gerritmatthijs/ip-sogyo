@@ -1,7 +1,7 @@
 namespace Tichu
 
 type TichuGame = 
-    {players: Player list; lastPlay: Option<Card * Player>; turn: int; status: StatusText}
+    {players: Player list; lastPlay: Option<CardSet * Player>; turn: int; status: StatusText}
 
     member x.GetPlayer(name: string): Player = 
         x.players |> List.find(fun player -> player.name.Equals name)
@@ -26,11 +26,11 @@ type TichuGame =
     
 module TichuGame = 
 
-    let PlaySet(card: Card)(tichu: TichuGame): TichuGame = 
-        let updatedPlayer = tichu.GetActivePlayer() |> Player.PlayCards(card)
+    let PlaySet(set: CardSet)(tichu: TichuGame): TichuGame = 
+        let updatedPlayer = tichu.GetActivePlayer() |> Player.PlayCards(set)
         let updatedPlayerList = tichu.players |> List.mapi(fun i p -> if i = tichu.turn then updatedPlayer else p)
         let status: StatusText = if updatedPlayer.hand.IsEmpty then Message(tichu.GetActivePlayer().name + " has played all their cards!") else NoText
-        {players = updatedPlayerList; lastPlay = Some(card, updatedPlayer); turn = tichu.NextTurn(); status = status}
+        {players = updatedPlayerList; lastPlay = Some(set, updatedPlayer); turn = tichu.NextTurn(); status = status}
 
     let Pass(tichu: TichuGame): TichuGame = 
         if tichu.TrickIsWonUponPass() then
@@ -50,4 +50,4 @@ module TichuGame =
 
         match action with 
         | Pass -> tichu |> Pass
-        | Set(card) -> tichu |> PlaySet(card)
+        | Set(set) -> tichu |> PlaySet(set)

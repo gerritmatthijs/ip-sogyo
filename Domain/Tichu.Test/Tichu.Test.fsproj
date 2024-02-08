@@ -12,7 +12,9 @@
     <Compile Include="TichuTests.fs" />
     <Compile Include="TichuFactoryTests.fs" />
     <Compile Include="CardTests.fs" />
+    <Compile Include="CardSetTests.fs" />
     <Compile Include="HandTests.fs" />
+    <Compile Include="PlayerTests.fs" />
   </ItemGroup>
 
   <ItemGroup>

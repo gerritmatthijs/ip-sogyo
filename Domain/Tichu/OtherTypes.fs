@@ -7,19 +7,20 @@ type StatusText =
 
 type Action = 
     | Pass
-    | Set of cards: Card
+    | Set of cards: CardSet
 
 module Action = 
 
     let ToAction(actionstring: string): Action = 
         match actionstring with 
             | "pass" -> Pass
-            | cardstring -> Set({value = cardstring[0]})
+            | cardstring -> Set(cardstring |> CardSet.StringToCardSet)
 
-    let CheckAllowed(lastSet: Option<Card>)(action: Action): string = 
+    let CheckAllowed(lastSet: Option<CardSet>)(action: Action): string = 
         match lastSet, action with
             | None, Pass -> "You cannot pass when opening a trick."
             | None, _ -> "OK"
             | _, Pass -> "OK"
-            | Some(lastCard), Set(cardPlayed) -> 
-                if cardPlayed.IntValue() > lastCard.IntValue() then "OK" else "Your card has to be higher than the last played card."
+            | Some(lastSet), Set(newSet) -> 
+                if not (newSet |> CardSet.IsSameTypeAs(lastSet)) then $"You can only play sets of {lastSet.number} cards of the same height in this trick." else
+                if newSet |> CardSet.IsHigherThen(lastSet) then "OK" else "Your card has to be higher than the last played card."

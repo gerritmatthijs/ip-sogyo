@@ -15,7 +15,7 @@ type TichuFacade(tichu: TichuGame) =
         member _.GetLastPlayed(): string = 
             match tichu.lastPlay with 
             | None -> ""
-            | Some(card, _) -> card.value.ToString()
+            | Some(set, _) -> set |> CardSet.CardSetToString
 
         member _.GetCurrentLeader(): string = 
             match tichu.lastPlay with

@@ -83,13 +83,16 @@ let ``Play single card removes it from hand`` () =
     let tichu = SetUpGame()
     let gerritPlayed = tichu.DoTurn("4")
     let danielPlayed = gerritPlayed.DoTurn("6")
-    // let hand = 
-    //     match tryNewTichu with 
-    //     | Ok newTichu -> newTichu.GetPlayerHand("Gerrit")
-    //     | Error e -> handstring
-    // Assert.True(Result.isOk tryNewTichu)
     Assert.Equal("222233334445", danielPlayed.GetPlayerHand("Gerrit"))
     Assert.Equal("555666777788", danielPlayed.GetPlayerHand("Daniel"))
+
+[<Fact>]
+let ``Play sets removes all  cards from hand`` () =
+    let tichu = SetUpGame()
+    let gerritPlayed = tichu.DoTurn("444")
+    let danielPlayed = gerritPlayed.DoTurn("666")
+    Assert.Equal("2222333345", danielPlayed.GetPlayerHand("Gerrit"))
+    Assert.Equal("5556777788", danielPlayed.GetPlayerHand("Daniel"))
 
 [<Fact>]
 let ``Passing doesn't change last action or player's hand but does change turn`` () =
