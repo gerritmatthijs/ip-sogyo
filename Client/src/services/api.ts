@@ -1,6 +1,6 @@
-import { TichuGameState, isTichuGameState } from "../types";
+import { TichuGameState } from "../types";
 
-export async function playerAction(name: string, action: string){
+export async function playerAction(action: string){
     const response = await fetch("tichu/play", {
         method: "POST",
         headers: {
@@ -8,18 +8,12 @@ export async function playerAction(name: string, action: string){
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            name:name,
             action:action
         })
     });
     if (response.ok){
         const result = await response.json();
-        if (isTichuGameState(result)){
-            return result as TichuGameState;
-        }
-        else {
-            return result as string;
-        }
+        return result as TichuGameState;
     } else {
         return {
             statusCode: response.status,

@@ -24,31 +24,37 @@ export default function Play() {
     }
 
     async function onCardPlayed(cardPlayed: string){
-        const result = await playerAction(activePlayer, cardPlayed);
-        if (isTichuGameState(result) && gameState?.players[gameState.turn].hand == cardPlayed){
-            setMessage(activePlayer + " has played all their cards!");
-        }
+        const result = await playerAction(cardPlayed);
         updateState(result);
     }
 
     async function onPass(){
-        const result = await playerAction(activePlayer, "pass");
-        if (isTichuGameState(result) && result["lastPlayed"] == ""){
-            setMessage(gameState?.currentLeader + " has won the trick!");
-        }
+        const result = await playerAction("pass");
         updateState(result);
     }
     
-    function updateState(result: string | TichuGameState | {statusCode: number; statusText: string;}) {
+    function updateState(result: TichuGameState | {statusCode: number; statusText: string;}) {
         if (isTichuGameState(result)) {
             setGameState(result);
-            setAlert(null);
-        }
-        else if (typeof result == 'string') {
-            setAlert(result);
+            setAlertOrMessage(result);
         }
         else {
             setAlert(`${result.statusCode} ${result.statusText}`);
+        }
+    }
+
+    function setAlertOrMessage(result: TichuGameState) {
+        if (result.gameStatus.alert){
+            setAlert(result.gameStatus.alert)
+        }
+        else {
+            setAlert(null)
+        }
+        if (result.gameStatus.message){
+            setMessage(result.gameStatus.message)
+        }
+        else {
+            setMessage(null)
         }
     }
 
@@ -77,3 +83,4 @@ export default function Play() {
         </div>
     )
 }
+

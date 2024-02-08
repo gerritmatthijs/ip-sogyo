@@ -13,19 +13,16 @@ export default function ActiveHand(props: Props) {
 
     return <div className="hand">
         {createCards(hand)}
-        {/* <br/>
-        <button className='playCardsButton'>
-            Play cards
-        </button> */}
     </div>
 
     function createCards(hand: string){
         const cardList = [];
         for (let i = 0; i < hand.length; i++){
-            cardList.push(<button className="card" key = {i} 
+            cardList.push(<button 
+                    className="card" key = {i} 
                     style={{backgroundPosition: getPicture(hand[i])}} 
-                    onClick={() => onClick(hand[i])}/>
-                    );
+                    onClick={() => onClick(hand[i])}
+                    />);
         }
         return cardList;
     }

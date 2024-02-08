@@ -1,81 +1,53 @@
 namespace Tichu
 
-type TichuGame(players: Player list, lastPlay: Option<Card * Player>, turn: int) = 
-    
-    let GetPlayer(name: string): Player = 
-        players |> List.find(fun player -> player.name.Equals name)
+type TichuGame = 
+    {players: Player list; lastPlay: Option<Card * Player>; turn: int; status: StatusText}
 
-    let IncreasePlayerIndex(index: int) = (index + 1) % 4
+    member x.GetPlayer(name: string): Player = 
+        x.players |> List.find(fun player -> player.name.Equals name)
 
-    let rec NextTurnHelper(index: int): int = 
-        if players[index] |> Player.isFinished then NextTurnHelper(index |> IncreasePlayerIndex)
+    member x.GetActivePlayer(): Player = x.players[x.turn]
+
+    member x.NextTurn(): int = x.NextTurnHelper(TichuGame.IncreasePlayerIndex x.turn)
+
+    member x.NextTurnHelper(index: int): int = 
+        if x.players[index] |> Player.isFinished then x.NextTurnHelper(index |> TichuGame.IncreasePlayerIndex)
         else index
 
-    let NextTurn(): int = NextTurnHelper(IncreasePlayerIndex turn)
+    member x.TrickIsWonUponPass(): bool = x.TrickWonHelper(TichuGame.IncreasePlayerIndex x.turn)
 
-    let PlaySet(name: string, setstring: string): ITichu = 
-        let set = setstring |> Hand.StringToCardList 
-        let updatedPlayer = GetPlayer name |> Player.PlayCards(set)
-        let updatedPlayerList = players |> List.map(fun p -> if p.name.Equals name then updatedPlayer else p)
-        new TichuGame(updatedPlayerList, Some(set[0], updatedPlayer), NextTurn())
-
-    let rec TrickWonHelper(index: int): bool = 
-        let (_, leader) = lastPlay.Value
-        if players[index].Equals leader then true
-        else if players[index] |> Player.isFinished then TrickWonHelper(index |> IncreasePlayerIndex)
+    member x.TrickWonHelper(index: int): bool = 
+        let (_, leader) = x.lastPlay.Value
+        if x.players[index].Equals leader then true
+        else if x.players[index] |> Player.isFinished then x.TrickWonHelper(index |> TichuGame.IncreasePlayerIndex)
         else false
 
-    let TrickWon(): bool = TrickWonHelper(IncreasePlayerIndex turn)
+    static member IncreasePlayerIndex(index: int) = (index + 1) % 4
+    
+module TichuGame = 
 
-    let Pass(name: string): ITichu = 
-        match lastPlay with
-        | None -> failwith "Cannot pass when starting a trick."
-        | Some(_, _) -> 
-            let updatedLastPlay = if TrickWon() then None else lastPlay
-            new TichuGame(players, updatedLastPlay, NextTurn())
+    let PlaySet(card: Card)(tichu: TichuGame): TichuGame = 
+        let updatedPlayer = tichu.GetActivePlayer() |> Player.PlayCards(card)
+        let updatedPlayerList = tichu.players |> List.mapi(fun i p -> if i = tichu.turn then updatedPlayer else p)
+        let status: StatusText = if updatedPlayer.hand.IsEmpty then Message(tichu.GetActivePlayer().name + " has played all their cards!") else NoText
+        {players = updatedPlayerList; lastPlay = Some(card, updatedPlayer); turn = tichu.NextTurn(); status = status}
 
-    // Is there a way to make this a let binding (i.e. private function), while still being able to call an interface member?
-    member this.checkErrors(name: string, setstring: string): unit = 
-        if not (players[turn].name.Equals name)
-            then failwith "It is not allowed to play out of turn."
-        if not ((this :> ITichu).CheckAllowed(setstring) = "OK") 
-            then failwith "Move not allowed: call CheckAllowed function first."
-       
-    interface ITichu with
-        member x.GetPlayerName(playerNumber: int): string = 
-            players[playerNumber].name
+    let Pass(tichu: TichuGame): TichuGame = 
+        if tichu.TrickIsWonUponPass() then
+            let (_, leader) = tichu.lastPlay.Value
+            let status = Message(leader.name + " has won the trick!")
+            {tichu with lastPlay = None; turn = tichu.NextTurn(); status = status}
+        else 
+            {tichu with turn = tichu.NextTurn(); status = NoText}
+        // let updatedLastPlay = if tichu.TrickIsWonUponPass() then None else tichu.lastPlay
+        // let status: StatusText = if tichu.TrickIsWonUponPass() then Message(leader.name + " has won the trick!") else NoText
+        // {tichu with lastPlay = updatedLastPlay; turn = tichu.NextTurn(); status = status}
 
-        member x.GetPlayerHand(name: string): string = 
-            Hand.CardListToString(GetPlayer(name).hand)
+    let DoTurn(action: Action)(tichu: TichuGame): TichuGame = 
+        let errorStatus = action |> Action.CheckAllowed(tichu.lastPlay |> Option.map(fun (card, _) -> card))
+        if not (errorStatus.Equals "OK" )
+            then {tichu with status = Alert(errorStatus)} else
 
-        member x.GetLastPlayed(): string = 
-            match lastPlay with 
-            | None -> ""
-            | Some(card, _) -> card.value.ToString()
-
-        member x.GetCurrentLeader(): string = 
-            match lastPlay with
-            | None -> ""
-            | Some(_, player) -> player.name
-
-        member x.GetTurn(): int = turn
-
-        member x.CheckAllowed(action: string): string = 
-            match lastPlay, action with
-            | None, "pass" -> "You cannot pass when opening a trick."
-            | None, _ -> "OK"
-            | _, "pass" -> "OK"
-            | Some(card, _), setstring -> 
-                let cardPlayed = {value = setstring[0]};
-                if cardPlayed.IntValue() > card.IntValue() then "OK" else "Your card has to be higher than the last played card."
-
-        member this.DoTurn(name: string, action: string): ITichu = 
-            this.checkErrors(name, action)
-
-            match action with 
-            | "pass" -> Pass(name)
-            | setstring -> PlaySet(name, setstring)
-
-
-        member x.IsEndOfGame(): bool = 
-            failwith "Not Implemented"
+        match action with 
+        | Pass -> tichu |> Pass
+        | Set(card) -> tichu |> PlaySet(card)

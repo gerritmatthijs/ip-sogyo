@@ -13,6 +13,3 @@ module Hand =
         | handcard::tailhand, setcard::tailset -> 
         if handcard.Equals setcard then RemoveCards tailset tailhand else handcard::RemoveCards set tailhand
         | [], _ -> failwith "Card set is not contained in hand."
-
-    let RemoveCardsStringVersion(hand: string, set: string): string = 
-        hand |> StringToCardList |> RemoveCards(StringToCardList set) |> CardListToString

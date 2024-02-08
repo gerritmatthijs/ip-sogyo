@@ -12,6 +12,7 @@ type Card =
         | 'A' -> 14
         | x -> int x - int '0'
 
+
     // interface IComparable with
     //     member this.CompareTo other = 
     //         match other with
