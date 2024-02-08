@@ -17,6 +17,12 @@ let SetUpGameEmptyHand() =
     let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
     new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichu
 
+let SetUpGameAlmostEmptyHand() = 
+    let playerOne = {name = "Gerrit"; hand = "4" |> Hand.StringToCardList}
+    let playerTwo = {name = "Daniel"; hand = "5556666777788" |> Hand.StringToCardList}
+    let playerThree = {name = "Wesley"; hand = "889999TTTTJJJ" |> Hand.StringToCardList}
+    let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
+    new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichu
 
 [<Fact>]
 let ``Get player name`` () = 
@@ -86,29 +92,6 @@ let ``Play single card removes it from hand`` () =
     Assert.Equal("555666777788", danielPlayed.GetPlayerHand("Daniel"))
 
 [<Fact>]
-let ``Play higher card is allowed`` () = 
-    let tichu = SetUpGame()
-    let tichu1 = tichu.DoTurn("Gerrit", "3")
-    Assert.Equal("OK", tichu1.CheckAllowed "4")
-
-[<Fact>]
-let ``Passing is allowed`` () = 
-    let tichu = SetUpGame().DoTurn("Gerrit", "5")
-    Assert.Equal("OK", tichu.CheckAllowed("pass"))
-
-[<Fact>]
-let ``Trying to pass when opening a trick gives alert`` () = 
-    let tichu = SetUpGame()
-    Assert.Equal("You cannot pass when opening a trick.", tichu.CheckAllowed("pass"))
-
-[<Fact>]
-let ``Play lower or equal card is not allowed`` () = 
-    let tichu = SetUpGame()
-    let tichu1 = tichu.DoTurn("Gerrit", "4")
-    Assert.Equal("Your card has to be higher than the last played card.", tichu1.CheckAllowed("3"))
-    Assert.Equal("Your card has to be higher than the last played card.", tichu1.CheckAllowed("4"))
-
-[<Fact>]
 let ``Passing doesn't change last action or player's hand but does change turn`` () =
     let tichu = SetUpGame()
     let gerritPlayed = tichu.DoTurn("Gerrit", "4")
@@ -130,12 +113,6 @@ let ``When three people pass, the trick ends`` () =
     Assert.Equal(0, everyonePassed.GetTurn());
 
 [<Fact>]
-let ``DoTurn throws exception if move is not allowed`` () = 
-    let tichu = SetUpGame()
-    let tichu1 = tichu.DoTurn("Gerrit", "4")
-    Assert.Throws<System.Exception>(fun () -> tichu1.DoTurn("Gerrit", "3") :> obj)
-
-[<Fact>]
 let ``Player with empty hand does not get a turn`` () = 
     let tichu = SetUpGameEmptyHand()
 
@@ -155,11 +132,7 @@ let ``Two consecutive players with empty hands are both skipped`` () =
 
 [<Fact>]
 let ``When a player wins the trick with their last cards, the next player starts the next trick`` () = 
-    let playerOne = {name = "Gerrit"; hand = "4" |> Hand.StringToCardList}
-    let playerTwo = {name = "Daniel"; hand = "5556666777788" |> Hand.StringToCardList}
-    let playerThree = {name = "Wesley"; hand = "889999TTTTJJJ" |> Hand.StringToCardList}
-    let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
-    let tichu = new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichu
+    let tichu = SetUpGameAlmostEmptyHand()
 
     let gerritPlayed = tichu.DoTurn("Gerrit", "4")
     let danielPassed = gerritPlayed.DoTurn("Daniel", "pass")
@@ -211,3 +184,65 @@ let ``Check situation: a player is out and the previous player wins a trick with
     Assert.Equal(3, gerritPassed.GetTurn())
     Assert.Equal("", gerritPassed.GetLastPlayed())
     Assert.Equal("", gerritPassed.GetCurrentLeader())
+
+[<Fact>]
+let ``No message when nothing special happens`` () = 
+    let tichu = SetUpGame()
+    let gerritPlayed = tichu.DoTurn("Gerrit", "4")
+    let danielPassed = gerritPlayed.DoTurn("Daniel", "pass")
+    let wesleyPassed = danielPassed.DoTurn("Wesley", "pass")
+    Assert.Equal("", tichu.GetMessage())
+    Assert.Equal("", gerritPlayed.GetMessage())
+    Assert.Equal("", danielPassed.GetMessage())
+    Assert.Equal("", wesleyPassed.GetMessage())
+
+[<Fact>]
+let ``Get Message upon winning a trick`` () = 
+    let tichu = SetUpGame()
+    let gerritPlayed = tichu.DoTurn("Gerrit", "4")
+    let danielPassed = gerritPlayed.DoTurn("Daniel", "pass")
+    let wesleyPassed = danielPassed.DoTurn("Wesley", "pass")
+    let everyonePassed = wesleyPassed.DoTurn("Hanneke", "pass")
+    Assert.Equal("Gerrit has won the trick!", everyonePassed.GetMessage())
+
+[<Fact>]
+let ``Get Message upon playing last card`` () = 
+    let tichu = SetUpGameAlmostEmptyHand()
+    let gerritPlayed = tichu.DoTurn("Gerrit", "4")
+    Assert.Equal("Gerrit has played all their cards!", gerritPlayed.GetMessage())
+
+[<Fact>]
+let ``Trying to pass when opening a trick gives alert`` () = 
+    let tichu = SetUpGame()
+    let gerritTriedPassing = tichu.DoTurn("Gerrit", "pass")
+    Assert.Equal("You cannot pass when opening a trick.", gerritTriedPassing.GetAlert())
+
+[<Fact>]
+let ``No alert when nothing special happens`` () = 
+    let tichu = SetUpGame()
+    let gerritPlayed = tichu.DoTurn("Gerrit", "4")
+    let danielPassed = gerritPlayed.DoTurn("Daniel", "6")
+    let wesleyPassed = danielPassed.DoTurn("Wesley", "pass")
+    Assert.Equal("", tichu.GetAlert())
+    Assert.Equal("", gerritPlayed.GetAlert())
+    Assert.Equal("", danielPassed.GetAlert())
+    Assert.Equal("", wesleyPassed.GetAlert())
+
+[<Fact>]
+let ``Get alert when playing a lower or equal card`` () = 
+    let tichu = SetUpGame()
+    let gerritPlayed = tichu.DoTurn("Gerrit", "5")
+    let danielTriedPlaying = gerritPlayed.DoTurn("Daniel", "5")
+    let danielPlayed = danielTriedPlaying.DoTurn("Daniel", "6")
+    let wesleyPlayed = danielPlayed.DoTurn("Wesley", "T")
+    let hannekePlayed = wesleyPlayed.DoTurn("Hanneke", "K")
+    let gerritPlayedAgain = hannekePlayed.DoTurn("Gerrit", "4")
+    
+    Assert.Equal("Your card has to be higher than the last played card.", danielTriedPlaying.GetAlert())
+    Assert.Equal("Your card has to be higher than the last played card.", gerritPlayedAgain.GetAlert())
+
+[<Fact>]
+let ``Get alert upon passing when starting a trick`` () = 
+    let tichu = SetUpGame()
+    let gerritTriedPassing = tichu.DoTurn("Gerrit", "pass")
+    Assert.Equal("You cannot pass when opening a trick.", gerritTriedPassing.GetAlert())

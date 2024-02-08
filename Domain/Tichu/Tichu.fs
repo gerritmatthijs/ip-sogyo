@@ -48,6 +48,9 @@ module TichuGame =
             then failwith "Move not allowed: call CheckAllowed function first."
 
     let DoTurn(name: string, action: Action)(tichu: TichuGame): TichuGame = 
+        let errorStatus = action |> Action.CheckAllowed(tichu.lastPlay |> Option.map(fun (card, _) -> card))
+        if not (errorStatus.Equals "OK" )
+            then {tichu with status = Alert(errorStatus)} else
         tichu |> checkErrors(name, action)
 
         match action with 

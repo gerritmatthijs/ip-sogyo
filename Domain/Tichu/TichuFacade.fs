@@ -24,13 +24,20 @@ type TichuFacade(tichu: TichuGame) =
 
         member _.GetTurn(): int = tichu.turn
 
-        member _.CheckAllowed(actionstring: string): string = 
-            actionstring |> Action.ToAction |> Action.CheckAllowed(tichu.lastPlay |> Option.map(fun (card, _) -> card))
-
         member _.DoTurn(name: string, actionstring: string): ITichu = 
             printfn $"action received from server: {actionstring}." 
             let action = actionstring |> Action.ToAction
             new TichuFacade(tichu |> TichuGame.DoTurn(name, action))
 
+        member _.GetMessage(): string = 
+            match tichu.status with
+                | Message(text) -> text
+                | _ -> ""
+
+        member _.GetAlert(): string = 
+            match tichu.status with
+                | Alert(text) -> text
+                | _ -> ""
+    
         member _.IsEndOfGame(): bool = 
             failwith "Not Implemented"
