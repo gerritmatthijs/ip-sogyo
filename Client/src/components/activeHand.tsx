@@ -15,6 +15,7 @@ export default function ActiveHand(props: Props) {
     const [cardsClicked, setCardsClicked] = useState<Array<number>>([]);
     const lastPlayed = gameState? gameState.lastPlayed : "";
     const endOfGame = gameState? gameState.gameStatus.endOfGame: false;
+    const activePlayer = gameState? gameState.players[gameState.turn].name : "";
 
     function onCardClicked(cardnumber: number){
         let index = cardsClicked.findIndex((n) => n == cardnumber)
@@ -48,6 +49,7 @@ export default function ActiveHand(props: Props) {
     }
 
     return <div className="hand">   
+    <h2>{activePlayer}'s hand</h2>
     {createCards(hand)}
     <br/>
     <button className="play-button" onClick={onPlayButtonClicked} disabled={cardsClicked.length == 0}>Play Selected Cards</button>
