@@ -2,6 +2,7 @@ namespace Tichu
 
 type Action = 
     | Pass
+    | Invalid
     | Set of cards: CardSet
 
 module Action = 
@@ -9,10 +10,14 @@ module Action =
     let ToAction(actionstring: string): Action = 
         match actionstring with 
             | "pass" -> Pass
-            | cardstring -> Set(cardstring |> CardSet.StringToCardSet)
+            | cardstring -> 
+                match cardstring |> CardSet.StringToCardSet with 
+                | None -> Invalid
+                | Some(set) -> Set(set)
 
     let GetAlertTextOrOK(lastSet: Option<CardSet>)(action: Action): string = 
         match lastSet, action with
+            | _, Invalid -> "Invalid set type: you can only play multiples of the same card height"
             | None, Pass -> "You cannot pass when opening a trick."
             | None, _ -> "OK"
             | _, Pass -> "OK"

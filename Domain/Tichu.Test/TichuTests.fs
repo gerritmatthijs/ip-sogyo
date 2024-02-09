@@ -272,6 +272,12 @@ let ``Get alert upon playing the wrong type of set`` () =
     Assert.Equal("You can only play sets of 3 cards of the same height in this trick.", danielTriedPlaying.GetAlert())
 
 [<Fact>]
+let ``Get alert upon playing invalid set`` () =
+    let tichu = SetUpGame()
+    let playInvalidSet = tichu.DoTurn("56")
+    Assert.Equal("Invalid set type: you can only play multiples of the same card height", playInvalidSet.GetAlert())
+
+[<Fact>]
 let ``Game ends when 3 players play all their cards`` () = 
     let playerOne = {name = "Gerrit"; hand = "5" |> Hand.StringToCardList}
     let playerTwo = {name = "Daniel"; hand = "" |> Hand.StringToCardList}

@@ -48,3 +48,4 @@ module TichuGame =
         match action with 
         | Pass -> tichu |> Pass
         | Set(set) -> tichu |> PlaySet(set)
+        | Invalid -> failwith "Invalid set type should have been recognised earlier"

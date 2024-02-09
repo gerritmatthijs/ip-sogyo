@@ -8,8 +8,13 @@ module CardSet =
     let CardSetToString(set: CardSet): string = 
         seq { for i in 1..set.number -> set.card.value} |> String.Concat
 
-    let StringToCardSet(setstring: string): CardSet = 
-        {card = {value = setstring[0]}; number = setstring.Length}
+    let IsValidSet(setstring: string): bool = 
+        (setstring |> Seq.distinct |> Seq.length) = 1
+
+    // Perhaps replace Option<CardSet> by Result<CardSet> later to avoid confusion with the lastPlayed Option.
+    let StringToCardSet(setstring: string): Option<CardSet> = 
+        if not (setstring |> IsValidSet) then None 
+        else Some({card = {value = setstring[0]}; number = setstring.Length})
 
     let CardSetToCardList(set: CardSet): Card list = 
         [for i in 1..set.number -> set.card]
