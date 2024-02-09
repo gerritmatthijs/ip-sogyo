@@ -84,7 +84,7 @@ export default function Play() {
             {!endOfGame && <div>
                 <ActiveHand onClick={onCardPlayed}/>
             </div>}
-            {!endOfGame && <button className="pass-button" onClick={onPass}>Pass</button>}
+            {!endOfGame && <button className="pass-button" onClick={onPass} disabled={!lastPlayed}>Pass</button>}
         </div>
     )
 }
