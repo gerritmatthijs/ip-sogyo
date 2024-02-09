@@ -44,9 +44,9 @@ module TichuGame =
         // {tichu with lastPlay = updatedLastPlay; turn = tichu.NextTurn(); status = status}
 
     let DoTurn(action: Action)(tichu: TichuGame): TichuGame = 
-        let errorStatus = action |> Action.CheckAllowed(tichu.lastPlay |> Option.map(fun (card, _) -> card))
-        if not (errorStatus.Equals "OK" )
-            then {tichu with status = Alert(errorStatus)} else
+        let alertText = action |> Action.GetAlertTextOrOK(tichu.lastPlay |> Option.map(fun (card, _) -> card))
+        if not (alertText.Equals "OK" )
+            then {tichu with status = Alert(alertText)} else
 
         match action with 
         | Pass -> tichu |> Pass
