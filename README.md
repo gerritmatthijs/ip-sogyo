@@ -1,4 +1,4 @@
-### (Nederlandse versie onderaan)
+<!-- ### (Nederlandse versie onderaan) -->
 
 # Individual project - Presidents/Tichu
 
@@ -53,13 +53,13 @@ The goal of this project is the development of a full-stack web application for 
 
 The back-end of this project runs on .NET; the domain layer is programmed in F# and the API- and persistence layers in C#. The front-end uses Node.js in combination with React, Typescript and a Vite server. The database is not currently implemented (instead a simple in-memory dictionary is being used). When it is implemented, it will be MySQL. 
 
-To start the back-end server, run the following command from the API folder: 
+To start the back-end server, make sure you have .NET 8.0 installed. Run the following command from the API folder: 
 ```bash
 dotnet run
 ```
 The server listens from port 5036. 
 
-To start the front-end server, first go to the Client folder. To install the dependencies (only the first time), run the following command:
+To start the front-end server, you need to have the [Node.js webserver](https://nodejs.org/en/) installed. First go to the Client folder. To install the dependencies (only the first time), run the following command:
 ```bash
 npm install
 ```
@@ -98,7 +98,7 @@ The planning for week 3 is to finish the SHOULDS and get as far as possible with
 
 My favourite piece in F# (minor) is Rachmaninoff's 1st piano concerto - especially the [cadenza](https://youtu.be/y6EX3t2Mdnw?t=650)!
 
-
+<!-- 
 ## ----- Dutch version -----
 
 
@@ -198,7 +198,4 @@ De planning voor week 3 is om de SHOULDS af te maken en zo ver mogelijk te komen
 
 # Trivia
 
-Mijn favoriete stuk in F# (klein) is Rachmaninoff's 1e pianoconcert - vooral de [cadens](https://youtu.be/y6EX3t2Mdnw?t=650)! -->
-
-
-<!-- ## ----- English version ----- -->
+Mijn favoriete stuk in F# (klein) is Rachmaninoff's 1e pianoconcert - vooral de [cadens](https://youtu.be/y6EX3t2Mdnw?t=650)! --> -->

@@ -24,8 +24,8 @@ export default function Play() {
         updateState(result);
     }
 
-    async function onCardPlayed(cardPlayed: string){
-        const result = await playerAction(cardPlayed);
+    async function onPlaySet(cardset: string){
+        const result = await playerAction(cardset);
         updateState(result);
     }
 
@@ -59,6 +59,18 @@ export default function Play() {
         }
     }
 
+    function createLastPlayed(cardset: string){
+        const cardList = [];
+        for (let i = 0; i < cardset.length; i++){
+            cardList.push(<button 
+                    className="card" key = {i} 
+                    style={{backgroundPosition: getPicture(cardset[i])}} 
+                    disabled={true}
+                    />);
+        }
+        return cardList;
+    }
+
     return (
         <div className='environment' >
             <h1>Tichu</h1>
@@ -67,9 +79,8 @@ export default function Play() {
                 <Player index={1}/>
                 <Player index={2}/>
                 <Player index={3}/>
-                {lastPlayed && !endOfGame &&  <button className="card" disabled={true} 
-                style={{backgroundPosition: getPicture(lastPlayed), 
-                    gridColumn: '2 / span 1', gridRow: '2 / span 1'}} />} 
+                {lastPlayed && !endOfGame && 
+                <div style={{gridColumn: '2 / span 1', gridRow: '2 / span 1'}}>{createLastPlayed(lastPlayed)}</div>} 
                 {endOfGame && <div style = {{gridColumn: '2 / span 1', gridRow: '2 / span 1'}}>
                     <h2> Game finished! </h2>
                     <button className='newGameButton' onClick={getNewGame}>Start New Game</button>
@@ -82,9 +93,8 @@ export default function Play() {
             {!endOfGame && <h2>{activePlayer}'s hand</h2>}
             {alert && <Alert text = {alert} onClick={() => setAlert(null)}/>}
             {!endOfGame && <div>
-                <ActiveHand onClick={onCardPlayed}/>
+                <ActiveHand onPlay={onPlaySet} onPass={onPass}/>
             </div>}
-            {!endOfGame && <button className="pass-button" onClick={onPass}>Pass</button>}
         </div>
     )
 }

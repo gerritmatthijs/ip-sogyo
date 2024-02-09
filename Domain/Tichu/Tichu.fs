@@ -1,7 +1,7 @@
 namespace Tichu
 
 type TichuGame = 
-    {players: Player list; lastPlay: Option<Card * Player>; turn: int; status: StatusText}
+    {players: Player list; lastPlay: Option<CardSet * Player>; turn: int; status: StatusText}
 
     member x.GetPlayer(name: string): Player = 
         x.players |> List.find(fun player -> player.name.Equals name)
@@ -26,11 +26,11 @@ type TichuGame =
     
 module TichuGame = 
 
-    let PlaySet(card: Card)(tichu: TichuGame): TichuGame = 
-        let updatedPlayer = tichu.GetActivePlayer() |> Player.PlayCards(card)
+    let PlaySet(set: CardSet)(tichu: TichuGame): TichuGame = 
+        let updatedPlayer = tichu.GetActivePlayer() |> Player.PlayCards(set)
         let updatedPlayerList = tichu.players |> List.mapi(fun i p -> if i = tichu.turn then updatedPlayer else p)
         let status: StatusText = if updatedPlayer.hand.IsEmpty then Message(tichu.GetActivePlayer().name + " has played all their cards!") else NoText
-        {players = updatedPlayerList; lastPlay = Some(card, updatedPlayer); turn = tichu.NextTurn(); status = status}
+        {players = updatedPlayerList; lastPlay = Some(set, updatedPlayer); turn = tichu.NextTurn(); status = status}
 
     let Pass(tichu: TichuGame): TichuGame = 
         if tichu.TrickIsWonUponPass() then
@@ -39,15 +39,13 @@ module TichuGame =
             {tichu with lastPlay = None; turn = tichu.NextTurn(); status = status}
         else 
             {tichu with turn = tichu.NextTurn(); status = NoText}
-        // let updatedLastPlay = if tichu.TrickIsWonUponPass() then None else tichu.lastPlay
-        // let status: StatusText = if tichu.TrickIsWonUponPass() then Message(leader.name + " has won the trick!") else NoText
-        // {tichu with lastPlay = updatedLastPlay; turn = tichu.NextTurn(); status = status}
 
     let DoTurn(action: Action)(tichu: TichuGame): TichuGame = 
-        let errorStatus = action |> Action.CheckAllowed(tichu.lastPlay |> Option.map(fun (card, _) -> card))
-        if not (errorStatus.Equals "OK" )
-            then {tichu with status = Alert(errorStatus)} else
+        let alertText = action |> Action.GetAlertTextOrOK(tichu.lastPlay |> Option.map(fun (card, _) -> card))
+        if not (alertText.Equals "OK" )
+            then {tichu with status = Alert(alertText)} else
 
         match action with 
         | Pass -> tichu |> Pass
-        | Set(card) -> tichu |> PlaySet(card)
+        | Set(set) -> tichu |> PlaySet(set)
+        | Invalid -> failwith "Invalid set type should have been recognised earlier"

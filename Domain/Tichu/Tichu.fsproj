@@ -8,8 +8,10 @@
   <ItemGroup>
     <Compile Include="ITichu.fs" />
     <Compile Include="ITichuFactory.fs" />
+    <Compile Include="StatusText.fs" />
     <Compile Include="Card.fs" />
-    <Compile Include="OtherTypes.fs" />
+    <Compile Include="CardSet.fs" />
+    <Compile Include="Action.fs" />
     <Compile Include="Hand.fs" />
     <Compile Include="Player.fs" />
     <Compile Include="Tichu.fs" />

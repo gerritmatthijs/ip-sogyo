@@ -74,7 +74,7 @@ let ``Get index of player whose turn it is`` () =
     Assert.Equal(0, hannekePlayed.GetTurn())
 
 [<Fact>]
-let ``Throw when attempting to play out of turn`` () =
+let ``Throw when attempting to play a card that is not in hand`` () =
     let tichu = SetUpGame()
     Assert.Throws<System.Exception>(fun () -> tichu.DoTurn("6") :> obj)
 
@@ -83,13 +83,30 @@ let ``Play single card removes it from hand`` () =
     let tichu = SetUpGame()
     let gerritPlayed = tichu.DoTurn("4")
     let danielPlayed = gerritPlayed.DoTurn("6")
-    // let hand = 
-    //     match tryNewTichu with 
-    //     | Ok newTichu -> newTichu.GetPlayerHand("Gerrit")
-    //     | Error e -> handstring
-    // Assert.True(Result.isOk tryNewTichu)
     Assert.Equal("222233334445", danielPlayed.GetPlayerHand("Gerrit"))
     Assert.Equal("555666777788", danielPlayed.GetPlayerHand("Daniel"))
+
+[<Fact>]
+let ``Play sets removes all  cards from hand`` () =
+    let tichu = SetUpGame()
+    let gerritPlayed = tichu.DoTurn("444")
+    let danielPlayed = gerritPlayed.DoTurn("666")
+    Assert.Equal("2222333345", danielPlayed.GetPlayerHand("Gerrit"))
+    Assert.Equal("5556777788", danielPlayed.GetPlayerHand("Daniel"))
+
+[<Fact>]
+let ``Playing a set that is not allowed does not change the hand`` () = 
+    let tichu = SetUpGame()
+    let gerritPlayed = tichu.DoTurn("5")
+    let danielPlayed = gerritPlayed.DoTurn("5")
+    Assert.Equal(13, danielPlayed.GetPlayerHand("Daniel").Length)
+
+[<Fact>]
+let ``Playing the wrong type of set does not change the hand`` () = 
+    let tichu = SetUpGame()
+    let gerritPlayed = tichu.DoTurn("444")
+    let danielPlayed = gerritPlayed.DoTurn("66")
+    Assert.Equal(13, danielPlayed.GetPlayerHand("Daniel").Length)
 
 [<Fact>]
 let ``Passing doesn't change last action or player's hand but does change turn`` () =
@@ -238,14 +255,27 @@ let ``Get alert when playing a lower or equal card`` () =
     let hannekePlayed = wesleyPlayed.DoTurn("K")
     let gerritPlayedAgain = hannekePlayed.DoTurn("4")
     
-    Assert.Equal("Your card has to be higher than the last played card.", danielTriedPlaying.GetAlert())
-    Assert.Equal("Your card has to be higher than the last played card.", gerritPlayedAgain.GetAlert())
+    Assert.Equal("Your card set has to be higher than the last played card set.", danielTriedPlaying.GetAlert())
+    Assert.Equal("Your card set has to be higher than the last played card set.", gerritPlayedAgain.GetAlert())
 
 [<Fact>]
 let ``Get alert upon passing when starting a trick`` () = 
     let tichu = SetUpGame()
     let gerritTriedPassing = tichu.DoTurn("pass")
     Assert.Equal("You cannot pass when opening a trick.", gerritTriedPassing.GetAlert())
+
+[<Fact>]
+let ``Get alert upon playing the wrong type of set`` () = 
+    let tichu = SetUpGame()
+    let gerritPlayed = tichu.DoTurn("444")
+    let danielTriedPlaying = gerritPlayed.DoTurn("5")
+    Assert.Equal("You can only play sets of 3 cards of the same height in this trick.", danielTriedPlaying.GetAlert())
+
+[<Fact>]
+let ``Get alert upon playing invalid set`` () =
+    let tichu = SetUpGame()
+    let playInvalidSet = tichu.DoTurn("56")
+    Assert.Equal("Invalid set type: you can only play multiples of the same card height", playInvalidSet.GetAlert())
 
 [<Fact>]
 let ``Game ends when 3 players play all their cards`` () = 

@@ -4,8 +4,8 @@ type Player =
     {name: string; hand: Card list}
 
 module Player = 
-    let PlayCards(card: Card)(player: Player): Player = 
-        let newHand = player.hand |> Hand.RemoveCards([card])
+    let PlayCards(set: CardSet)(player: Player): Player = 
+        let newHand = player.hand |> Hand.RemoveCards(set |> CardSet.CardSetToCardList)
         {player with hand = newHand}
 
     let isFinished(player: Player): bool = player.hand.IsEmpty
