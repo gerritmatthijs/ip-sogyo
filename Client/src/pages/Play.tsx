@@ -17,6 +17,7 @@ export default function Play() {
     const activePlayer = gameState? gameState.players[gameState.turn].name : "";
     const [alert, setAlert] = useState<string | null>(null);
     const [message, setMessage] = useState<string | null>(null);
+    const [IsChangeOver, setIsChangeOver] = useState(false);
     const endOfGame = gameState? gameState.gameStatus.endOfGame: false;
 
     async function getNewGame(){
@@ -38,6 +39,10 @@ export default function Play() {
         if (isTichuGameState(result)) {
             setGameState(result);
             setAlertOrMessage(result);
+            // Comment the next 3 lines to disable intermediate screen
+            if (!(result.gameStatus.alert)){
+                setIsChangeOver(true);
+            }
         }
         else {
             setAlert(`${result.statusCode} ${result.statusText}`);
@@ -90,11 +95,12 @@ export default function Play() {
  
             <br/>
             {message && <Message text = {message} onClick = {() => setMessage(null)}/>}
-            {!endOfGame && <h2>{activePlayer}'s hand</h2>}
             {alert && <Alert text = {alert} onClick={() => setAlert(null)}/>}
-            {!endOfGame && <div>
+            {!IsChangeOver && !endOfGame && <div>
                 <ActiveHand onPlay={onPlaySet} onPass={onPass}/>
             </div>}
+            {IsChangeOver && <button className="changeover-button" onClick={() => setIsChangeOver(false)}>
+                Show {activePlayer}'s Hand</button>}
         </div>
     )
 }
