@@ -93,9 +93,8 @@ export default function Play() {
             {!endOfGame && <h2>{activePlayer}'s hand</h2>}
             {alert && <Alert text = {alert} onClick={() => setAlert(null)}/>}
             {!endOfGame && <div>
-                <ActiveHand onPlay={onPlaySet}/>
+                <ActiveHand onPlay={onPlaySet} onPass={onPass}/>
             </div>}
-            {!endOfGame && <button className="pass-button" onClick={onPass} disabled={!lastPlayed}>Pass</button>}
         </div>
     )
 }

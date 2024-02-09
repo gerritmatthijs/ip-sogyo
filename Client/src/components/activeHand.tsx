@@ -5,13 +5,16 @@ import { getPicture } from './card.tsx';
 
 type Props = {
     onPlay: (cardset: string) => void;
+    onPass: () => void;
 };
 
 export default function ActiveHand(props: Props) {
-    const { onPlay } = props;
+    const { onPlay, onPass } = props;
     const { gameState } = useTichuContext();
     const hand = gameState? gameState.players[gameState.turn].hand : "";
     const [cardsClicked, setCardsClicked] = useState<Array<number>>([]);
+    const lastPlayed = gameState? gameState.lastPlayed : "";
+    const endOfGame = gameState? gameState.gameStatus.endOfGame: false;
 
     function onCardClicked(cardnumber: number){
         let index = cardsClicked.findIndex((n) => n == cardnumber)
@@ -47,6 +50,7 @@ export default function ActiveHand(props: Props) {
     return <div className="hand">   
     {createCards(hand)}
     <br/>
-    <button className="play-button" onClick={onPlayButtonClicked} disabled={cardsClicked.length == 0}>Play Cards</button>
+    <button className="play-button" onClick={onPlayButtonClicked} disabled={cardsClicked.length == 0}>Play Selected Cards</button>
+    {!endOfGame && <button className="pass-button" onClick={onPass} disabled={!lastPlayed}>Pass</button>}
     </div>
 }
