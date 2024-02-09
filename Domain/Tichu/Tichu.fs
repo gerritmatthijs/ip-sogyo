@@ -39,9 +39,6 @@ module TichuGame =
             {tichu with lastPlay = None; turn = tichu.NextTurn(); status = status}
         else 
             {tichu with turn = tichu.NextTurn(); status = NoText}
-        // let updatedLastPlay = if tichu.TrickIsWonUponPass() then None else tichu.lastPlay
-        // let status: StatusText = if tichu.TrickIsWonUponPass() then Message(leader.name + " has won the trick!") else NoText
-        // {tichu with lastPlay = updatedLastPlay; turn = tichu.NextTurn(); status = status}
 
     let DoTurn(action: Action)(tichu: TichuGame): TichuGame = 
         let alertText = action |> Action.GetAlertTextOrOK(tichu.lastPlay |> Option.map(fun (card, _) -> card))

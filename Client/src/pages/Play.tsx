@@ -24,8 +24,8 @@ export default function Play() {
         updateState(result);
     }
 
-    async function onCardPlayed(cardPlayed: string){
-        const result = await playerAction(cardPlayed);
+    async function onPlaySet(cardset: string){
+        const result = await playerAction(cardset);
         updateState(result);
     }
 
@@ -82,7 +82,7 @@ export default function Play() {
             {!endOfGame && <h2>{activePlayer}'s hand</h2>}
             {alert && <Alert text = {alert} onClick={() => setAlert(null)}/>}
             {!endOfGame && <div>
-                <ActiveHand onClick={onCardPlayed}/>
+                <ActiveHand onPlay={onPlaySet}/>
             </div>}
             {!endOfGame && <button className="pass-button" onClick={onPass} disabled={!lastPlayed}>Pass</button>}
         </div>

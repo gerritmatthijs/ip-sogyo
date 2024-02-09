@@ -24,8 +24,10 @@ type TichuFacade(tichu: TichuGame) =
 
         member _.GetTurn(): int = tichu.turn
 
-        member _.DoTurn(actionstring: string): ITichu = 
-            printfn $"action received from server: {actionstring}." 
+        member x.DoTurn(actionstring: string): ITichu = 
+            printfn $"Action received from server: {actionstring}." 
+            let hand = (x :> ITichu).GetPlayerHand(tichu.GetActivePlayer().name)
+            printfn $"Active player hand: {hand}."
             let action = actionstring |> Action.ToAction
             new TichuFacade(tichu |> TichuGame.DoTurn(action))
 
