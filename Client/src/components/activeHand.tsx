@@ -12,11 +12,9 @@ export default function ActiveHand(props: Props) {
     const { gameState } = useTichuContext();
     const hand = gameState? gameState.players[gameState.turn].hand : "";
     const [cardsClicked, setCardsClicked] = useState<Array<number>>([]);
-    console.log(cardsClicked);
 
     function onCardClicked(cardnumber: number){
         let index = cardsClicked.findIndex((n) => n == cardnumber)
-        console.log("index: " + index)
         if (index == -1){
             let newArray = cardsClicked.concat(cardnumber)
             newArray.sort()

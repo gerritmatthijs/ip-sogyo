@@ -61,7 +61,6 @@ export default function Play() {
 
     function createLastPlayed(cardset: string){
         const cardList = [];
-        console.log(cardset)
         for (let i = 0; i < cardset.length; i++){
             cardList.push(<button 
                     className="card" key = {i} 
