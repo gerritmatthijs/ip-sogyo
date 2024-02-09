@@ -46,9 +46,9 @@ export default function ActiveHand(props: Props) {
         return cardList;
     }
 
-    return <div className="hand">
+    return <div className="hand">   
     {createCards(hand)}
     <br/>
-    <button className="play-button" onClick={onPlayButtonClicked} disabled={!cardsClicked}>Play Cards</button>
+    <button className="play-button" onClick={onPlayButtonClicked} disabled={cardsClicked.length == 0}>Play Cards</button>
     </div>
 }
