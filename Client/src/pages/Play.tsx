@@ -10,7 +10,7 @@ import { createGame, playerAction } from '../services/api.ts';
 import { useEffect, useState } from 'react';
 
 export default function Play() {
-    useEffect(() => {getNewGame();}, []);
+    // useEffect(() => {getNewGame();}, []);
 
     const { gameState, setGameState } = useTichuContext();
     const lastPlayed = gameState? gameState.lastPlayed : "";
@@ -21,7 +21,7 @@ export default function Play() {
     const endOfGame = gameState? gameState.gameStatus.endOfGame: false;
 
     async function getNewGame(){
-        const result = await createGame(["Gerrit", "Daniel", "Wesley", "Hanneke"]);
+        const result = await createGame(gameState? gameState.players.map(p => p.name): []);
         updateState(result);
     }
 
@@ -39,6 +39,7 @@ export default function Play() {
         if (isTichuGameState(result)) {
             setGameState(result);
             setAlertOrMessage(result);
+            
             // Comment the next 3 lines to disable intermediate screen
             if (!(result.gameStatus.alert)){
                 setIsChangeOver(true);
