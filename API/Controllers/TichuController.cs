@@ -26,6 +26,16 @@ public class TichuController(ITichuRepository repository, ITichuFactory factory)
         return Ok(new TichuDTO(newTichu));
     }
 
+    [HttpGet("check")]
+    [Consumes("application/json")]
+    public IActionResult CheckAllowed(Dictionary<string, string> body)
+    {
+        string gameID = HttpContext.Session.GetString(SessionClientID) ?? throw new Exception("Game ID not found in session.");
+        ITichu tichu = _repository.GetGame(gameID);
+
+        return Ok(tichu.CheckAllowed(body["action"]));
+    }
+
     [HttpPost("newgame")]
     [Consumes("application/json")]
     public IActionResult CreateGame(Dictionary<string, string> body)

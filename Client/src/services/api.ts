@@ -22,6 +22,29 @@ export async function playerAction(action: string){
     }
 }
 
+export async function checkAllowed(action: string){
+    const response = await fetch("tichu/check", {
+        method: "GET",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            action:action
+        })
+    });
+    if (response.ok){
+        const result = await response.json();
+        console.log("Server response on check request: " + result);
+        return result as boolean;
+    } else {
+        return {
+            statusCode: response.status,
+            statusText: response.statusText
+        };
+    }
+}
+
 export async function createGame(playerNames: string[]){
     const response = await fetch("tichu/newgame", {
         method: "POST",
