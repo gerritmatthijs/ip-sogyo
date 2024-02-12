@@ -5,7 +5,7 @@ type TichuFacade(tichu: TichuGame) =
 
     new(players: Player list) = new TichuFacade({players = players; lastPlay = None; turn = 0; status = NoText})
 
-    interface ITichu with
+    interface ITichuFacade with
         member _.GetPlayerName(playerNumber: int): string = 
             tichu.players[playerNumber].name
 
@@ -24,9 +24,16 @@ type TichuFacade(tichu: TichuGame) =
 
         member _.GetTurn(): int = tichu.turn
 
-        member x.DoTurn(actionstring: string): ITichu = 
+        member _.CheckAllowed(actionstring: string): bool = 
+            let action = actionstring |> Action.ToAction
+            let potentialNewTichu = tichu |> TichuGame.DoTurn(action)
+            match potentialNewTichu.status with
+                | Alert(_) -> false
+                | _ -> true
+
+        member x.DoTurn(actionstring: string): ITichuFacade = 
             printfn $"Action received from server: {actionstring}." 
-            let hand = (x :> ITichu).GetPlayerHand(tichu.GetActivePlayer().name)
+            let hand = (x :> ITichuFacade).GetPlayerHand(tichu.GetActivePlayer().name)
             printfn $"Active player hand: {hand}."
             let action = actionstring |> Action.ToAction
             new TichuFacade(tichu |> TichuGame.DoTurn(action))

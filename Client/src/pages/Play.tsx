@@ -46,8 +46,12 @@ export default function Play() {
             }
         }
         else {
-            setAlert(`${result.statusCode} ${result.statusText}`);
+            displayServerAlert(result);
         }
+    }
+
+    function displayServerAlert(result: {statusCode: number; statusText: string;}){
+        setAlert(`${result.statusCode} ${result.statusText}`);
     }
 
     function setAlertOrMessage(result: TichuGameState) {
@@ -98,7 +102,7 @@ export default function Play() {
             {message && <Message text = {message} onClick = {() => setMessage(null)}/>}
             {alert && <Alert text = {alert} onClick={() => setAlert(null)}/>}
             {!IsChangeOver && !endOfGame && <div>
-                <ActiveHand onPlay={onPlaySet} onPass={onPass}/>
+                <ActiveHand onPlay={onPlaySet} onPass={onPass} onAlert={displayServerAlert}/>
             </div>}
             {IsChangeOver && <button className="changeover-button" onClick={() => setIsChangeOver(false)}>
                 Show {activePlayer}'s Hand</button>}

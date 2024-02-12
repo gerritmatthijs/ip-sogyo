@@ -1,6 +1,6 @@
 ﻿namespace Tichu
 
-type ITichu = 
+type ITichuFacade = 
     abstract member GetPlayerName: playerNumber: int -> string
 
     abstract member GetPlayerHand: name: string -> string
@@ -11,7 +11,9 @@ type ITichu =
 
     abstract member GetTurn: unit -> int
 
-    abstract member DoTurn: set: string -> ITichu
+    abstract member CheckAllowed: string -> bool
+
+    abstract member DoTurn: string -> ITichuFacade
 
     abstract member GetMessage: unit -> string
 

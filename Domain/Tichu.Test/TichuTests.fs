@@ -8,21 +8,21 @@ let SetUpGame () =
     let playerTwo = {name = "Daniel"; hand = "5556666777788" |> Hand.StringToCardList}
     let playerThree = {name = "Wesley"; hand = "889999TTTTJJJ" |> Hand.StringToCardList}
     let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
-    new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichu
+    new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichuFacade
 
 let SetUpGameEmptyHand() = 
     let playerOne = {name = "Gerrit"; hand = "2222333344445" |> Hand.StringToCardList}
     let playerTwo = {name = "Daniel"; hand = "" |> Hand.StringToCardList}
     let playerThree = {name = "Wesley"; hand = "889999TTTTJJJ" |> Hand.StringToCardList}
     let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
-    new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichu
+    new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichuFacade
 
 let SetUpGameAlmostEmptyHand() = 
     let playerOne = {name = "Gerrit"; hand = "4" |> Hand.StringToCardList}
     let playerTwo = {name = "Daniel"; hand = "5556666777788" |> Hand.StringToCardList}
     let playerThree = {name = "Wesley"; hand = "889999TTTTJJJ" |> Hand.StringToCardList}
     let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
-    new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichu
+    new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichuFacade
 
 [<Fact>]
 let ``Get player name`` () = 
@@ -142,7 +142,7 @@ let ``Two consecutive players with empty hands are both skipped`` () =
     let playerTwo = {name = "Daniel"; hand = "" |> Hand.StringToCardList}
     let playerThree = {name = "Wesley"; hand = "" |> Hand.StringToCardList}
     let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
-    let tichu = new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichu
+    let tichu = new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichuFacade
 
     let gerritPlayed = tichu.DoTurn("4")
     Assert.Equal(3, gerritPlayed.GetTurn())
@@ -176,7 +176,7 @@ let ``Check situation: a player is out and the next player wins a trick with the
     let playerTwo = {name = "Daniel"; hand = "" |> Hand.StringToCardList}
     let playerThree = {name = "Wesley"; hand = "T" |> Hand.StringToCardList}
     let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
-    let tichu = new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichu
+    let tichu = new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichuFacade
 
     let gerritPlayed = tichu.DoTurn("4")
     let wesleyPlayed = gerritPlayed.DoTurn("T")
@@ -192,7 +192,7 @@ let ``Check situation: a player is out and the previous player wins a trick with
     let playerTwo = {name = "Daniel"; hand = "6" |> Hand.StringToCardList}
     let playerThree = {name = "Wesley"; hand = "" |> Hand.StringToCardList}
     let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
-    let tichu = new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichu
+    let tichu = new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichuFacade
 
     let gerritPlayed = tichu.DoTurn("4")
     let danielPlayed = gerritPlayed.DoTurn("6")
@@ -229,10 +229,13 @@ let ``Get Message upon playing last card`` () =
     Assert.Equal("Gerrit has played all their cards!", gerritPlayed.GetMessage())
 
 [<Fact>]
-let ``Trying to pass when opening a trick gives alert`` () = 
+let ``Normal moves are allowed`` () = 
     let tichu = SetUpGame()
-    let gerritTriedPassing = tichu.DoTurn("pass")
-    Assert.Equal("You cannot pass when opening a trick.", gerritTriedPassing.GetAlert())
+    let gerritPlayed = tichu.DoTurn("4")
+    let danielPlayed = gerritPlayed.DoTurn("6")
+    Assert.True(tichu.CheckAllowed("4"))
+    Assert.True(gerritPlayed.CheckAllowed("6"))
+    Assert.True(danielPlayed.CheckAllowed("pass"))
 
 [<Fact>]
 let ``No alert when nothing special happens`` () = 
@@ -244,6 +247,16 @@ let ``No alert when nothing special happens`` () =
     Assert.Equal("", gerritPlayed.GetAlert())
     Assert.Equal("", danielPassed.GetAlert())
     Assert.Equal("", wesleyPassed.GetAlert())
+
+[<Fact>]
+let ``Play lower or equal card is not allowed`` () = 
+    let tichu = SetUpGame()
+    let gerritPlayed = tichu.DoTurn("5")
+    let danielPlayed = gerritPlayed.DoTurn("6")
+    let wesleyPlayed = danielPlayed.DoTurn("T")
+    let hannekePlayed = wesleyPlayed.DoTurn("K")
+    Assert.False(gerritPlayed.CheckAllowed("5"))
+    Assert.False(hannekePlayed.CheckAllowed("4"))
 
 [<Fact>]
 let ``Get alert when playing a lower or equal card`` () = 
@@ -259,10 +272,21 @@ let ``Get alert when playing a lower or equal card`` () =
     Assert.Equal("Your card set has to be higher than the last played card set.", gerritPlayedAgain.GetAlert())
 
 [<Fact>]
+let ``Passing when opening a trick is not allowed`` () = 
+    let tichu = SetUpGame()
+    Assert.False(tichu.CheckAllowed("pass"))
+
+[<Fact>]
 let ``Get alert upon passing when starting a trick`` () = 
     let tichu = SetUpGame()
     let gerritTriedPassing = tichu.DoTurn("pass")
     Assert.Equal("You cannot pass when opening a trick.", gerritTriedPassing.GetAlert())
+
+[<Fact>]
+let ``Playing the wrong type of set is not allowed`` () = 
+    let tichu = SetUpGame()
+    let gerritPlayed = tichu.DoTurn("444")
+    Assert.False(gerritPlayed.CheckAllowed("55"))
 
 [<Fact>]
 let ``Get alert upon playing the wrong type of set`` () = 
@@ -270,6 +294,11 @@ let ``Get alert upon playing the wrong type of set`` () =
     let gerritPlayed = tichu.DoTurn("444")
     let danielTriedPlaying = gerritPlayed.DoTurn("5")
     Assert.Equal("You can only play sets of 3 cards of the same height in this trick.", danielTriedPlaying.GetAlert())
+
+[<Fact>]
+let ``Playing invalid set is not allowed`` () =
+    let tichu = SetUpGame()
+    Assert.False(tichu.CheckAllowed("223"))
 
 [<Fact>]
 let ``Get alert upon playing invalid set`` () =
@@ -283,7 +312,7 @@ let ``Game ends when 3 players play all their cards`` () =
     let playerTwo = {name = "Daniel"; hand = "" |> Hand.StringToCardList}
     let playerThree = {name = "Wesley"; hand = "" |> Hand.StringToCardList}
     let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
-    let tichu = new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichu
+    let tichu = new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichuFacade
     let gerritFinished = tichu.DoTurn("5")
     Assert.False(tichu.IsEndOfGame())
     Assert.True(gerritFinished.IsEndOfGame())

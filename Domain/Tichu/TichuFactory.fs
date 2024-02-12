@@ -14,7 +14,7 @@ type TichuFactory() =
         array |> Array.toSeq |> String.Concat
     
     interface ITichuFactory with
-        member _.createNewGame(playerNames: string seq): ITichu = 
+        member _.createNewGame(playerNames: string seq): ITichuFacade = 
             let hands = generateRandomInput() |> Seq.chunkBySize(13) |> Seq.map(
                     Seq.map(fun c -> {value = c}) >> Seq.sortBy(fun card -> card.IntValue()) >> Seq.toList
                 )

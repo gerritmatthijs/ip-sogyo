@@ -10,7 +10,7 @@ namespace api.Models
         public string CurrentLeader { get; set; }
         public int Turn {get; set; }
 
-        public TichuDTO(ITichu tichu){
+        public TichuDTO(ITichuFacade tichu){
             for (int i = 0; i < 4; i++){
                 Players[i] = new PlayerDTO(tichu, tichu.GetPlayerName(i));
             }

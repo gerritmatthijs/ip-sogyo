@@ -2,38 +2,52 @@
 import { useState } from 'react';
 import { useTichuContext } from '../context/TichuGameContext.tsx';
 import { getPicture } from './card.tsx';
+import { checkAllowed } from '../services/api.ts';
 
 type Props = {
     onPlay: (cardset: string) => void;
     onPass: () => void;
+    onAlert: (result: {statusCode: number; statusText: string;}) => void;
 };
 
 export default function ActiveHand(props: Props) {
-    const { onPlay, onPass } = props;
+    const { onPlay, onPass, onAlert } = props;
     const { gameState } = useTichuContext();
     const hand = gameState? gameState.players[gameState.turn].hand : "";
     const [cardsClicked, setCardsClicked] = useState<Array<number>>([]);
+    const [allowed, setAllowed] = useState(false);
     const lastPlayed = gameState? gameState.lastPlayed : "";
     const endOfGame = gameState? gameState.gameStatus.endOfGame: false;
     const activePlayer = gameState? gameState.players[gameState.turn].name : "";
 
-    function onCardClicked(cardnumber: number){
-        let index = cardsClicked.findIndex((n) => n == cardnumber)
-        if (index == -1){
-            let newArray = cardsClicked.concat(cardnumber)
-            newArray.sort()
-            setCardsClicked(newArray)
+    async function checkAllowedCardSet(newArray: Array<number>) {
+        const result = await checkAllowed(newArray.map((i) => hand[i]).join(""));
+        if (typeof result == 'boolean'){
+            setAllowed(result);
         }
         else {
-            let newArray = cardsClicked.slice(0, index).concat(cardsClicked.slice(index + 1))
-            setCardsClicked(newArray)
+            onAlert(result);
         }
     }
 
+    function onCardClicked(cardnumber: number){
+        let index = cardsClicked.findIndex((n) => n == cardnumber);
+        let newArray: Array<number>;
+        if (index == -1){
+            newArray = cardsClicked.concat(cardnumber);
+            newArray.sort();
+        }
+        else {
+            newArray = cardsClicked.slice(0, index).concat(cardsClicked.slice(index + 1));
+        }
+        setCardsClicked(newArray);
+        checkAllowedCardSet(newArray);
+    }
+
     function onPlayButtonClicked(){
-        const cardset = cardsClicked.map((i) => hand[i]).join("");
+        const currentCardSet = cardsClicked.map((i) => hand[i]).join("");
         setCardsClicked([]);
-        onPlay(cardset)
+        onPlay(currentCardSet);
     }
 
     function createCards(hand: string){
@@ -52,7 +66,8 @@ export default function ActiveHand(props: Props) {
     <h2>{activePlayer}'s hand</h2>
     {createCards(hand)}
     <br/>
-    <button className="play-button" onClick={onPlayButtonClicked} disabled={cardsClicked.length == 0}>Play Selected Cards</button>
+    <button className="play-button" onClick={onPlayButtonClicked} disabled={!allowed}>Play Selected Cards</button>
     {!endOfGame && <button className="pass-button" onClick={onPass} disabled={!lastPlayed}>Pass</button>}
     </div>
 }
+
