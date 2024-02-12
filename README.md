@@ -198,4 +198,4 @@ De planning voor week 3 is om de SHOULDS af te maken en zo ver mogelijk te komen
 
 # Trivia
 
-Mijn favoriete stuk in F# (klein) is Rachmaninoff's 1e pianoconcert - vooral de [cadens](https://youtu.be/y6EX3t2Mdnw?t=650)! --> -->
+Mijn favoriete stuk in F# (klein) is Rachmaninoff's 1e pianoconcert - vooral de [cadens](https://youtu.be/y6EX3t2Mdnw?t=650)! -->

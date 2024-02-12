@@ -229,10 +229,13 @@ let ``Get Message upon playing last card`` () =
     Assert.Equal("Gerrit has played all their cards!", gerritPlayed.GetMessage())
 
 [<Fact>]
-let ``Trying to pass when opening a trick gives alert`` () = 
+let ``Normal moves are allowed`` () = 
     let tichu = SetUpGame()
-    let gerritTriedPassing = tichu.DoTurn("pass")
-    Assert.Equal("You cannot pass when opening a trick.", gerritTriedPassing.GetAlert())
+    let gerritPlayed = tichu.DoTurn("4")
+    let danielPlayed = gerritPlayed.DoTurn("6")
+    Assert.True(tichu.CheckAllowed("4"))
+    Assert.True(gerritPlayed.CheckAllowed("6"))
+    Assert.True(danielPlayed.CheckAllowed("pass"))
 
 [<Fact>]
 let ``No alert when nothing special happens`` () = 
@@ -244,6 +247,16 @@ let ``No alert when nothing special happens`` () =
     Assert.Equal("", gerritPlayed.GetAlert())
     Assert.Equal("", danielPassed.GetAlert())
     Assert.Equal("", wesleyPassed.GetAlert())
+
+[<Fact>]
+let ``Play lower or equal card is not allowed`` () = 
+    let tichu = SetUpGame()
+    let gerritPlayed = tichu.DoTurn("5")
+    let danielPlayed = gerritPlayed.DoTurn("6")
+    let wesleyPlayed = danielPlayed.DoTurn("T")
+    let hannekePlayed = wesleyPlayed.DoTurn("K")
+    Assert.False(gerritPlayed.CheckAllowed("5"))
+    Assert.False(hannekePlayed.CheckAllowed("4"))
 
 [<Fact>]
 let ``Get alert when playing a lower or equal card`` () = 
@@ -259,10 +272,21 @@ let ``Get alert when playing a lower or equal card`` () =
     Assert.Equal("Your card set has to be higher than the last played card set.", gerritPlayedAgain.GetAlert())
 
 [<Fact>]
+let ``Passing when opening a trick is not allowed`` () = 
+    let tichu = SetUpGame()
+    Assert.False(tichu.CheckAllowed("pass"))
+
+[<Fact>]
 let ``Get alert upon passing when starting a trick`` () = 
     let tichu = SetUpGame()
     let gerritTriedPassing = tichu.DoTurn("pass")
     Assert.Equal("You cannot pass when opening a trick.", gerritTriedPassing.GetAlert())
+
+[<Fact>]
+let ``Playing the wrong type of set is not allowed`` () = 
+    let tichu = SetUpGame()
+    let gerritPlayed = tichu.DoTurn("444")
+    Assert.False(gerritPlayed.CheckAllowed("55"))
 
 [<Fact>]
 let ``Get alert upon playing the wrong type of set`` () = 
@@ -270,6 +294,11 @@ let ``Get alert upon playing the wrong type of set`` () =
     let gerritPlayed = tichu.DoTurn("444")
     let danielTriedPlaying = gerritPlayed.DoTurn("5")
     Assert.Equal("You can only play sets of 3 cards of the same height in this trick.", danielTriedPlaying.GetAlert())
+
+[<Fact>]
+let ``Playing invalid set is not allowed`` () =
+    let tichu = SetUpGame()
+    Assert.False(tichu.CheckAllowed("557"))
 
 [<Fact>]
 let ``Get alert upon playing invalid set`` () =

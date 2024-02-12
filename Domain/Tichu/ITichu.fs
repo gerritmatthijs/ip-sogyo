@@ -11,7 +11,9 @@ type ITichu =
 
     abstract member GetTurn: unit -> int
 
-    abstract member DoTurn: set: string -> ITichu
+    abstract member CheckAllowed: string -> bool
+
+    abstract member DoTurn: string -> ITichu
 
     abstract member GetMessage: unit -> string
 

@@ -24,6 +24,13 @@ type TichuFacade(tichu: TichuGame) =
 
         member _.GetTurn(): int = tichu.turn
 
+        member _.CheckAllowed(actionstring: string): bool = 
+            let action = actionstring |> Action.ToAction
+            let potentialNewTichu = tichu |> TichuGame.DoTurn(action)
+            match potentialNewTichu.status with
+                | Alert(_) -> false
+                | _ -> true
+
         member x.DoTurn(actionstring: string): ITichu = 
             printfn $"Action received from server: {actionstring}." 
             let hand = (x :> ITichu).GetPlayerHand(tichu.GetActivePlayer().name)
