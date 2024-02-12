@@ -69,6 +69,28 @@ npm run dev
 ```
 The front-end server listens on port 5173. Go to http://localhost:5173/ in the browser to play the game. 
 
+# Testing
+
+To run all unit tests, run the following command from the project root folder:
+```bash
+dotnet test
+```
+
+To run the tests with code coverage, run instead the following:
+```bash
+dotnet test --collect:"Xplat Code Coverage"
+```
+This creates a coverage.cobertura.xml file in the Domain/Tichu.Test/TestResults folder. You can generate a report from this by using the reportgenerator. It can be installed by:
+```bash
+dotnet tool install -g dotnet-reportgenerator-globaltool
+```
+Then run the following command to generate the report:
+```bash
+reportgenerator -reports:"./Domain/Tichu.Test/TestResults/*/coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:Html
+```
+The report is created in a new folder coveragereport. View it in a browser by opening index.html. I recommend moving the folder to Domain/Tichu.Test/Testresults so that it does not get checked into git. 
+
+
 # Planning
 
 The goal for week 1 was to get the front-end and back-end working and communicating. Then I added the following vertical slices one by one: 
