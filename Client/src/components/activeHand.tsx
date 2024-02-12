@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useTichuContext } from '../context/TichuGameContext.tsx';
 import { getPicture } from './card.tsx';
+import { checkAllowed } from '../services/api.ts';
 
 type Props = {
     onPlay: (cardset: string) => void;
@@ -18,22 +19,24 @@ export default function ActiveHand(props: Props) {
     const activePlayer = gameState? gameState.players[gameState.turn].name : "";
 
     function onCardClicked(cardnumber: number){
-        let index = cardsClicked.findIndex((n) => n == cardnumber)
+        let index = cardsClicked.findIndex((n) => n == cardnumber);
+        let newArray: Array<number>;
         if (index == -1){
-            let newArray = cardsClicked.concat(cardnumber)
-            newArray.sort()
-            setCardsClicked(newArray)
+            newArray = cardsClicked.concat(cardnumber);
+            newArray.sort();
         }
         else {
-            let newArray = cardsClicked.slice(0, index).concat(cardsClicked.slice(index + 1))
-            setCardsClicked(newArray)
+            newArray = cardsClicked.slice(0, index).concat(cardsClicked.slice(index + 1));
         }
+        setCardsClicked(newArray);
+        const cardset = cardsClicked.map((i) => hand[i]).join("");
+        checkAllowed(cardset);
     }
 
     function onPlayButtonClicked(){
         const cardset = cardsClicked.map((i) => hand[i]).join("");
         setCardsClicked([]);
-        onPlay(cardset)
+        onPlay(cardset);
     }
 
     function createCards(hand: string){

@@ -3,16 +3,16 @@ using Tichu;
 
 public class TichuRepositoryInMemory : ITichuRepository
 {
-    private readonly Dictionary<string, ITichu> storage = [];
+    private readonly Dictionary<string, ITichuFacade> storage = [];
 
-    public void SaveGame(string key, ITichu tichu)
+    public void SaveGame(string key, ITichuFacade tichu)
     {
         if (!storage.TryAdd(key, tichu)){
             storage[key] = tichu;
         }
     }
 
-    public ITichu GetGame(string key)
+    public ITichuFacade GetGame(string key)
     {
         return storage[key];
     }

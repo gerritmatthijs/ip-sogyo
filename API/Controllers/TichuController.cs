@@ -19,9 +19,9 @@ public class TichuController(ITichuRepository repository, ITichuFactory factory)
     public IActionResult PlayCards(Dictionary<string, string> body)
     {
         string gameID = HttpContext.Session.GetString(SessionClientID) ?? throw new Exception("Game ID not found in session.");
-        ITichu tichu = _repository.GetGame(gameID);
+        ITichuFacade tichu = _repository.GetGame(gameID);
 
-        ITichu newTichu  = tichu.DoTurn(body["action"]);
+        ITichuFacade newTichu  = tichu.DoTurn(body["action"]);
         _repository.SaveGame(gameID, newTichu);
         return Ok(new TichuDTO(newTichu));
     }
@@ -31,7 +31,7 @@ public class TichuController(ITichuRepository repository, ITichuFactory factory)
     public IActionResult CheckAllowed(Dictionary<string, string> body)
     {
         string gameID = HttpContext.Session.GetString(SessionClientID) ?? throw new Exception("Game ID not found in session.");
-        ITichu tichu = _repository.GetGame(gameID);
+        ITichuFacade tichu = _repository.GetGame(gameID);
 
         return Ok(tichu.CheckAllowed(body["action"]));
     }
@@ -40,7 +40,7 @@ public class TichuController(ITichuRepository repository, ITichuFactory factory)
     [Consumes("application/json")]
     public IActionResult CreateGame(Dictionary<string, string> body)
     {
-        ITichu tichu = _factory.createNewGame(body["names"].Split(","));
+        ITichuFacade tichu = _factory.createNewGame(body["names"].Split(","));
         string gameID = HttpContext.Session.GetString(SessionClientID) ?? Guid.NewGuid().ToString();
         HttpContext.Session.SetString(SessionClientID, gameID);
         _repository.SaveGame(gameID, tichu);
