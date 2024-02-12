@@ -4,6 +4,7 @@ import '../style/play.css';
 import { useState } from 'react';
 import { isTichuGameState } from '../types';
 import { useTichuContext } from '../context/TichuGameContext';
+import { Alert } from '../components/alert';
 
 export default function Start() {
     const [player1, setPlayer1] = useState("Gerrit")
@@ -11,15 +12,17 @@ export default function Start() {
     const [player3, setPlayer3] = useState("Wesley")
     const [player4, setPlayer4] = useState("Hanneke")  
     const { setGameState } = useTichuContext()
+    const [alert, setAlert] = useState<string | null>(null);
+
 
     async function onSubmit() {
         const result = await createGame([player1, player2, player3, player4]);
         if (isTichuGameState(result)) {
             setGameState(result);
         }
-        // else {
-        //     setAlert(`${result.statusCode} ${result.statusText}`);
-        // }
+        else {
+            setAlert(`${result.statusCode} ${result.statusText}`);
+        }
     }
 
     return (
@@ -32,6 +35,7 @@ export default function Start() {
             <NameInputField id={4} value={player4} onChange={e => setPlayer4(e.target.value)}/>
             <br/>
             <button onClick={onSubmit}>Start game</button>
+            {alert && <Alert text = {alert} onClick={() => setAlert(null)}/>}
         </div>
     )
 }
