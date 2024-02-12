@@ -25,6 +25,7 @@ export default function Start() {
     return (
         <div className='environment'>
             <h1>Welcome to Tichu!</h1>
+            <h3>Don't know the rules? Read up on them <a href="https://en.wikipedia.org/wiki/Tichu" target="_blank">here!</a></h3>
             <NameInputField id={1} value={player1} onChange={e => setPlayer1(e.target.value)}/>
             <NameInputField id={2} value={player2} onChange={e => setPlayer2(e.target.value)}/>
             <NameInputField id={3} value={player3} onChange={e => setPlayer3(e.target.value)}/>
