@@ -7,10 +7,11 @@ import { checkAllowed } from '../services/api.ts';
 type Props = {
     onPlay: (cardset: string) => void;
     onPass: () => void;
+    onAlert: (result: {statusCode: number; statusText: string;}) => void;
 };
 
 export default function ActiveHand(props: Props) {
-    const { onPlay, onPass } = props;
+    const { onPlay, onPass, onAlert } = props;
     const { gameState } = useTichuContext();
     const hand = gameState? gameState.players[gameState.turn].hand : "";
     const [cardsClicked, setCardsClicked] = useState<Array<number>>([]);
@@ -21,11 +22,11 @@ export default function ActiveHand(props: Props) {
 
     async function checkAllowedCardSet(newArray: Array<number>) {
         const result = await checkAllowed(newArray.map((i) => hand[i]).join(""));
-        if (typeof result == 'boolean' && result){
+        if (typeof result == 'boolean'){
             setAllowed(result);
         }
         else {
-            setAllowed(false);
+            onAlert(result);
         }
     }
 

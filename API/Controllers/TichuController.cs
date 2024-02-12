@@ -32,7 +32,6 @@ public class TichuController(ITichuRepository repository, ITichuFactory factory)
     {
         string gameID = HttpContext.Session.GetString(SessionClientID) ?? throw new Exception("Game ID not found in session.");
         ITichuFacade tichu = _repository.GetGame(gameID);
-        bool result = tichu.CheckAllowed(body["action"]);
 
         return Ok(tichu.CheckAllowed(body["action"]));
     }
