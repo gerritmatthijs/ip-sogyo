@@ -298,7 +298,7 @@ let ``Get alert upon playing the wrong type of set`` () =
 [<Fact>]
 let ``Playing invalid set is not allowed`` () =
     let tichu = SetUpGame()
-    Assert.False(tichu.CheckAllowed("557"))
+    Assert.False(tichu.CheckAllowed("223"))
 
 [<Fact>]
 let ``Get alert upon playing invalid set`` () =

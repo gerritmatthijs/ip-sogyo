@@ -14,9 +14,20 @@ export default function ActiveHand(props: Props) {
     const { gameState } = useTichuContext();
     const hand = gameState? gameState.players[gameState.turn].hand : "";
     const [cardsClicked, setCardsClicked] = useState<Array<number>>([]);
+    const [allowed, setAllowed] = useState(false);
     const lastPlayed = gameState? gameState.lastPlayed : "";
     const endOfGame = gameState? gameState.gameStatus.endOfGame: false;
     const activePlayer = gameState? gameState.players[gameState.turn].name : "";
+
+    async function checkAllowedCardSet(newArray: Array<number>) {
+        const result = await checkAllowed(newArray.map((i) => hand[i]).join(""));
+        if (typeof result == 'boolean' && result){
+            setAllowed(result);
+        }
+        else {
+            setAllowed(false);
+        }
+    }
 
     function onCardClicked(cardnumber: number){
         let index = cardsClicked.findIndex((n) => n == cardnumber);
@@ -29,14 +40,13 @@ export default function ActiveHand(props: Props) {
             newArray = cardsClicked.slice(0, index).concat(cardsClicked.slice(index + 1));
         }
         setCardsClicked(newArray);
-        const cardset = cardsClicked.map((i) => hand[i]).join("");
-        checkAllowed(cardset);
+        checkAllowedCardSet(newArray);
     }
 
     function onPlayButtonClicked(){
-        const cardset = cardsClicked.map((i) => hand[i]).join("");
+        const currentCardSet = cardsClicked.map((i) => hand[i]).join("");
         setCardsClicked([]);
-        onPlay(cardset);
+        onPlay(currentCardSet);
     }
 
     function createCards(hand: string){
@@ -55,7 +65,8 @@ export default function ActiveHand(props: Props) {
     <h2>{activePlayer}'s hand</h2>
     {createCards(hand)}
     <br/>
-    <button className="play-button" onClick={onPlayButtonClicked} disabled={cardsClicked.length == 0}>Play Selected Cards</button>
+    <button className="play-button" onClick={onPlayButtonClicked} disabled={!allowed}>Play Selected Cards</button>
     {!endOfGame && <button className="pass-button" onClick={onPass} disabled={!lastPlayed}>Pass</button>}
     </div>
 }
+

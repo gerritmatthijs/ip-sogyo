@@ -24,7 +24,7 @@ export async function playerAction(action: string){
 
 export async function checkAllowed(action: string){
     const response = await fetch("tichu/check", {
-        method: "GET",
+        method: "POST",
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
@@ -35,7 +35,6 @@ export async function checkAllowed(action: string){
     });
     if (response.ok){
         const result = await response.json();
-        console.log("Server response on check request: " + result);
         return result as boolean;
     } else {
         return {
