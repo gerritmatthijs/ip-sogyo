@@ -7,12 +7,11 @@ import { useTichuContext } from '../context/TichuGameContext.tsx';
 import { getPicture } from '../components/card.tsx';
 import { TichuGameState, isTichuGameState } from '../types.ts';
 import { createGame, playerAction } from '../services/api.ts';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export default function Play() {
-    useEffect(() => {getNewGame();}, []);
-
     const { gameState, setGameState } = useTichuContext();
+
     const lastPlayed = gameState? gameState.lastPlayed : "";
     const activePlayer = gameState? gameState.players[gameState.turn].name : "";
     const [alert, setAlert] = useState<string | null>(null);
@@ -21,7 +20,8 @@ export default function Play() {
     const endOfGame = gameState? gameState.gameStatus.endOfGame: false;
 
     async function getNewGame(){
-        const result = await createGame(["Gerrit", "Daniel", "Wesley", "Hanneke"]);
+        const result = await createGame(gameState? gameState.players.map(p => p.name): 
+            ["Gerrit", "Daniel", "Wesley", "Hanneke"]);
         updateState(result);
     }
 
@@ -39,6 +39,7 @@ export default function Play() {
         if (isTichuGameState(result)) {
             setGameState(result);
             setAlertOrMessage(result);
+            
             // Comment the next 3 lines to disable intermediate screen
             if (!(result.gameStatus.alert)){
                 setIsChangeOver(true);
