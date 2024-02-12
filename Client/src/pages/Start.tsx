@@ -6,10 +6,10 @@ import { isTichuGameState } from '../types';
 import { useTichuContext } from '../context/TichuGameContext';
 
 export default function Start() {
-    const [player1, setPlayer1] = useState("")
-    const [player2, setPlayer2] = useState("")
-    const [player3, setPlayer3] = useState("")
-    const [player4, setPlayer4] = useState("")  
+    const [player1, setPlayer1] = useState("Gerrit")
+    const [player2, setPlayer2] = useState("Daniel")
+    const [player3, setPlayer3] = useState("Wesley")
+    const [player4, setPlayer4] = useState("Hanneke")  
     const { setGameState } = useTichuContext()
 
     async function onSubmit() {
