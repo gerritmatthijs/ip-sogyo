@@ -12,8 +12,8 @@ module Action =
             | "pass" -> Pass
             | cardstring -> 
                 match cardstring |> CardSet.StringToCardSet with 
-                | None -> Invalid
-                | Some(set) -> Set(set)
+                | NonExistant -> Invalid
+                | x -> Set(x)
 
     let GetAlertTextOrOK(lastSet: Option<CardSet>)(action: Action): string = 
         match lastSet, action with
@@ -22,5 +22,5 @@ module Action =
             | None, _ -> "OK"
             | _, Pass -> "OK"
             | Some(lastSet), Set(newSet) -> 
-                if not (newSet |> CardSet.IsSameTypeAs(lastSet)) then $"You can only play sets of {lastSet.number} cards of the same height in this trick." else
+                if not (newSet |> CardSet.IsSameTypeAs(lastSet)) then $"You can only play sets of the same type as the leading set." else
                 if newSet |> CardSet.IsHigherThen(lastSet) then "OK" else "Your card set has to be higher than the last played card set."

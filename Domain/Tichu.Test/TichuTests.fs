@@ -293,7 +293,7 @@ let ``Get alert upon playing the wrong type of set`` () =
     let tichu = SetUpGame()
     let gerritPlayed = tichu.DoTurn("444")
     let danielTriedPlaying = gerritPlayed.DoTurn("5")
-    Assert.Equal("You can only play sets of 3 cards of the same height in this trick.", danielTriedPlaying.GetAlert())
+    Assert.Equal("You can only play sets of the same type as the leading set.", danielTriedPlaying.GetAlert())
 
 [<Fact>]
 let ``Playing invalid set is not allowed`` () =
