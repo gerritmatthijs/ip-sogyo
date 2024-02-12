@@ -8,21 +8,21 @@ let SetUpGame () =
     let playerTwo = {name = "Daniel"; hand = "5556666777788" |> Hand.StringToCardList}
     let playerThree = {name = "Wesley"; hand = "889999TTTTJJJ" |> Hand.StringToCardList}
     let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
-    new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichu
+    new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichuFacade
 
 let SetUpGameEmptyHand() = 
     let playerOne = {name = "Gerrit"; hand = "2222333344445" |> Hand.StringToCardList}
     let playerTwo = {name = "Daniel"; hand = "" |> Hand.StringToCardList}
     let playerThree = {name = "Wesley"; hand = "889999TTTTJJJ" |> Hand.StringToCardList}
     let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
-    new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichu
+    new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichuFacade
 
 let SetUpGameAlmostEmptyHand() = 
     let playerOne = {name = "Gerrit"; hand = "4" |> Hand.StringToCardList}
     let playerTwo = {name = "Daniel"; hand = "5556666777788" |> Hand.StringToCardList}
     let playerThree = {name = "Wesley"; hand = "889999TTTTJJJ" |> Hand.StringToCardList}
     let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
-    new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichu
+    new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichuFacade
 
 [<Fact>]
 let ``Get player name`` () = 
@@ -142,7 +142,7 @@ let ``Two consecutive players with empty hands are both skipped`` () =
     let playerTwo = {name = "Daniel"; hand = "" |> Hand.StringToCardList}
     let playerThree = {name = "Wesley"; hand = "" |> Hand.StringToCardList}
     let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
-    let tichu = new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichu
+    let tichu = new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichuFacade
 
     let gerritPlayed = tichu.DoTurn("4")
     Assert.Equal(3, gerritPlayed.GetTurn())
@@ -176,7 +176,7 @@ let ``Check situation: a player is out and the next player wins a trick with the
     let playerTwo = {name = "Daniel"; hand = "" |> Hand.StringToCardList}
     let playerThree = {name = "Wesley"; hand = "T" |> Hand.StringToCardList}
     let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
-    let tichu = new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichu
+    let tichu = new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichuFacade
 
     let gerritPlayed = tichu.DoTurn("4")
     let wesleyPlayed = gerritPlayed.DoTurn("T")
@@ -192,7 +192,7 @@ let ``Check situation: a player is out and the previous player wins a trick with
     let playerTwo = {name = "Daniel"; hand = "6" |> Hand.StringToCardList}
     let playerThree = {name = "Wesley"; hand = "" |> Hand.StringToCardList}
     let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
-    let tichu = new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichu
+    let tichu = new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichuFacade
 
     let gerritPlayed = tichu.DoTurn("4")
     let danielPlayed = gerritPlayed.DoTurn("6")
@@ -312,7 +312,7 @@ let ``Game ends when 3 players play all their cards`` () =
     let playerTwo = {name = "Daniel"; hand = "" |> Hand.StringToCardList}
     let playerThree = {name = "Wesley"; hand = "" |> Hand.StringToCardList}
     let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Hand.StringToCardList}
-    let tichu = new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichu
+    let tichu = new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichuFacade
     let gerritFinished = tichu.DoTurn("5")
     Assert.False(tichu.IsEndOfGame())
     Assert.True(gerritFinished.IsEndOfGame())
