@@ -304,7 +304,7 @@ let ``Playing invalid set is not allowed`` () =
 let ``Get alert upon playing invalid set`` () =
     let tichu = SetUpGame()
     let playInvalidSet = tichu.DoTurn("56")
-    Assert.Equal("Invalid set type: you can only play multiples of the same card height", playInvalidSet.GetAlert())
+    Assert.Equal("Invalid card set.", playInvalidSet.GetAlert())
 
 [<Fact>]
 let ``Game ends when 3 players play all their cards`` () = 

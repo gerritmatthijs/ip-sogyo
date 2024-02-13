@@ -1,6 +1,5 @@
 namespace Tichu
 
-// [<CustomComparison>]
 type Card = 
     {value: char}
     member this.IntValue () = 
@@ -13,4 +12,7 @@ type Card =
         | x -> int x - int '0'
 
 module Card = 
-    let Card(value: char) = {value = value}
+    let Card(value: char) = 
+        if ['2'; '3'; '4'; '5'; '6'; '7'; '8'; '9'; 'T'; 'J'; 'Q'; 'K'; 'A'] |> List.contains(value) 
+            then {value = value}
+        else failwith "Invalid card type"

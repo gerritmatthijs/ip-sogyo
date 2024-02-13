@@ -11,12 +11,12 @@ type ITichuFacade =
 
     abstract member GetTurn: unit -> int
 
-    abstract member CheckAllowed: string -> bool
-
-    abstract member DoTurn: string -> ITichuFacade
-
     abstract member GetMessage: unit -> string
 
     abstract member GetAlert: unit -> string
     
     abstract member IsEndOfGame: unit -> bool
+    
+    abstract member CheckAllowed: string -> bool
+
+    abstract member DoTurn: string -> ITichuFacade

@@ -7,35 +7,21 @@ type CardSet =
     | NonExistant
 
 module CardSet = 
-    let CardSetToString(set: CardSet): string = 
-        match set with
-        | Multiple(card, number) -> seq { for i in 1..number -> card.value} |> String.Concat
-        | FullHouse(triple, double) -> 
-            if triple.IntValue() > double.IntValue() 
-                then seq {double.value; double.value; triple.value; triple.value; triple.value} |> String.Concat
-            else seq {triple.value; triple.value; triple.value; double.value; double.value} |> String.Concat
-        | NonExistant -> failwith "Cannot convert invalid CardSet to string."
+    let _getCounts(cards: Card list): list<int> = 
+        cards |> List.countBy(fun x -> x) |> List.map(fun (x, y) -> y) |> List.sort
 
-    let _getCounts(str: string): list<int> = 
-        str |> Seq.countBy(fun x -> x) |> Seq.map(fun (x, y) -> y) |> Seq.sort |> Seq.toList
+    let _IsMultiple(cards: Card list): bool = 
+        _getCounts(cards) |> List.length = 1
 
-    let _IsMultiple(setstring: string): bool = 
-        _getCounts(setstring) |> List.length = 1
+    let _IsFullHouse(cards: Card list): bool = 
+        _getCounts(cards).Equals([2; 3]) 
 
-    let _IsFullHouse(setstring: string): bool = 
-        _getCounts(setstring).Equals([2; 3]) 
-
-    let StringToCardSet(setstring: string): CardSet = 
-        if (setstring |> _IsMultiple) then Multiple(Card.Card(setstring[0]), setstring.Length)
-        else if (setstring |> _IsFullHouse) then 
-            let double = if setstring[0] = setstring[2] then Card.Card(setstring[4]) else Card.Card(setstring[0])
-            FullHouse(Card.Card(setstring[2]), double)
+    let ToCardSet(cards: Card list): CardSet = 
+        if (cards |> _IsMultiple) then Multiple(cards[0], cards.Length)
+        else if (cards |> _IsFullHouse) then 
+            let double = if cards[0].Equals cards[2] then cards[4] else cards[0]
+            FullHouse(cards[2], double)
         else NonExistant
-
-    let CardSetToCardList(set: CardSet): Card list = 
-        match set with
-        | Multiple (card, number) -> [for i in 1..number -> card]
-        | NonExistant -> failwith "Cannot convert invalid cardset to card list."
 
     let IsSameTypeAs(setOne: CardSet)(setTwo: CardSet): bool = 
         match setOne, setTwo with

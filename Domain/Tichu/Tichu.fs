@@ -1,7 +1,7 @@
 namespace Tichu
 
 type TichuGame = 
-    {players: Player list; lastPlay: Option<CardSet * Player>; turn: int; status: StatusText}
+    {players: Player list; lastPlay: Option<Card list * Player>; turn: int; status: StatusText}
 
     member x.GetPlayer(name: string): Player = 
         x.players |> List.find(fun player -> player.name.Equals name)
@@ -26,7 +26,7 @@ type TichuGame =
     
 module TichuGame = 
 
-    let PlaySet(set: CardSet)(tichu: TichuGame): TichuGame = 
+    let PlaySet(set: Card list)(tichu: TichuGame): TichuGame = 
         let updatedPlayer = tichu.GetActivePlayer() |> Player.PlayCards(set)
         let updatedPlayerList = tichu.players |> List.mapi(fun i p -> if i = tichu.turn then updatedPlayer else p)
         let status: StatusText = if updatedPlayer.hand.IsEmpty then Message(tichu.GetActivePlayer().name + " has played all their cards!") else NoText
@@ -41,11 +41,10 @@ module TichuGame =
             {tichu with turn = tichu.NextTurn(); status = NoText}
 
     let DoTurn(action: Action)(tichu: TichuGame): TichuGame = 
-        let alertText = action |> Action.GetAlertTextOrOK(tichu.lastPlay |> Option.map(fun (card, _) -> card))
+        let alertText = action |> Action.GetAlertTextOrOK(tichu.lastPlay |> Option.map(fun (cards, _) -> cards))
         if not (alertText.Equals "OK" )
             then {tichu with status = Alert(alertText)} else
 
         match action with 
         | Pass -> tichu |> Pass
         | Set(set) -> tichu |> PlaySet(set)
-        | Invalid -> failwith "Invalid set type should have been recognised earlier"

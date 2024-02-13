@@ -9,19 +9,18 @@ let ``Convert string to Action`` () =
     let unwrappedSet = 
         match playAction with
         | Pass -> ""
-        | Set(set) -> set |> CardSet.CardSetToString
-        | Invalid -> ""
+        | Set(set) -> set |> Hand.CardListToString
     Assert.Equal("333", unwrappedSet)
 
 [<Fact>]
 let ``Play higher set of same type is OK`` () = 
-    let lastPlay = Some("333" |> CardSet.StringToCardSet)
+    let lastPlay = Some("333" |> Hand.StringToCardList)
     let newAction = "444" |> Action.ToAction
     Assert.Equal("OK", newAction |> Action.GetAlertTextOrOK(lastPlay))
 
 [<Fact>]
 let ``Play lower or equal set of same type returns alert text`` () = 
-    let lastPlay = Some("44" |> CardSet.StringToCardSet)
+    let lastPlay = Some("44" |> Hand.StringToCardList)
     let lowerAction = "33" |> Action.ToAction
     let equalAction = "44" |> Action.ToAction
     Assert.Equal("Your card set has to be higher than the last played card set.", lowerAction |> Action.GetAlertTextOrOK(lastPlay))
@@ -29,7 +28,7 @@ let ``Play lower or equal set of same type returns alert text`` () =
 
 [<Fact>]
 let ``Play wrong type of set returns alert text`` () = 
-    let lastPlay = Some("44" |> CardSet.StringToCardSet)
+    let lastPlay = Some("44" |> Hand.StringToCardList)
     let action = "666" |> Action.ToAction
     Assert.Equal("You can only play sets of the same type as the leading set.", action |> Action.GetAlertTextOrOK(lastPlay))
 
@@ -43,5 +42,4 @@ let ``Pass when starting a trick returns alert text`` () =
 let ``Play invalid set returns alert text`` () =
     let lastPlay = None
     let action = "23" |> Action.ToAction
-    Assert.Equal("Invalid set type: you can only play multiples of the same card height", 
-        action |> Action.GetAlertTextOrOK(lastPlay))
+    Assert.Equal("Invalid card set.", action |> Action.GetAlertTextOrOK(lastPlay))
