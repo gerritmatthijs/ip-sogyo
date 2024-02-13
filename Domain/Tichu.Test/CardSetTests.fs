@@ -46,11 +46,18 @@ let ``CardSets of different types are told apart`` () =
     Assert.False(fullHouse |> CardSet.IsSameTypeAs(twoTriple))
 
 [<Fact>]
-let ``Higher CardSet is recognised as higher, but not conversely`` () = 
+let ``Higher Multiple is recognised as higher, but not conversely`` () = 
     let kingTriple = "KKK" |> StringToCardSet
     let tenTriple = "TTT" |> StringToCardSet
     Assert.True(kingTriple |> CardSet.IsHigherThen(tenTriple))
     Assert.False(tenTriple |> CardSet.IsHigherThen(kingTriple))
+
+[<Fact>]
+let ``Higher Full House is recognised`` () =
+    let fullHouseHigh = "22KKK" |> StringToCardSet
+    let fullHouseLow = "666AA" |> StringToCardSet
+    Assert.True(fullHouseHigh |> CardSet.IsHigherThen(fullHouseLow))
+    Assert.False(fullHouseLow |> CardSet.IsHigherThen(fullHouseHigh))
 
 [<Fact>]
 let ``Equal height CardSets are not recognised as higher`` () =

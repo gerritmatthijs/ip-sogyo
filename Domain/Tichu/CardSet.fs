@@ -35,4 +35,5 @@ module CardSet =
         
         match setOne, setTwo with
         | Multiple(cardOne, _), Multiple(cardTwo, _) -> cardTwo.IntValue() > cardOne.IntValue()
+        | FullHouse(cardOne, _), FullHouse(cardTwo, _) -> cardTwo.IntValue() > cardOne.IntValue()
         | _, _ -> failwith "different types of card sets are incomparable"
