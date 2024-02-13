@@ -1,5 +1,4 @@
 import { useTichuContext } from "../context/TichuGameContext";
-import { getGame } from "../services/api";
 import Play from "./Play";
 import Start from "./Start";
 
