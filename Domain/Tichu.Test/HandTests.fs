@@ -24,3 +24,9 @@ let ``Removing a card that is not in the hand gives error`` () =
     let handstring = "223556779TKA"
     let set = "234567"
     Assert.Throws<System.Exception>(fun () -> RemoveCardsStringVersion(handstring, set) :> obj)
+
+[<Fact>]
+let ``Remove full house from hand`` () =
+    let handstring = "333477889KK"
+    let newHand = RemoveCardsStringVersion(handstring, "333KK")
+    Assert.Equal("477889", newHand)

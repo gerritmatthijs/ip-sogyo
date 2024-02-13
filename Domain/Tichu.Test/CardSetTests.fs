@@ -54,8 +54,8 @@ let ``Higher Multiple is recognised as higher, but not conversely`` () =
 
 [<Fact>]
 let ``Higher Full House is recognised`` () =
-    let fullHouseHigh = "22KKK" |> StringToCardSet
-    let fullHouseLow = "666AA" |> StringToCardSet
+    let fullHouseHigh = "44KKK" |> StringToCardSet
+    let fullHouseLow = "TTTAA" |> StringToCardSet
     Assert.True(fullHouseHigh |> CardSet.IsHigherThen(fullHouseLow))
     Assert.False(fullHouseLow |> CardSet.IsHigherThen(fullHouseHigh))
 

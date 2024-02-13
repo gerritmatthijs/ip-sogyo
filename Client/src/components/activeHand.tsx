@@ -21,6 +21,7 @@ export default function ActiveHand(props: Props) {
     const activePlayer = gameState? gameState.players[gameState.turn].name : "";
 
     async function checkAllowedCardSet(newArray: Array<number>) {
+        console.log(newArray.map((i) => hand[i]).join(""))
         const result = await checkAllowed(newArray.map((i) => hand[i]).join(""));
         if (typeof result == 'boolean'){
             setAllowed(result);
@@ -35,7 +36,7 @@ export default function ActiveHand(props: Props) {
         let newArray: Array<number>;
         if (index == -1){
             newArray = cardsClicked.concat(cardnumber);
-            newArray.sort();
+            newArray.sort((n,m) => n-m); // Sorting number arrays with default sort does not work in javascript
         }
         else {
             newArray = cardsClicked.slice(0, index).concat(cardsClicked.slice(index + 1));
