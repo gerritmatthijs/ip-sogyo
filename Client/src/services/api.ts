@@ -22,7 +22,7 @@ export async function playerAction(action: string){
     }
 }
 
-export async function checkAllowed(action: string){
+export async function parseCardSelection(action: string){
     const response = await fetch("tichu/check", {
         method: "POST",
         headers: {
@@ -35,7 +35,7 @@ export async function checkAllowed(action: string){
     });
     if (response.ok){
         const result = await response.json();
-        return result as boolean;
+        return result as TichuGameState;
     } else {
         return {
             statusCode: response.status,

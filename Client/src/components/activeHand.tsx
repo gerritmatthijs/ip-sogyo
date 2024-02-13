@@ -1,8 +1,8 @@
-// import { Card } from './card.tsx'
 import { useState } from 'react';
 import { useTichuContext } from '../context/TichuGameContext.tsx';
 import { getPicture } from './card.tsx';
-import { checkAllowed } from '../services/api.ts';
+import { parseCardSelection } from '../services/api.ts';
+import { isTichuGameState } from '../types.ts';
 
 type Props = {
     onPlay: (cardset: string) => void;
@@ -15,16 +15,16 @@ export default function ActiveHand(props: Props) {
     const { gameState } = useTichuContext();
     const hand = gameState? gameState.players[gameState.turn].hand : "";
     const [cardsClicked, setCardsClicked] = useState<Array<number>>([]);
-    const [allowed, setAllowed] = useState(false);
+    const [hoverMessage, setHoverMessage] = useState("");
     const lastPlayed = gameState? gameState.lastPlayed : "";
     const endOfGame = gameState? gameState.gameStatus.endOfGame: false;
     const activePlayer = gameState? gameState.players[gameState.turn].name : "";
 
     async function checkAllowedCardSet(newArray: Array<number>) {
         console.log(newArray.map((i) => hand[i]).join(""))
-        const result = await checkAllowed(newArray.map((i) => hand[i]).join(""));
-        if (typeof result == 'boolean'){
-            setAllowed(result);
+        const result = await parseCardSelection(newArray.map((i) => hand[i]).join(""));
+        if (isTichuGameState(result)){
+            setHoverMessage(result.gameStatus.alert);
         }
         else {
             onAlert(result);
@@ -67,8 +67,9 @@ export default function ActiveHand(props: Props) {
     <h2>{activePlayer}'s hand</h2>
     {createCards(hand)}
     <br/>
-    <button className="play-button" onClick={onPlayButtonClicked} disabled={!allowed}>Play Selected Cards</button>
+    <button className="play-button" onClick={onPlayButtonClicked} disabled={hoverMessage.length>0}>Play Selected Cards</button>
     {!endOfGame && <button className="pass-button" onClick={onPass} disabled={!lastPlayed}>Pass</button>}
+    <div className="hovertext">{hoverMessage}</div>
     </div>
 }
 
