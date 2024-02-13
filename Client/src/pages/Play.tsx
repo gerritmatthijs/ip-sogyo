@@ -19,6 +19,10 @@ export default function Play() {
     const [IsChangeOver, setIsChangeOver] = useState(false);
     const endOfGame = gameState? gameState.gameStatus.endOfGame: false;
 
+    function backToStart(){
+        setGameState(undefined);
+    }
+
     async function getNewGame(){
         const result = await createGame(gameState? gameState.players.map(p => p.name): 
             ["Gerrit", "Daniel", "Wesley", "Hanneke"]);
@@ -84,6 +88,8 @@ export default function Play() {
     return (
         <div className='environment' >
             <h1>Tichu</h1>
+            <button className='newgame-button' onClick={getNewGame}>Start New Game</button>
+            <button className='backtostart-button' onClick={backToStart}>Back To Start</button>
             <div className="grid-container">
                 <Player index={0}/>
                 <Player index={1}/>
@@ -93,7 +99,6 @@ export default function Play() {
                 <div style={{gridColumn: '2 / span 1', gridRow: '2 / span 1'}}>{createLastPlayed(lastPlayed)}</div>} 
                 {endOfGame && <div style = {{gridColumn: '2 / span 1', gridRow: '2 / span 1'}}>
                     <h2> Game finished! </h2>
-                    <button className='newGameButton' onClick={getNewGame}>Start New Game</button>
                 </div>}
                 <div className="line"></div>
             </div>

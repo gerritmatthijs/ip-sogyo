@@ -3,7 +3,7 @@ import { TichuGameState } from "../types";
 
 type ContextType = {
     gameState: TichuGameState | undefined;
-    setGameState: (gameState: TichuGameState) => void;
+    setGameState: (gameState: TichuGameState | undefined) => void;
 };
 
 const TichuGameContext = createContext<ContextType>({

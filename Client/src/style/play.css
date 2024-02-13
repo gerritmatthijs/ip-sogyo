@@ -45,6 +45,11 @@ h2 {
   color: #888;
 }
 
+.newgame-button {
+  margin-bottom: 15px;
+  margin-right: 30px;
+}
+
 .pass-button {
   margin-left: 30px;
 }
