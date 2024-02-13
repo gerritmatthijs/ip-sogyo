@@ -4,28 +4,55 @@ open Xunit
 open Tichu
 
 [<Fact>]
-let ``Transform CardSet to string`` () = 
-    let jackTriple = Multiple({value = 'J'}, 3)
-    let setstring = jackTriple |> CardSet.CardSetToString
-    Assert.Equal("JJJ", setstring)
+let ``Transform Multiple to string`` () = 
+    let jackTriple = Multiple(Card.Card('J'), 3)|> CardSet.CardSetToString
+    Assert.Equal("JJJ", jackTriple)
 
 [<Fact>]
-let ``Transform string to CardSet`` () = 
-    let setstring = "TTTT"
-    let TenQuadruple = setstring |> CardSet.StringToCardSet
+let ``Transform Full House to string`` () = 
+    let fullHouse1 = FullHouse(Card.Card('2'), Card.Card('J')) |> CardSet.CardSetToString
+    let fullHouse2 = FullHouse(Card.Card('T'), Card.Card('3')) |> CardSet.CardSetToString
+    Assert.Equal("222JJ", fullHouse1)
+    Assert.Equal("33TTT", fullHouse2)
+
+[<Fact>]
+let ``Transform string to Multiple CardSet`` () = 
+    let TenQuadruple = "TTTT" |> CardSet.StringToCardSet
     Assert.Equal("TTTT", TenQuadruple |> CardSet.CardSetToString)
 
 [<Fact>]
-let ``CardSets of the same type are recognised`` () = 
+let ``Transform string to Full House CardSet`` () = 
+    let fullHouseOne = "333QQ" |> CardSet.StringToCardSet
+    let fullHouseTwo = "66KKK" |> CardSet.StringToCardSet
+    Assert.Equal("333QQ", fullHouseOne |> CardSet.CardSetToString)
+    Assert.Equal("66KKK", fullHouseTwo |> CardSet.CardSetToString)
+
+[<Fact>]
+let ``Transform string to NonExistant set`` () = 
+    let invalidCardSetOne = "56" |> CardSet.StringToCardSet
+    let invalidCardSetTwo = "22225" |> CardSet.StringToCardSet
+    Assert.Equal(NonExistant, invalidCardSetOne)
+    Assert.Equal(NonExistant, invalidCardSetTwo)
+
+[<Fact>]
+let ``Multiples are recognised as the same type`` () = 
     let jackTriple = "JJJ" |> CardSet.StringToCardSet
     let twoTriple = "222" |> CardSet.StringToCardSet
     Assert.True(jackTriple |> CardSet.IsSameTypeAs(twoTriple))
 
 [<Fact>]
+let ``Full Houses are recognised as the same type`` () =
+    let fullHouseOne = "22255" |> CardSet.StringToCardSet
+    let fullHouseTwo = "88TTT" |> CardSet.StringToCardSet
+    Assert.True(fullHouseTwo |> CardSet.IsSameTypeAs(fullHouseOne))
+
+[<Fact>]
 let ``CardSets of different types are told apart`` () = 
     let jackDouble = "JJ" |> CardSet.StringToCardSet
     let twoTriple = "222" |> CardSet.StringToCardSet
+    let fullHouse = "222JJ" |> CardSet.StringToCardSet
     Assert.False(jackDouble |> CardSet.IsSameTypeAs(twoTriple))
+    Assert.False(fullHouse |> CardSet.IsSameTypeAs(twoTriple))
 
 [<Fact>]
 let ``Higher CardSet is recognised as higher, but not conversely`` () = 
@@ -52,16 +79,6 @@ let ``Convert CardSet to Card list`` () =
     let sixPairList = sixPair |> CardSet.CardSetToCardList
     Assert.Equal(2, sixPairList.Length)
     Assert.Equal('6', sixPairList[0].value)
-
-[<Fact>]
-let ``Detect valid set`` () = 
-    let setstring = "66"
-    Assert.True(setstring |> CardSet.IsValidSet)
-
-[<Fact>]
-let ``Detect invalid set`` () = 
-    let setstring = "56"
-    Assert.False(setstring |> CardSet.IsValidSet)
 
 [<Fact>]
 let ``Return NonExistant when trying to convert invalid set`` () = 

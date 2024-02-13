@@ -11,3 +11,6 @@ type Card =
         | 'K' -> 13
         | 'A' -> 14
         | x -> int x - int '0'
+
+module Card = 
+    let Card(value: char) = {value = value}
