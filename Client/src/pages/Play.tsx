@@ -26,6 +26,9 @@ export default function Play() {
     async function getNewGame(){
         const result = await createGame(gameState? gameState.players.map(p => p.name): 
             ["Gerrit", "Daniel", "Wesley", "Hanneke"]);
+        if (isTichuGameState(result)){
+            localStorage.setItem("gameID", result.gameID);
+        } 
         updateState(result);
     }
 
@@ -43,7 +46,7 @@ export default function Play() {
         if (isTichuGameState(result)) {
             setGameState(result);
             setAlertOrMessage(result);
-            
+
             // Comment the next 3 lines to disable intermediate screen
             if (!(result.gameStatus.alert)){
                 setIsChangeOver(true);
