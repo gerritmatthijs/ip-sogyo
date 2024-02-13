@@ -12,8 +12,7 @@ module Action =
             | setstring -> Set(setstring |> Card.StringToCardList)
 
     let _CheckSameTypeAndHigher(lastSet: CardSet, newSet: CardSet) = 
-        if newSet.Equals(Invalid) then "Invalid card set." 
-        else if not (newSet |> CardSet.IsSameTypeAs(lastSet)) then "You can only play sets of the same type as the leading set."
+        if not (newSet |> CardSet.IsSameTypeAs(lastSet)) then "You can only play sets of the same type as the leading set."
         else if not (newSet |> CardSet.IsHigherThen(lastSet)) then "Your card set has to be higher than the last played card set."
         else "OK"
 

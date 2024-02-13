@@ -5,12 +5,11 @@ open Tichu
 
 [<Fact>]
 let ``Convert string to Action`` () = 
-    let playAction = "333" |> Action.ToAction
-    let unwrappedSet = 
-        match playAction with
-        | Pass -> ""
-        | Set(set) -> set |> Card.CardListToString
-    Assert.Equal("333", unwrappedSet)
+    let playAction = "33" |> Action.ToAction
+    let passAction = "pass" |> Action.ToAction
+    let cardList = [Card.Card('3'); Card.Card('3')]
+    Assert.Equal(Set(cardList), playAction)
+    Assert.Equal(Pass, passAction)
 
 [<Fact>]
 let ``Play higher set of same type is OK`` () = 
