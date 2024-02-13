@@ -23,6 +23,7 @@ public class TichuController(ITichuRepository repository, ITichuFactory factory)
 
         ITichuFacade newTichu  = tichu.DoTurn(body["action"]);
         _repository.SaveGame(gameID, newTichu);
+        
         return Ok(new TichuDTO(newTichu, gameID));
     }
 
@@ -42,6 +43,8 @@ public class TichuController(ITichuRepository repository, ITichuFactory factory)
     {
         string gameID = body["gameID"];
         ITichuFacade tichu = _repository.GetGame(gameID);
+        HttpContext.Session.SetString(SessionClientID, gameID);
+        _repository.SaveGame(gameID, tichu);
 
         return Ok(new TichuDTO(tichu, gameID));
     }
@@ -54,6 +57,7 @@ public class TichuController(ITichuRepository repository, ITichuFactory factory)
         string gameID = HttpContext.Session.GetString(SessionClientID) ?? Guid.NewGuid().ToString();
         HttpContext.Session.SetString(SessionClientID, gameID);
         _repository.SaveGame(gameID, tichu);
+
         return Ok(new TichuDTO(tichu, gameID));
     }
 }
