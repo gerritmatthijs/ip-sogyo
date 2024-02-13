@@ -4,7 +4,7 @@ open Xunit
 open Tichu
 
 let StringToCardSet(str: string) = 
-    str |> Hand.StringToCardList |> CardSet.ToCardSet
+    str |> Card.StringToCardList |> CardSet.ToCardSet
 
 [<Fact>]
 let ``Create Multiple CardSet`` () = 
@@ -22,8 +22,8 @@ let `` Create Full House CardSet`` () =
 let ``Invalid sets yield a NonExistant type set`` () = 
     let invalidCardSetOne = "56" |> StringToCardSet
     let invalidCardSetTwo = "22225" |> StringToCardSet
-    Assert.Equal(NonExistant, invalidCardSetOne)
-    Assert.Equal(NonExistant, invalidCardSetTwo)
+    Assert.Equal(Invalid, invalidCardSetOne)
+    Assert.Equal(Invalid, invalidCardSetTwo)
 
 [<Fact>]
 let ``Multiples are recognised as the same type`` () = 

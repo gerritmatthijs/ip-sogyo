@@ -4,7 +4,7 @@ open System
 type CardSet = 
     | Multiple of card: Card * number: int
     | FullHouse of triple: Card * double: Card
-    | NonExistant
+    | Invalid
 
 module CardSet = 
     let _getCounts(cards: Card list): list<int> = 
@@ -21,7 +21,7 @@ module CardSet =
         else if (cards |> _IsFullHouse) then 
             let double = if cards[0].Equals cards[2] then cards[4] else cards[0]
             FullHouse(cards[2], double)
-        else NonExistant
+        else Invalid
 
     let IsSameTypeAs(setOne: CardSet)(setTwo: CardSet): bool = 
         match setOne, setTwo with

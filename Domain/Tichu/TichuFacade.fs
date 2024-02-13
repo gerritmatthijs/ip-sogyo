@@ -10,12 +10,12 @@ type TichuFacade(tichu: TichuGame) =
             tichu.players[playerNumber].name
 
         member _.GetPlayerHand(name: string): string = 
-            Hand.CardListToString(tichu.GetPlayer(name).hand)
+            Card.CardListToString(tichu.GetPlayer(name).hand)
 
         member _.GetLastPlayed(): string = 
             match tichu.lastPlay with 
             | None -> ""
-            | Some(set, _) -> set |> Hand.CardListToString
+            | Some(set, _) -> set |> Card.CardListToString
 
         member _.GetCurrentLeader(): string = 
             match tichu.lastPlay with

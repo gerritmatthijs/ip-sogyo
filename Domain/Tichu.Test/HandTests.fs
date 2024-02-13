@@ -4,14 +4,7 @@ open Xunit
 open Tichu
 
 let RemoveCardsStringVersion(hand: string, set: string): string = 
-    hand |> Hand.StringToCardList |> Hand.RemoveCards(Hand.StringToCardList set) |> Hand.CardListToString
-
-[<Fact>]
-let ``Convert string to card list and back`` () = 
-    let handstring = "24T"
-    let convertedHand : Card list = Hand.StringToCardList(handstring)
-    let doubleConvertedHand = Hand.CardListToString(convertedHand)
-    Assert.Equal(handstring, doubleConvertedHand)
+    hand |> Card.StringToCardList |> Hand.RemoveCards(Card.StringToCardList set) |> Card.CardListToString
 
 [<Fact>]
 let ``Remove a single card from a hand`` () = 

@@ -9,10 +9,10 @@ module Action =
     let ToAction(actionstring: string): Action = 
         match actionstring with 
             | "pass" -> Pass
-            | setstring -> Set(setstring |> Hand.StringToCardList)
+            | setstring -> Set(setstring |> Card.StringToCardList)
 
     let _CheckSameTypeAndHigher(lastSet: CardSet, newSet: CardSet) = 
-        if newSet.Equals(NonExistant) then "Invalid card set." 
+        if newSet.Equals(Invalid) then "Invalid card set." 
         else if not (newSet |> CardSet.IsSameTypeAs(lastSet)) then "You can only play sets of the same type as the leading set."
         else if not (newSet |> CardSet.IsHigherThen(lastSet)) then "Your card set has to be higher than the last played card set."
         else "OK"
@@ -20,7 +20,7 @@ module Action =
     let _CheckInvalidSetPlayed(action: Action) = 
         match action with 
             | Pass -> false
-            | Set(set) -> (set |> CardSet.ToCardSet).Equals(NonExistant)
+            | Set(set) -> (set |> CardSet.ToCardSet).Equals(Invalid)
 
     let GetAlertTextOrOK(lastSet: Option<Card list>)(action: Action): string = 
         if _CheckInvalidSetPlayed(action) then "Invalid card set." 

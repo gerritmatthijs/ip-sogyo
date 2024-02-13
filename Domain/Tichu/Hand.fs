@@ -1,12 +1,6 @@
 namespace Tichu
 module Hand = 
 
-    let StringToCardList(handstring: string): Card list = 
-        handstring |> Seq.map(fun c -> Card.Card(c)) |> Seq.toList
-
-    let CardListToString(hand: Card list): string = 
-        hand |> List.map(fun card -> card.value) |> System.String.Concat
-
     let rec RemoveCards(set: Card list)(hand: Card list): Card list = 
         match hand, set with
         | hand, [] -> hand
