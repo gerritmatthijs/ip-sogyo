@@ -56,3 +56,12 @@ h2 {
   border-bottom: 1px solid black;
   width: 100%;
 }
+
+.hovertext {
+  visibility: hidden;
+}
+
+.play-button:hover ~ .hovertext {
+  visibility: visible;
+  color: darkred;
+}

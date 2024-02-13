@@ -2,25 +2,31 @@ namespace Tichu
 
 type Action = 
     | Pass
-    | Invalid
-    | Set of cards: CardSet
+    | Set of cards: Card list
 
 module Action = 
 
     let ToAction(actionstring: string): Action = 
         match actionstring with 
             | "pass" -> Pass
-            | cardstring -> 
-                match cardstring |> CardSet.StringToCardSet with 
-                | None -> Invalid
-                | Some(set) -> Set(set)
+            | setstring -> Set(setstring |> Card.StringToCardList)
 
-    let GetAlertTextOrOK(lastSet: Option<CardSet>)(action: Action): string = 
+    let _CheckSameTypeAndHigher(lastSet: CardSet, newSet: CardSet) = 
+        if not (newSet |> CardSet.IsSameTypeAs(lastSet)) then "You can only play sets of the same type as the leading set."
+        else if not (newSet |> CardSet.IsHigherThen(lastSet)) then "Your card set has to be higher than the last played card set."
+        else "OK"
+
+    let _CheckInvalidSetPlayed(action: Action) = 
+        match action with 
+            | Pass -> false
+            | Set(set) -> (set |> CardSet.ToCardSet).Equals(Invalid)
+
+    let GetAlertTextOrOK(lastSet: Option<Card list>)(action: Action): string = 
+        if _CheckInvalidSetPlayed(action) then "Invalid card set." 
+        else 
         match lastSet, action with
-            | _, Invalid -> "Invalid set type: you can only play multiples of the same card height"
+            | Some(lastSet), Set(newSet) -> _CheckSameTypeAndHigher(lastSet |> CardSet.ToCardSet, newSet |> CardSet.ToCardSet)
             | None, Pass -> "You cannot pass when opening a trick."
             | None, _ -> "OK"
             | _, Pass -> "OK"
-            | Some(lastSet), Set(newSet) -> 
-                if not (newSet |> CardSet.IsSameTypeAs(lastSet)) then $"You can only play sets of {lastSet.number} cards of the same height in this trick." else
-                if newSet |> CardSet.IsHigherThen(lastSet) then "OK" else "Your card set has to be higher than the last played card set."
+                

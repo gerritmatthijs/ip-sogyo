@@ -28,12 +28,12 @@ public class TichuController(ITichuRepository repository, ITichuFactory factory)
 
     [HttpPost("check")]
     [Consumes("application/json")]
-    public IActionResult CheckAllowed(Dictionary<string, string> body)
+    public IActionResult ParseCardSelection(Dictionary<string, string> body)
     {
         string gameID = HttpContext.Session.GetString(SessionClientID) ?? throw new Exception("Game ID not found in session.");
         ITichuFacade tichu = _repository.GetGame(gameID);
 
-        return Ok(tichu.CheckAllowed(body["action"]));
+        return Ok(new TichuDTO(tichu.DoTurn(body["action"])));
     }
 
     [HttpPost("newgame")]
