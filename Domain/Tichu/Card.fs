@@ -18,7 +18,7 @@ module Card =
         else failwith "Invalid card type"
 
     let StringToCardList(handstring: string): Card list = 
-        handstring |> Seq.map(fun c -> Card(c)) |> Seq.toList
+        handstring |> Seq.map(fun c -> Card(c)) |> Seq.toList |> List.sortBy(fun card -> card.IntValue())
 
     let CardListToString(hand: Card list): string = 
         hand |> List.map(fun card -> card.value) |> System.String.Concat
