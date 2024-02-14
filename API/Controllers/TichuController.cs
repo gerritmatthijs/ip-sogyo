@@ -51,7 +51,6 @@ public class TichuController(ITichuRepository repository, ITichuFactory factory)
         string gameID = body["gameID"];
         ITichuFacade tichu = _repository.GetGame(gameID);
         HttpContext.Session.SetString(SessionClientID, gameID);
-        _repository.SaveGame(gameID, tichu);
 
         return Ok(new TichuDTO(tichu, gameID));
     }
@@ -60,7 +59,7 @@ public class TichuController(ITichuRepository repository, ITichuFactory factory)
     [Consumes("application/json")]
     public IActionResult CreateGame(Dictionary<string, string> body)
     {
-        ITichuFacade tichu = _factory.createNewGame(body["names"].Split(","));
+        ITichuFacade tichu = _factory.CreateNewGame(body["names"].Split(","));
         string gameID = HttpContext.Session.GetString(SessionClientID) ?? Guid.NewGuid().ToString();
         HttpContext.Session.SetString(SessionClientID, gameID);
         _repository.SaveGame(gameID, tichu);
