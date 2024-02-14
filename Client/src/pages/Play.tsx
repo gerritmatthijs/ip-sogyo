@@ -18,6 +18,9 @@ export default function Play() {
     const [message, setMessage] = useState<string | null>(null);
     const [IsChangeOver, setIsChangeOver] = useState(false);
     const endOfGame = gameState? gameState.gameStatus.endOfGame: false;
+    if (endOfGame){
+        localStorage.removeItem("gameID");
+    }
 
     function backToStart(){
         setGameState(undefined);

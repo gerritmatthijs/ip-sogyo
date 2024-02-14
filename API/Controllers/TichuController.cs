@@ -22,8 +22,15 @@ public class TichuController(ITichuRepository repository, ITichuFactory factory)
         ITichuFacade tichu = _repository.GetGame(gameID);
 
         ITichuFacade newTichu  = tichu.DoTurn(body["action"]);
-        _repository.SaveGame(gameID, newTichu);
-        
+        if (newTichu.IsEndOfGame())
+        {
+            _repository.DeleteGame(gameID);
+            HttpContext.Session.Remove(SessionClientID);
+        }
+        else 
+        {
+            _repository.SaveGame(gameID, newTichu);
+        }
         return Ok(new TichuDTO(newTichu, gameID));
     }
 
