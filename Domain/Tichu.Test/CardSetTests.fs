@@ -117,6 +117,13 @@ let ``Higher straight is recognised`` () =
     Assert.False(straightLow |> CardSet.IsHigherThen(straightHigh))
 
 [<Fact>]
+let ``Higher subsequent pairs is recognised`` () =
+    let subsequentPairsLow = "445566" |> StringToCardSet
+    let subsequentPairsHigh = "TTJJQQ" |> StringToCardSet
+    Assert.True(subsequentPairsHigh |> CardSet.IsHigherThen(subsequentPairsLow))
+    Assert.False(subsequentPairsLow |> CardSet.IsHigherThen(subsequentPairsHigh))
+
+[<Fact>]
 let ``Equal height CardSets are not recognised as higher`` () =
     let jackPair = "JJ" |> StringToCardSet
     let anotherJackPair = "JJ" |> StringToCardSet

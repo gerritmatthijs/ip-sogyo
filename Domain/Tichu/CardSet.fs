@@ -53,4 +53,5 @@ module CardSet =
         | Multiple(cardOne, _), Multiple(cardTwo, _) -> cardTwo.IntValue() > cardOne.IntValue()
         | FullHouse(cardOne), FullHouse(cardTwo) -> cardTwo.IntValue() > cardOne.IntValue()
         | Straight(lowestOne, _), Straight(lowestTwo, _) -> lowestTwo.IntValue() > lowestOne.IntValue()
+        | SubsequentPairs(lowestOne, _), SubsequentPairs(lowestTwo, _) -> lowestTwo.IntValue() > lowestOne.IntValue()
         | _, _ -> failwith "different types of card sets are incomparable"
