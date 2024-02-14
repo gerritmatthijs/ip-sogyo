@@ -17,6 +17,4 @@ type ITichuFacade =
     
     abstract member IsEndOfGame: unit -> bool
     
-    abstract member CheckAllowed: string -> bool
-
     abstract member DoTurn: string -> ITichuFacade

@@ -37,13 +37,6 @@ type TichuFacade(tichu: TichuGame) =
         member _.IsEndOfGame(): bool = 
             (tichu.players |> List.filter(Player.isFinished)).Length = 3
 
-        member _.CheckAllowed(actionstring: string): bool = 
-            let action = actionstring |> Action.ToAction
-            let potentialNewTichu = tichu |> TichuGame.DoTurn(action)
-            match potentialNewTichu.status with
-                | Alert(_) -> false
-                | _ -> true
-
         member x.DoTurn(actionstring: string): ITichuFacade = 
             let action = actionstring |> Action.ToAction
             new TichuFacade(tichu |> TichuGame.DoTurn(action))

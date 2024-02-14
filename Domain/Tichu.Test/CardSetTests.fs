@@ -19,11 +19,18 @@ let `` Create Full House CardSet`` () =
     Assert.Equal(FullHouse(Card.Card('K'), Card.Card('6')), fullHouseTwo)
 
 [<Fact>]
+let ``Create straight CardSet`` () = 
+    let straight = "89TJQ" |> StringToCardSet
+    Assert.Equal(Straight(Card.Card('8'), 5), straight)
+
+[<Fact>]
 let ``Invalid sets yield a NonExistant type set`` () = 
-    let invalidCardSetOne = "56" |> StringToCardSet
-    let invalidCardSetTwo = "22225" |> StringToCardSet
-    Assert.Equal(Invalid, invalidCardSetOne)
-    Assert.Equal(Invalid, invalidCardSetTwo)
+    let invalidPair = "56" |> StringToCardSet
+    let invalidFullHouse = "22225" |> StringToCardSet
+    let invalidStraight = "5689T" |> StringToCardSet
+    Assert.Equal(Invalid, invalidPair)
+    Assert.Equal(Invalid, invalidFullHouse)
+    Assert.Equal(Invalid, invalidStraight)
 
 [<Fact>]
 let ``Multiples are recognised as the same type`` () = 
@@ -38,12 +45,24 @@ let ``Full Houses are recognised as the same type`` () =
     Assert.True(fullHouseTwo |> CardSet.IsSameTypeAs(fullHouseOne))
 
 [<Fact>]
+let ``Straights of the same length are recognised as the same type`` () = 
+    let straightOne = "345678" |> StringToCardSet
+    let straightTwo = "56789T" |> StringToCardSet
+    Assert.True(straightOne |> CardSet.IsSameTypeAs(straightTwo))
+
+[<Fact>]
 let ``CardSets of different types are told apart`` () = 
     let jackDouble = "JJ" |> StringToCardSet
     let twoTriple = "222" |> StringToCardSet
     let fullHouse = "222JJ" |> StringToCardSet
     Assert.False(jackDouble |> CardSet.IsSameTypeAs(twoTriple))
     Assert.False(fullHouse |> CardSet.IsSameTypeAs(twoTriple))
+
+[<Fact>]
+let ``Straights of different length are told apart`` () =
+    let straightOne = "34567" |> StringToCardSet
+    let straightTwo = "56789T" |> StringToCardSet
+    Assert.False(straightOne |> CardSet.IsSameTypeAs(straightTwo))
 
 [<Fact>]
 let ``Higher Multiple is recognised as higher, but not conversely`` () = 
@@ -58,6 +77,13 @@ let ``Higher Full House is recognised`` () =
     let fullHouseLow = "TTTAA" |> StringToCardSet
     Assert.True(fullHouseHigh |> CardSet.IsHigherThen(fullHouseLow))
     Assert.False(fullHouseLow |> CardSet.IsHigherThen(fullHouseHigh))
+
+[<Fact>]
+let ``Higher straight is recognised`` () = 
+    let straightLow = "345678" |> StringToCardSet
+    let straightHigh = "56789T" |> StringToCardSet
+    Assert.True(straightHigh |> CardSet.IsHigherThen(straightLow))
+    Assert.False(straightLow |> CardSet.IsHigherThen(straightHigh))
 
 [<Fact>]
 let ``Equal height CardSets are not recognised as higher`` () =
