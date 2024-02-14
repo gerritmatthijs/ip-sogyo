@@ -8,33 +8,33 @@ type CardSet =
     | Invalid
 
 module CardSet = 
-    let _getCounts(cards: Card list): list<int> = 
+    let private getCounts(cards: Card list): list<int> = 
         cards |> List.countBy(fun x -> x) |> List.map(fun (x, y) -> y) |> List.sort
 
-    let _IsMultiple(cards: Card list): bool = 
-        _getCounts(cards) |> List.length = 1
+    let private IsMultiple(cards: Card list): bool = 
+        getCounts(cards) |> List.length = 1
 
-    let _IsFullHouse(cards: Card list): bool = 
-        _getCounts(cards).Equals([2; 3]) 
+    let private IsFullHouse(cards: Card list): bool = 
+        getCounts(cards).Equals([2; 3]) 
 
-    let rec _checkConsecutive(cards: Card list): bool = 
+    let rec private checkConsecutive(cards: Card list): bool = 
         match cards.Tail with
         | [] -> true
-        | second::remainder -> second.IntValue() - cards.Head.IntValue() = 1 && _checkConsecutive(cards.Tail)
+        | second::remainder -> second.IntValue() - cards.Head.IntValue() = 1 && checkConsecutive(cards.Tail)
 
-    let _IsStraight(cards: Card list): bool = 
-        cards.Length >= 5 && _checkConsecutive(cards)
+    let private IsStraight(cards: Card list): bool = 
+        cards.Length >= 5 && checkConsecutive(cards)
 
-    let _IsSubsequentPairs(cards: Card list): bool = 
-        let distinctCounts = _getCounts(cards) |> List.distinct 
+    let private IsSubsequentPairs(cards: Card list): bool = 
+        let distinctCounts = getCounts(cards) |> List.distinct 
         if not (cards.Length >= 4 && distinctCounts[0] = 2 && distinctCounts.Length = 1) then false
-        else _checkConsecutive(List.distinct cards)
+        else checkConsecutive(List.distinct cards)
         
     let ToCardSet(cards: Card list): CardSet = 
-        if (cards |> _IsMultiple) then Multiple(cards[0], cards.Length)
-        else if (cards |> _IsFullHouse) then FullHouse(cards[2])
-        else if (cards |> _IsStraight) then Straight(cards.Head, cards.Length)
-        else if (cards |> _IsSubsequentPairs) then SubsequentPairs(cards.Head, cards.Length/2)
+        if (cards |> IsMultiple) then Multiple(cards[0], cards.Length)
+        else if (cards |> IsFullHouse) then FullHouse(cards[2])
+        else if (cards |> IsStraight) then Straight(cards.Head, cards.Length)
+        else if (cards |> IsSubsequentPairs) then SubsequentPairs(cards.Head, cards.Length/2)
         else Invalid
 
     let IsSameTypeAs(setOne: CardSet)(setTwo: CardSet): bool = 
