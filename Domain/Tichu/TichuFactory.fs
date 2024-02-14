@@ -18,15 +18,13 @@ type TichuFactory() =
 
     interface ITichuFactory with
         member _.CreateNewGame(playerNames: string seq): ITichuFacade = 
-            let hands = generateRandomInput() |> Seq.chunkBySize(13) |> Seq.map(
-                    Seq.map(fun c -> Card.Card(c)) >> Seq.sortBy(fun card -> card.IntValue()) >> Seq.toList
-                )
-            let players = GetPlayers(playerNames, hands) 
-            new TichuFacade(players)
+            let playerList = playerNames |> Seq.toList
+            let hands = generateRandomInput() |> Seq.chunkBySize(13) |> Seq.map(String.Concat) |> Seq.toList
+            new TichuFacade(playerList, hands)
         
         member _.CreateExistingGame(playerNames: string seq, playerHands: string seq, leader: string, lastPlayed: string, turn: int): ITichuFacade = 
-            let hands = playerHands |> Seq.map(Card.StringToCardList)
-            let players = GetPlayers(playerNames, hands);
-            new TichuFacade(players) // TODO finish
+            let playerList = playerNames |> Seq.toList
+            let handList = playerHands |> Seq.toList
+            new TichuFacade(playerList, handList, leader, lastPlayed, turn)
 
         

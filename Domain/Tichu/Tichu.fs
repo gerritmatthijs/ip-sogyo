@@ -1,7 +1,7 @@
 namespace Tichu
 
 type TichuGame = 
-    {players: Player list; lastPlay: Option<Card list * Player>; turn: int; status: StatusText}
+    {players: Player list; lastPlay: Option<Card list * string>; turn: int; status: StatusText}
 
     member x.GetPlayer(name: string): Player = 
         x.players |> List.find(fun player -> player.name.Equals name)
@@ -17,8 +17,8 @@ type TichuGame =
     member x.TrickIsWonUponPass(): bool = x.TrickWonHelper(TichuGame.IncreasePlayerIndex x.turn)
 
     member x.TrickWonHelper(index: int): bool = 
-        let (_, leader) = x.lastPlay.Value
-        if x.players[index].Equals leader then true
+        let (_, leaderName) = x.lastPlay.Value
+        if x.players[index].name.Equals leaderName then true
         else if x.players[index] |> Player.isFinished then x.TrickWonHelper(index |> TichuGame.IncreasePlayerIndex)
         else false
 
@@ -30,12 +30,12 @@ module TichuGame =
         let updatedPlayer = tichu.GetActivePlayer() |> Player.PlayCards(set)
         let updatedPlayerList = tichu.players |> List.mapi(fun i p -> if i = tichu.turn then updatedPlayer else p)
         let status: StatusText = if updatedPlayer.hand.IsEmpty then Message(tichu.GetActivePlayer().name + " has played all their cards!") else NoText
-        {players = updatedPlayerList; lastPlay = Some(set, updatedPlayer); turn = tichu.NextTurn(); status = status}
+        {players = updatedPlayerList; lastPlay = Some(set, updatedPlayer.name); turn = tichu.NextTurn(); status = status}
 
     let Pass(tichu: TichuGame): TichuGame = 
         if tichu.TrickIsWonUponPass() then
             let (_, leader) = tichu.lastPlay.Value
-            let status = Message(leader.name + " has won the trick!")
+            let status = Message(leader + " has won the trick!")
             {tichu with lastPlay = None; turn = tichu.NextTurn(); status = status}
         else 
             {tichu with turn = tichu.NextTurn(); status = NoText}
