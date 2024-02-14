@@ -50,6 +50,11 @@ export default function ActiveHand(props: Props) {
         onPlay(currentCardSet);
     }
 
+    function onPassButtonClicked(){
+        setCardsClicked([]);
+        onPass();
+    }
+
     function createCards(hand: string){
         const cardList = [];
         for (let i = 0; i < hand.length; i++){
@@ -67,7 +72,7 @@ export default function ActiveHand(props: Props) {
     {createCards(hand)}
     <br/>
     <button className="play-button" onClick={onPlayButtonClicked} disabled={hoverMessage.length>0}>Play Selected Cards</button>
-    {!endOfGame && <button className="pass-button" onClick={onPass} disabled={!lastPlayed}>Pass</button>}
+    {!endOfGame && <button className="pass-button" onClick={onPassButtonClicked} disabled={!lastPlayed}>Pass</button>}
     <div className="hovertext">{hoverMessage}</div>
     </div>
 }
