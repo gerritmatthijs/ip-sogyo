@@ -16,6 +16,7 @@
     <Compile Include="CardSetTests.fs" />
     <Compile Include="HandTests.fs" />
     <Compile Include="PlayerTests.fs" />
+    <Compile Include="SpecialCardTests.fs" />
   </ItemGroup>
 
   <ItemGroup>

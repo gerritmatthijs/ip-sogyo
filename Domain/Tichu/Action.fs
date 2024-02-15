@@ -26,6 +26,7 @@ module Action =
         else 
         match lastSet, action with
             | Some([Hound]), Set(_) -> "OK"
+            | Some([Dragon]), Set([Phoenix(_)]) -> "Phoenix cannot be played over the dragon."
             | Some(lastSet), Set(newSet) -> _CheckSameTypeAndHigher(lastSet |> CardSet.ToCardSet, newSet |> CardSet.ToCardSet)
             | None, Pass | Some([Hound]), Pass -> "You cannot pass when opening a trick."
             | None, _ | _, Pass -> "OK"

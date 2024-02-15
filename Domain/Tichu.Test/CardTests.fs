@@ -23,6 +23,10 @@ let ``Card has correct integer Value`` () =
 let ``Convert string to card list and back`` () = 
     let handstring = "24TD"
     let convertedHand = Card.StringToCardList(handstring)
-    let doubleConvertedHand = Card.CardListToString(convertedHand)
     Assert.Equal<Card list>([Card.Card('2'); Card.Card('4'); Card.Card('T'); Card.Card('D')], convertedHand)
-    Assert.Equal(handstring, doubleConvertedHand)
+
+[<Fact>]
+let ``Convert card list to string`` () =
+    let hand = [Card.Card('2'); Card.Card('4'); Card.Card('T'); Card.Card('D')]
+    let handstring = Card.CardListToString(hand)
+    Assert.Equal("24TD", handstring)

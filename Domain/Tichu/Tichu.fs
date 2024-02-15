@@ -30,12 +30,20 @@ type TichuGame =
     
 module TichuGame = 
 
+    let private handlePhoenix(set: Card list, tichu: TichuGame): Card list = 
+        match set with 
+            | [Phoenix(_)] -> [Card.GetSinglePhoenix(tichu.lastPlay |> Option.map(fst))]
+            | _ -> set
+
     let PlaySet(set: Card list)(tichu: TichuGame): TichuGame = 
         let updatedPlayer = tichu.GetActivePlayer() |> Player.PlayCards(set)
         let updatedPlayerList = tichu.players |> List.mapi(fun i p -> if i = tichu.turn then updatedPlayer else p)
+        
         let status: StatusText = if updatedPlayer.hand.IsEmpty then Message(tichu.GetActivePlayer().name + " has played all their cards!") else NoText
         let nextTurn = if set.Equals([Hound]) then tichu.TurnAfterHound() else tichu.NextTurn()
-        {players = updatedPlayerList; lastPlay = Some(set, updatedPlayer.name); turn = nextTurn; status = status}
+        let lastPlayed = handlePhoenix(set, tichu)
+        
+        {players = updatedPlayerList; lastPlay = Some(lastPlayed, updatedPlayer.name); turn = nextTurn; status = status}
 
     let Pass(tichu: TichuGame): TichuGame = 
         if tichu.TrickIsWonUponPass() then
@@ -46,7 +54,7 @@ module TichuGame =
             {tichu with turn = tichu.NextTurn(); status = NoText}
 
     let DoTurn(action: Action)(tichu: TichuGame): TichuGame = 
-        let alertText = action |> Action.GetAlertTextOrOK(tichu.lastPlay |> Option.map(fun (cards, _) -> cards))
+        let alertText = action |> Action.GetAlertTextOrOK(tichu.lastPlay |> Option.map(fst))
         if not (alertText.Equals "OK" )
             then {tichu with status = Alert(alertText)} else
 
