@@ -7,10 +7,10 @@ open Tichu
 let ``Create new game through factory`` () = 
     let factory = new TichuFactory() :> ITichuFactory
     let tichuGame = factory.CreateNewGame(["Gerrit"; "Daniel"; "Wesley"; "Hanneke"])
-    Assert.Equal(13, tichuGame.GetPlayerHand("Gerrit").Length)
-    Assert.Equal(13, tichuGame.GetPlayerHand("Daniel").Length)
+    Assert.Equal(14, tichuGame.GetPlayerHand("Gerrit").Length)
+    Assert.Equal(14, tichuGame.GetPlayerHand("Daniel").Length)
     Assert.NotEqual<string>(tichuGame.GetPlayerHand("Gerrit"), tichuGame.GetPlayerHand("Daniel"))
-    Assert.NotEqual<string>("2222333344445", tichuGame.GetPlayerHand("Gerrit"))
+    Assert.NotEqual<string>("12222333344445", tichuGame.GetPlayerHand("Gerrit"))
 
 [<Fact>]
 let ``Create existing game through factory`` () =

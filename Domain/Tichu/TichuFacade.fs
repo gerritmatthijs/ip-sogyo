@@ -7,15 +7,16 @@ type TichuFacade(tichu: TichuGame) =
         Seq.map2(fun name hand -> {name = name; hand = hand}) names hands |> Seq.toList
 
     new(playerNames: string list, playerHands: string list, leader: string, lastPlayed: string, turn: int) = 
-        let hands = playerHands |> Seq.map(Card.StringToCardList)
-        let players = Seq.map2(fun name hand -> {name = name; hand = hand}) playerNames hands |> Seq.toList
+        let hands = playerHands |> List.map(Card.StringToCardList)
+        let players = List.map2(fun name hand -> {name = name; hand = hand}) playerNames hands
         let lastPlay = if leader.Length = 0 then None else Some(lastPlayed |> Card.StringToCardList, leader)
         new TichuFacade({players = players; lastPlay= lastPlay; turn = turn; status = NoText})
 
     new(playerNames: string list, playerHands: string list) = 
-        let hands = playerHands |> Seq.map(Card.StringToCardList)
-        let players = Seq.map2(fun name hand -> {name = name; hand = hand}) playerNames hands |> Seq.toList
-        new TichuFacade({players = players; lastPlay = None; turn = 0; status = NoText})
+        let hands = playerHands |> List.map(Card.StringToCardList)
+        let players = List.map2(fun name hand -> {name = name; hand = hand}) playerNames hands
+        let startingTurn = [0;1;2;3] |> List.find(fun i -> (hands[i] |> List.contains(Mahjong)))
+        new TichuFacade({players = players; lastPlay = None; turn = startingTurn; status = NoText})
 
 
     interface ITichuFacade with

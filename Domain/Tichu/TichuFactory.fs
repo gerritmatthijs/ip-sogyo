@@ -3,8 +3,8 @@ open System
 
 type TichuFactory() = 
     let generateRandomInput(): String = 
-        let orderedHand = "22223333444455556666777788889999TTTTJJJJQQQQKKKKAAAADDDD"
-        let array = orderedHand |> Seq.toArray
+        let allCards = "122223333444455556666777788889999TTTTJJJJQQQQKKKKAAAADDD"
+        let array = allCards |> Seq.toArray
         let random = Random()
         for i in 0 .. array.Length - 1 do
             let j = random.Next(i, array.Length)

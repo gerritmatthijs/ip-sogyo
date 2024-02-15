@@ -4,10 +4,12 @@ open System
 type Card = 
     | Normal of value: char
     | Dragon 
+    | Mahjong
 
     member this.IntValue (): int = 
         match this with
             | Dragon -> 100
+            | Mahjong -> 1
             | Normal(value) -> 
                 match value with 
                 | 'T' -> 10
@@ -20,14 +22,16 @@ type Card =
     member this.CharValue (): char = 
         match this with 
             | Dragon -> 'D'
+            | Mahjong -> '1'
             | Normal(value) -> value
 
 
 module Card = 
     let Card(value: char) = 
-        if ['2'; '3'; '4'; '5'; '6'; '7'; '8'; '9'; 'T'; 'J'; 'Q'; 'K'; 'A'; 'D'] |> List.contains(value) then
+        if ['1'; '2'; '3'; '4'; '5'; '6'; '7'; '8'; '9'; 'T'; 'J'; 'Q'; 'K'; 'A'; 'D'] |> List.contains(value) then
             match value with 
                 | 'D' -> Dragon
+                | '1' -> Mahjong
                 | x -> Normal(x)
 
         else failwith "Invalid card type"
