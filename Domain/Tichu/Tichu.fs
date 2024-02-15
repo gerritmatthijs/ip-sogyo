@@ -34,8 +34,13 @@ module TichuGame =
         match set with 
             | [Phoenix(_)] -> [Card.GetSinglePhoenix(tichu.lastPlay |> Option.map(fst))]
             | _ -> set
+    
+    let private CheckSameTypeAndHigher(lastSet: CardSet, newSet: CardSet) = 
+        if not (newSet |> CardSet.IsSameTypeAs(lastSet)) then "You can only play sets of the same type as the leading set."
+        else if not (newSet |> CardSet.IsHigherThen(lastSet)) then "Your card set has to be higher than the last played card set."
+        else "OK"
 
-    let PlaySet(set: Card list)(tichu: TichuGame): TichuGame = 
+    let private PlaySet(set: Card list)(tichu: TichuGame): TichuGame = 
         let updatedPlayer = tichu.GetActivePlayer() |> Player.PlayCards(set)
         let updatedPlayerList = tichu.players |> List.mapi(fun i p -> if i = tichu.turn then updatedPlayer else p)
         
@@ -45,7 +50,19 @@ module TichuGame =
         
         {players = updatedPlayerList; lastPlay = Some(lastPlayed, updatedPlayer.name); turn = nextTurn; status = status}
 
-    let Pass(tichu: TichuGame): TichuGame = 
+    let private TryPlaySet(set: Card list)(tichu: TichuGame): TichuGame = 
+        let alertText = 
+            if (set |> CardSet.ToCardSet).Equals(Invalid) then "Invalid card set." 
+            else 
+                match tichu.lastPlay, set with 
+                | None, _ | Some([Hound], _), _ -> "OK"
+                | Some([Dragon], _), [Phoenix(_)] -> "Phoenix cannot be played over the dragon."
+                | Some(lastSet, _), _ -> CheckSameTypeAndHigher(lastSet |> CardSet.ToCardSet, set |> CardSet.ToCardSet)
+        match alertText with 
+        | "OK" -> tichu |> PlaySet(set)
+        | _ -> {tichu with status = Alert(alertText)}
+
+    let private Pass(tichu: TichuGame): TichuGame = 
         if tichu.TrickIsWonUponPass() then
             let (_, leader) = tichu.lastPlay.Value
             let status = Message(leader + " has won the trick!")
@@ -53,11 +70,17 @@ module TichuGame =
         else 
             {tichu with turn = tichu.NextTurn(); status = NoText}
 
+    let TryPass(tichu: TichuGame): TichuGame = 
+        match tichu.lastPlay with 
+        | None | Some([Hound], _) -> {tichu with status = Alert("You cannot pass when opening a trick.")}
+        | _ -> tichu |> Pass
+        
+
     let DoTurn(action: Action)(tichu: TichuGame): TichuGame = 
-        let alertText = action |> Action.GetAlertTextOrOK(tichu.lastPlay |> Option.map(fst))
-        if not (alertText.Equals "OK" )
-            then {tichu with status = Alert(alertText)} else
+        // let alertText = action |> Action.GetAlertTextOrOK(tichu.lastPlay |> Option.map(fst))
+        // if not (alertText.Equals "OK" )
+        //     then {tichu with status = Alert(alertText)} else
 
         match action with 
-        | Pass -> tichu |> Pass
-        | Set(set) -> tichu |> PlaySet(set)
+        | Pass -> tichu |> TryPass
+        | Set(set) -> tichu |> TryPlaySet(set)

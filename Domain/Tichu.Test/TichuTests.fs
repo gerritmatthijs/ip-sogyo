@@ -251,13 +251,22 @@ let ``Get alert when playing a lower or equal card`` () =
     let tichu = SetUpGame()
     let gerritPlayed = tichu.DoTurn("5")
     let danielTriedPlaying = gerritPlayed.DoTurn("5")
-    let danielPlayed = danielTriedPlaying.DoTurn("6")
-    let wesleyPlayed = danielPlayed.DoTurn("T")
-    let hannekePlayed = wesleyPlayed.DoTurn("K")
-    let gerritPlayedAgain = hannekePlayed.DoTurn("4")
+    let peoplePlayed = danielTriedPlaying.DoTurn("6").DoTurn("T").DoTurn("K")
+    let gerritPlayedAgain = peoplePlayed.DoTurn("4")
     
     Assert.Equal("Your card set has to be higher than the last played card set.", danielTriedPlaying.GetAlert())
     Assert.Equal("Your card set has to be higher than the last played card set.", gerritPlayedAgain.GetAlert())
+
+[<Fact>]
+let ``Get alert when playing lower or equal full house`` () =
+    let names = ["Gerrit"; "Daniel"; "Wesley"; "Hanneke"]
+    let hands = ["22333344445KK"; "5556666777788"; "889999TTTTJJJ"; "22JQQQQKKAAAA"]
+    let tichu = new TichuFacade(names, hands, "", "", 3) :> ITichuFacade
+
+    let hannekePlayed = tichu.DoTurn("22QQQ")
+    let gerritTriedPlaying = hannekePlayed.DoTurn("44433")
+    Assert.Equal("Your card set has to be higher than the last played card set.", gerritTriedPlaying.GetAlert())
+
 
 [<Fact>]
 let ``Get alert upon passing when starting a trick`` () = 

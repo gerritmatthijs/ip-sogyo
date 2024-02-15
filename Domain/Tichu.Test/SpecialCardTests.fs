@@ -8,6 +8,11 @@ let SetUpGame () =
     let hands = ["1222233334444P"; "55556666777788"; "889999TTTTJJJH"; "JQQQQKKKKAAAAD"]
     new TichuFacade(names, hands) :> ITichuFacade
 
+let HoundSetUp() = 
+    let names = ["Gerrit"; "Daniel"; "Wesley"; "Hanneke"]
+    let hands = ["2222333344445"; "5556666777788D"; "889999TTTTJJH"; "JQQQQKKKKAAAAD"]
+    new TichuFacade(names, hands, "", "", 2) :> ITichuFacade
+
 [<Fact>]
 let ``Player with the mahjong starts the game`` () =
     let names = ["Gerrit"; "Daniel"; "Wesley"; "Hanneke"]
@@ -17,24 +22,23 @@ let ``Player with the mahjong starts the game`` () =
 
 [<Fact>]
 let ``Playing hound gives turn to opposite player`` () =
-    let names = ["Gerrit"; "Daniel"; "Wesley"; "Hanneke"]
-    let hands = ["2222333344445"; "5556666777788D"; "889999TTTTJJH"; "JQQQQKKKKAAAAD"]
-    let tichu = new TichuFacade(names, hands, "", "", 2) :> ITichuFacade
-
+    let tichu = HoundSetUp()
     let houndPlayed = tichu.DoTurn("H")
     Assert.Equal(0, houndPlayed.GetTurn())
 
 [<Fact>]
 let ``Any set can be played on hound`` () =
-    let houndPlayed = Some("H" |> Card.StringToCardList)
-    let pairOfTwos = "22" |> Action.ToAction
-    Assert.Equal("OK", pairOfTwos |> Action.GetAlertTextOrOK(houndPlayed))
+    let tichu = HoundSetUp()
+    let houndPlayed = tichu.DoTurn("H")
+    let pairOfTwosPlayed = houndPlayed.DoTurn("22")
+    Assert.Equal("", pairOfTwosPlayed.GetAlert())
 
 [<Fact>]
-let ``Passing after hound returns alert text`` () =
-    let houndPlayed = Some("H" |> Card.StringToCardList)
-    let passAction = "pass" |> Action.ToAction
-    Assert.Equal("You cannot pass when opening a trick.", passAction |> Action.GetAlertTextOrOK(houndPlayed))
+let ``Passing after hound gives alert`` () =
+    let tichu = HoundSetUp()
+    let houndPlayed = tichu.DoTurn("H")
+    let gerritTriedPassing = houndPlayed.DoTurn("pass")
+    Assert.Equal("You cannot pass when opening a trick.", gerritTriedPassing.GetAlert())
 
 [<Fact>]
 let ``Phoenix can be played over any single card other than dragon`` () =
