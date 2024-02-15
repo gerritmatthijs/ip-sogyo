@@ -17,9 +17,6 @@ type TichuFacade(tichu: TichuGame) =
         let players = Seq.map2(fun name hand -> {name = name; hand = hand}) playerNames hands |> Seq.toList
         new TichuFacade({players = players; lastPlay = None; turn = 0; status = NoText})
 
-    // TODO adapt Tichu tests so that the next constuctor can be removed
-    new(players: Player list) = new TichuFacade({players = players; lastPlay = None; turn = 0; status = NoText})
-
 
     interface ITichuFacade with
         member _.GetPlayerName(playerNumber: int): string = 
