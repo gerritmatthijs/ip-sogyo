@@ -25,8 +25,7 @@ module Action =
         if _CheckInvalidSetPlayed(action) then "Invalid card set." 
         else 
         match lastSet, action with
+            | Some([Hound]), Set(_) -> "OK"
             | Some(lastSet), Set(newSet) -> _CheckSameTypeAndHigher(lastSet |> CardSet.ToCardSet, newSet |> CardSet.ToCardSet)
-            | None, Pass -> "You cannot pass when opening a trick."
-            | None, _ -> "OK"
-            | _, Pass -> "OK"
-                
+            | None, Pass | Some([Hound]), Pass -> "You cannot pass when opening a trick."
+            | None, _ | _, Pass -> "OK"

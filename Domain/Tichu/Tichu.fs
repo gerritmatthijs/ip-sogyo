@@ -8,7 +8,11 @@ type TichuGame =
 
     member x.GetActivePlayer(): Player = x.players[x.turn]
 
-    member x.NextTurn(): int = x.NextTurnHelper(TichuGame.IncreasePlayerIndex x.turn)
+    member x.TurnAfterHound(): int = 
+        x.turn |> TichuGame.IncreasePlayerIndex |> TichuGame.IncreasePlayerIndex |> x.NextTurnHelper
+
+    member x.NextTurn(): int = 
+         x.turn |> TichuGame.IncreasePlayerIndex |> x.NextTurnHelper
 
     member x.NextTurnHelper(index: int): int = 
         if x.players[index] |> Player.isFinished then x.NextTurnHelper(index |> TichuGame.IncreasePlayerIndex)
@@ -30,7 +34,8 @@ module TichuGame =
         let updatedPlayer = tichu.GetActivePlayer() |> Player.PlayCards(set)
         let updatedPlayerList = tichu.players |> List.mapi(fun i p -> if i = tichu.turn then updatedPlayer else p)
         let status: StatusText = if updatedPlayer.hand.IsEmpty then Message(tichu.GetActivePlayer().name + " has played all their cards!") else NoText
-        {players = updatedPlayerList; lastPlay = Some(set, updatedPlayer.name); turn = tichu.NextTurn(); status = status}
+        let nextTurn = if set.Equals([Hound]) then tichu.TurnAfterHound() else tichu.NextTurn()
+        {players = updatedPlayerList; lastPlay = Some(set, updatedPlayer.name); turn = nextTurn; status = status}
 
     let Pass(tichu: TichuGame): TichuGame = 
         if tichu.TrickIsWonUponPass() then

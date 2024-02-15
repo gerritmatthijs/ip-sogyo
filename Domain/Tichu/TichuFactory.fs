@@ -3,7 +3,7 @@ open System
 
 type TichuFactory() = 
     let generateRandomInput(): String = 
-        let allCards = "122223333444455556666777788889999TTTTJJJJQQQQKKKKAAAADDD"
+        let allCards = "122223333444455556666777788889999TTTTJJJJQQQQKKKKAAAADDH"
         let array = allCards |> Seq.toArray
         let random = Random()
         for i in 0 .. array.Length - 1 do

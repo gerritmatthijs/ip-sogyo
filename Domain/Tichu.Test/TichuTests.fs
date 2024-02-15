@@ -5,7 +5,7 @@ open Tichu
 
 let SetUpGame () = 
     let names = ["Gerrit"; "Daniel"; "Wesley"; "Hanneke"]
-    let hands = ["12222333344445"; "5556666777788D"; "889999TTTTJJJD"; "JQQQQKKKKAAAAD"]
+    let hands = ["12222333344445"; "5556666777788D"; "889999TTTTJJJH"; "JQQQQKKKKAAAAD"]
     new TichuFacade(names, hands) :> ITichuFacade
 
 let SetUpGameEmptyHand() = 
@@ -31,7 +31,7 @@ let ``Get player hand`` () =
     let tichu = SetUpGame()
     Assert.Equal("12222333344445", tichu.GetPlayerHand("Gerrit"))
     Assert.Equal("5556666777788D", tichu.GetPlayerHand("Daniel"))
-    Assert.Equal("889999TTTTJJJD", tichu.GetPlayerHand("Wesley"))
+    Assert.Equal("889999TTTTJJJH", tichu.GetPlayerHand("Wesley"))
     Assert.Equal("JQQQQKKKKAAAAD", tichu.GetPlayerHand("Hanneke"))
 
 [<Fact>]
@@ -68,11 +68,20 @@ let ``Get index of player whose turn it is`` () =
     Assert.Equal(0, hannekePlayed.GetTurn())
 
 [<Fact>]
-let ``Player with the 1 starts the game`` () =
+let ``Player with the mahjong starts the game`` () =
     let names = ["Gerrit"; "Daniel"; "Wesley"; "Hanneke"]
     let hands = ["2222333344445D"; "5556666777788D"; "1889999TTTTJJJ"; "JQQQQKKKKAAAAD"]
     let tichu = new TichuFacade(names, hands) :> ITichuFacade
     Assert.Equal(2, tichu.GetTurn())
+
+[<Fact>]
+let ``Playing hound gives turn to opposite player`` () =
+    let names = ["Gerrit"; "Daniel"; "Wesley"; "Hanneke"]
+    let hands = ["2222333344445"; "5556666777788D"; "889999TTTTJJH"; "JQQQQKKKKAAAAD"]
+    let tichu = new TichuFacade(names, hands, "", "", 2) :> ITichuFacade
+
+    let houndPlayed = tichu.DoTurn("H")
+    Assert.Equal(0, houndPlayed.GetTurn())
 
 [<Fact>]
 let ``Throw when attempting to play a card that is not in hand`` () =

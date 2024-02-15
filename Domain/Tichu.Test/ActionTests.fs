@@ -34,11 +34,23 @@ let ``Play wrong type of set returns alert text`` () =
 [<Fact>]
 let ``Pass when starting a trick returns alert text`` () = 
     let lastPlay = None
-    let action = "pass" |> Action.ToAction
-    Assert.Equal("You cannot pass when opening a trick.", action |> Action.GetAlertTextOrOK(lastPlay))
+    let passAction = "pass" |> Action.ToAction
+    Assert.Equal("You cannot pass when opening a trick.", passAction |> Action.GetAlertTextOrOK(lastPlay))
 
 [<Fact>]
 let ``Play invalid set returns alert text`` () =
     let lastPlay = None
     let action = "23" |> Action.ToAction
     Assert.Equal("Invalid card set.", action |> Action.GetAlertTextOrOK(lastPlay))
+
+[<Fact>]
+let ``Any set can be played on hound`` () =
+    let houndPlayed = Some("H" |> Card.StringToCardList)
+    let pairOfTwos = "22" |> Action.ToAction
+    Assert.Equal("OK", pairOfTwos |> Action.GetAlertTextOrOK(houndPlayed))
+
+[<Fact>]
+let ``Passing after hound returns alert text`` () =
+    let houndPlayed = Some("H" |> Card.StringToCardList)
+    let passAction = "pass" |> Action.ToAction
+    Assert.Equal("You cannot pass when opening a trick.", passAction |> Action.GetAlertTextOrOK(houndPlayed))
