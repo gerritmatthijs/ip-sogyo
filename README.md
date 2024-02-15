@@ -51,7 +51,7 @@ The goal of this project is the development of a full-stack web application for 
 
 # Framework & Set-up
 
-The back-end of this project runs on .NET; the domain layer is programmed in F# and the API- and persistence layers in C#. The front-end uses Node.js in combination with React, Typescript and a Vite server. The database is not currently implemented (instead a simple in-memory dictionary is being used). When it is implemented, it will be MySQL. 
+The back-end of this project runs on .NET; the domain layer is programmed in F# and the API- and persistence layers in C#. The front-end uses Node.js in combination with React, Typescript and a Vite server. 
 
 To start the back-end server, make sure you have .NET 8.0 installed. Run the following command from the API folder: 
 ```bash
@@ -68,6 +68,18 @@ Then start the server by running:
 npm run dev
 ```
 The front-end server listens on port 5173. Go to http://localhost:5173/ in the browser to play the game. 
+
+# Database
+
+The project can be linked to a local MySQL Database. However, without such a database, everything functions fine as long as you don't restart the back-end server during a game.
+
+To attach a local database, either make sure it listens on localhost:3306 and has an 'admin'@'localhost' account with password 'Adminpassword!23', or change the connectionString in the Persistence/TichuRepositoryMySQL.cs file. 
+
+Next, create a database named 'tichu' for which admin has insert, update, select and delete privileges. Create a table named 'tichu' using the following command:
+```bash
+TODO get from Terminal history
+```
+Finally, run the scripts in the Persistence/SQLScripts folder using the tichu database. 
 
 # Testing
 
