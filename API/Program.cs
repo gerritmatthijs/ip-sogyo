@@ -5,11 +5,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-ITichuFactory factory = new();
+ITichuFactory factory = new TichuFactory();
 
 builder.Services.AddControllers();
-builder.Services.AddSingleton<ITichuRepository>(new TichuRepositoryInMemory(factory));
-builder.Services.AddSingleton<ITichuFactory>(factory;);
+builder.Services.AddSingleton<ITichuRepository>(new TichuRepositoryMySQL(factory));
+builder.Services.AddSingleton<ITichuRepository>(new TichuRepositoryInMemory());
+builder.Services.AddSingleton(factory);
 
 // Needed to add info the the session
 builder.Services.AddDistributedMemoryCache();

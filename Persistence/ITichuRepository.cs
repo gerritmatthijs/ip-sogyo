@@ -8,4 +8,7 @@ public interface ITichuRepository
     ITichuFacade GetGame(string key);
 
     void DeleteGame(string key);
+
+    Boolean ContainsGame(string key);
+
 }

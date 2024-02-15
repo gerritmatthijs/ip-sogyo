@@ -21,4 +21,9 @@ public class TichuRepositoryInMemory : ITichuRepository
     {
         storage.Remove(key);
     }
+
+    public bool ContainsGame(string key)
+    {
+        return storage.ContainsKey(key);
+    }
 }

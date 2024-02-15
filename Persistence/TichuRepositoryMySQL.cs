@@ -30,6 +30,7 @@ public class TichuRepositoryMySQL : ITichuRepository
                 MySqlCommand cmd = new(GetSaveQuery(tichu), conn);
                 cmd.ExecuteNonQuery();
             }
+            CloseConnection();
         }
     }
 
@@ -61,6 +62,18 @@ public class TichuRepositoryMySQL : ITichuRepository
             cmd.ExecuteNonQuery();
             CloseConnection();
         }
+    }
+
+    public bool ContainsGame(string key)
+    {
+        if (OpenConnection())
+        {
+            string dbContainsGame = (string)new MySqlCommand("CALL containsGame('" + key + "');", conn).ExecuteScalar();
+            CloseConnection();
+            return dbContainsGame.Equals("1");
+        }
+        Console.WriteLine("Could not access database");
+        return false;
     }
 
     private static string GetSaveQuery(ITichuFacade tichu)
@@ -139,4 +152,5 @@ public class TichuRepositoryMySQL : ITichuRepository
             return false;
         }
     }
+
 }
