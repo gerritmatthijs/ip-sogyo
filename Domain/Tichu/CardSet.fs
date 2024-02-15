@@ -30,11 +30,18 @@ module CardSet =
         if not (cards.Length >= 4 && distinctCounts[0] = 2 && distinctCounts.Length = 1) then false
         else checkConsecutive(List.distinct cards)
         
+    let private DeclarePhoenix(card: Card): Card = 
+        match card with 
+        | Phoenix(Some(declaredCard)) -> declaredCard
+        | Phoenix(None) -> failwith "Set phoenix' declared target before transforming to CardSet."
+        | _ -> card
+
     let ToCardSet(cards: Card list): CardSet = 
-        if (cards |> IsMultiple) then Multiple(cards[0], cards.Length)
-        else if (cards |> IsFullHouse) then FullHouse(cards[2])
-        else if (cards |> IsStraight) then Straight(cards.Head, cards.Length)
-        else if (cards |> IsSubsequentPairs) then SubsequentPairs(cards.Head, cards.Length/2)
+        let declaredCards = if cards.Length = 1 then cards else cards |> List.map(DeclarePhoenix)
+        if (declaredCards |> IsMultiple) then Multiple(declaredCards[0], cards.Length)
+        else if (declaredCards |> IsFullHouse) then FullHouse(declaredCards[2])
+        else if (declaredCards |> IsStraight) then Straight(declaredCards.Head, cards.Length)
+        else if (declaredCards |> IsSubsequentPairs) then SubsequentPairs(declaredCards.Head, cards.Length/2)
         else Invalid
 
     let IsSameTypeAs(setOne: CardSet)(setTwo: CardSet): bool = 
@@ -55,3 +62,17 @@ module CardSet =
         | Straight(lowestOne, _), Straight(lowestTwo, _) -> lowestTwo.IntValue() > lowestOne.IntValue()
         | SubsequentPairs(lowestOne, _), SubsequentPairs(lowestTwo, _) -> lowestTwo.IntValue() > lowestOne.IntValue()
         | _, _ -> failwith "different types of card sets are incomparable"
+
+    let private CreatesValidSetWith(set: Card list)(card: Card): bool = 
+        let joinedSet = List.append(set)([card]) |> List.sortBy(fun card -> card.IntValue())
+        match ToCardSet(joinedSet) with 
+        | Invalid | Multiple(_, 4) -> false
+        | _ -> true
+
+    let GetPhoenixValue(set: Card list): Option<Card> = 
+        // Here the card list is the remainder of the set without the phoenix
+        let possibleCards = "23456789TJQKA" |> Card.StringToCardList
+        try 
+            Some(possibleCards |> List.findBack(CreatesValidSetWith(set)))
+        with 
+        | :? System.Collections.Generic.KeyNotFoundException -> None

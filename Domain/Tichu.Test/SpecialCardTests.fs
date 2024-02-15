@@ -73,3 +73,29 @@ let ``Phoenix when played single at the start of the trick is higher than Mahjon
     Assert.Equal(1, triedPlayMahjong.GetTurn())
     Assert.Equal(2, twoPlayed.GetTurn())
 
+[<Fact>]
+let ``Phoenix is recognised as part of a multiple`` () =
+    let two = "2" |> Card.StringToCardList
+    let pairOfTens = "TT" |> Card.StringToCardList
+    Assert.Equal(Some(Card.Card('2')), CardSet.GetPhoenixValue(two))
+    Assert.Equal(Some(Card.Card('T')), CardSet.GetPhoenixValue(pairOfTens))
+
+[<Fact>]
+let ``Phoenix is not allowed as part of a 4 of a kind`` () =
+    let jackTriple = "JJJ" |> Card.StringToCardList
+    Assert.Equal(None, CardSet.GetPhoenixValue(jackTriple))
+
+[<Fact>]
+let ``Phoenix is recognised as part of a straight`` () = 
+    let straightWithGap = "5689TJ" |> Card.StringToCardList
+    Assert.Equal(Some(Card.Card('7')), CardSet.GetPhoenixValue(straightWithGap))
+
+[<Fact>]
+let ``Phoenix is recognised as the higher alternative of a Full House`` () =
+    let twoPair = "66TT" |> Card.StringToCardList
+    Assert.Equal(Some(Card.Card('T')), CardSet.GetPhoenixValue(twoPair))
+
+[<Fact>]
+let ``Phoenix is not recognised when no valid set can be made`` () =
+    let gibberish = "56" |> Card.StringToCardList
+    Assert.Equal(None, CardSet.GetPhoenixValue(gibberish))

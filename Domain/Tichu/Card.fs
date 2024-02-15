@@ -5,7 +5,7 @@ type Card =
     | Normal of value: char
     | Dragon 
     | Mahjong
-    | Phoenix of cardCopied: Option<Card>
+    | Phoenix of cardDeclared: Option<Card>
     | Hound
 
     member this.IntValue (): int = 
@@ -13,8 +13,8 @@ type Card =
             | Dragon -> 100
             | Mahjong -> 1
             | Hound -> 4949 // Just to always sort it on the right of the hand. The Hound never actually gets compared
-            | Phoenix(cardCopied) -> 
-                match cardCopied with 
+            | Phoenix(cardDeclared) -> 
+                match cardDeclared with 
                 | None -> 99 
                 | Some(card) ->  card.IntValue()
             | Normal(value) -> 
