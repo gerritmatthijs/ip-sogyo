@@ -24,6 +24,8 @@ var app = builder.Build();
 
 app.UseSession();
 
+app.UseAuthentication();
+
 app.MapControllers();
 
 app.Run();

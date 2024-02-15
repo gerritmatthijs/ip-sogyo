@@ -28,6 +28,7 @@ export const getPicture = (card: string) => {
         case "Q": return "-1100% 0%";
         case "K": return "-1200% 0%";
         case "A": return "-1300% 0%";
+        case "D": return "0% 0%";
         default: 
             const numberValue = Number(card);
             const horizontalPosition = (numberValue - 1) * -100;

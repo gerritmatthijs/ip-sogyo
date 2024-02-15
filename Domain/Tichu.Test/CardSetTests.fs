@@ -103,6 +103,12 @@ let ``Higher Multiple is recognised as higher, but not conversely`` () =
     Assert.False(tenTriple |> CardSet.IsHigherThen(kingTriple))
 
 [<Fact>]
+let ``Dragon is recognised as highest card`` () =
+    let ace = "A" |> StringToCardSet
+    let dragon = "D" |> StringToCardSet
+    Assert.True(dragon |> CardSet.IsHigherThen(ace))
+
+[<Fact>]
 let ``Higher Full House is recognised`` () =
     let fullHouseHigh = "44KKK" |> StringToCardSet
     let fullHouseLow = "TTTAA" |> StringToCardSet
