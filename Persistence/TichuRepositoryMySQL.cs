@@ -23,7 +23,6 @@ public class TichuRepositoryMySQL : ITichuRepository
         {
             conn.Open();
             var dbContainsGame = (int)(long) new MySqlCommand("CALL containsGame('" + key + "');", conn).ExecuteScalar();
-            Console.WriteLine("DB Contains game: " + dbContainsGame);
             if (dbContainsGame == 1){
                 MySqlCommand cmd = new(GetUpdateQuery(tichu, key), conn);
                 cmd.ExecuteNonQuery();

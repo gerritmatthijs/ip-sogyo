@@ -74,7 +74,9 @@ export default function ActiveHand(props: Props) {
     <h2>{activePlayer}'s hand</h2>
     {createCards(hand)}
     <br/>
-    <button className="play-button" onClick={onPlayButtonClicked} disabled={hoverMessage.length>0}>Play Selected Cards</button>
+    <button className="play-button" onClick={onPlayButtonClicked} 
+        disabled={hoverMessage.length>0 || cardsClicked.length==0}>
+        Play Selected Cards</button>
     {!endOfGame && <button className="pass-button" onClick={onPassButtonClicked} disabled={!lastPlayed}>Pass</button>}
     <div className="hovertext">{hoverMessage}</div>
     </div>
