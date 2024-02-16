@@ -10,4 +10,5 @@ public interface ITichuRepository
     void DeleteGame(string key);
 
     Boolean ContainsGame(string key);
+
 }

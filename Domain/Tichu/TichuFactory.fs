@@ -3,8 +3,8 @@ open System
 
 type TichuFactory() = 
     let generateRandomInput(): String = 
-        let orderedHand = "22223333444455556666777788889999TTTTJJJJQQQQKKKKAAAA"
-        let array = orderedHand |> Seq.toArray
+        let allCards = "122223333444455556666777788889999TTTTJJJJQQQQKKKKAAAAPDH"
+        let array = allCards |> Seq.toArray
         let random = Random()
         for i in 0 .. array.Length - 1 do
             let j = random.Next(i, array.Length)
@@ -13,10 +13,18 @@ type TichuFactory() =
             array.[j] <- pom
         array |> Array.toSeq |> String.Concat
     
+    let GetPlayers(names: string seq, hands: seq<list<Card>>): Player list = 
+        Seq.map2(fun name hand -> {name = name; hand = hand}) names hands |> Seq.toList
+
     interface ITichuFactory with
-        member _.createNewGame(playerNames: string seq): ITichuFacade = 
-            let hands = generateRandomInput() |> Seq.chunkBySize(13) |> Seq.map(
-                    Seq.map(fun c -> {value = c}) >> Seq.sortBy(fun card -> card.IntValue()) >> Seq.toList
-                )
-            let players = Seq.map2(fun name hand -> {name = name; hand = hand}) playerNames hands |> Seq.toList
-            new TichuFacade(players)
+        member _.CreateNewGame(playerNames: string seq): ITichuFacade = 
+            let playerList = playerNames |> Seq.toList
+            let hands = generateRandomInput() |> Seq.chunkBySize(14) |> Seq.map(String.Concat) |> Seq.toList
+            new TichuFacade(playerList, hands)
+        
+        member _.CreateExistingGame(playerNames: string seq, playerHands: string seq, leader: string, lastPlayed: string, turn: int): ITichuFacade = 
+            let playerList = playerNames |> Seq.toList
+            let handList = playerHands |> Seq.toList
+            new TichuFacade(playerList, handList, leader, lastPlayed, turn)
+
+        

@@ -1,0 +1,10 @@
+DROP PROCEDURE IF EXISTS getGame;
+
+DELIMITER //
+
+CREATE PROCEDURE getGame(IN gameId varchar(255))
+BEGIN
+	SELECT * FROM tichu
+    WHERE game_id = gameId;
+END //
+DELIMITER ;

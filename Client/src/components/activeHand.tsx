@@ -21,8 +21,10 @@ export default function ActiveHand(props: Props) {
     const activePlayer = gameState? gameState.players[gameState.turn].name : "";
 
     async function checkAllowedCardSet(newArray: Array<number>) {
-        console.log(newArray.map((i) => hand[i]).join(""))
-        const result = await parseCardSelection(newArray.map((i) => hand[i]).join(""));
+        const result = await parseCardSelection(
+            newArray.map((i) => hand[i]).join(""), 
+            gameState?.gameID as string
+            );
         if (isTichuGameState(result)){
             setHoverMessage(result.gameStatus.alert);
         }
@@ -36,7 +38,6 @@ export default function ActiveHand(props: Props) {
         let newArray: Array<number>;
         if (index == -1){
             newArray = cardsClicked.concat(cardnumber);
-            newArray.sort((n,m) => n-m); // Sorting number arrays with default sort does not work in javascript
         }
         else {
             newArray = cardsClicked.slice(0, index).concat(cardsClicked.slice(index + 1));
@@ -49,6 +50,11 @@ export default function ActiveHand(props: Props) {
         const currentCardSet = cardsClicked.map((i) => hand[i]).join("");
         setCardsClicked([]);
         onPlay(currentCardSet);
+    }
+
+    function onPassButtonClicked(){
+        setCardsClicked([]);
+        onPass();
     }
 
     function createCards(hand: string){
@@ -67,8 +73,11 @@ export default function ActiveHand(props: Props) {
     <h2>{activePlayer}'s hand</h2>
     {createCards(hand)}
     <br/>
-    <button className="play-button" onClick={onPlayButtonClicked} disabled={hoverMessage.length>0}>Play Selected Cards</button>
-    {!endOfGame && <button className="pass-button" onClick={onPass} disabled={!lastPlayed}>Pass</button>}
+    <button className="play-button" onClick={onPlayButtonClicked} 
+        disabled={hoverMessage.length>0 || cardsClicked.length==0}>
+        Play Selected Cards</button>
+    {!endOfGame && <button className="pass-button" onClick={onPassButtonClicked} 
+        disabled={!lastPlayed || lastPlayed=="H"}>Pass</button>}
     <div className="hovertext">{hoverMessage}</div>
     </div>
 }

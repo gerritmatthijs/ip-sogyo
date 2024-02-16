@@ -8,9 +8,10 @@ namespace api.Models
         public GameStatusDTO GameStatus { get; set; }
         public string LastPlayed { get; set; }
         public string CurrentLeader { get; set; }
-        public int Turn {get; set; }
+        public int Turn { get; set; }
+        public string GameID{ get; set; }
 
-        public TichuDTO(ITichuFacade tichu){
+        public TichuDTO(ITichuFacade tichu, string gameID){
             for (int i = 0; i < 4; i++){
                 Players[i] = new PlayerDTO(tichu, tichu.GetPlayerName(i));
             }
@@ -18,6 +19,7 @@ namespace api.Models
             LastPlayed = tichu.GetLastPlayed();
             CurrentLeader = tichu.GetCurrentLeader();
             Turn = tichu.GetTurn();
+            GameID = gameID;
         }
     }
 }

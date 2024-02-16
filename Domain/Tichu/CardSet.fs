@@ -8,33 +8,39 @@ type CardSet =
     | Invalid
 
 module CardSet = 
-    let _getCounts(cards: Card list): list<int> = 
+    let private getCounts(cards: Card list): list<int> = 
         cards |> List.countBy(fun x -> x) |> List.map(fun (x, y) -> y) |> List.sort
 
-    let _IsMultiple(cards: Card list): bool = 
-        _getCounts(cards) |> List.length = 1
+    let private IsMultiple(cards: Card list): bool = 
+        getCounts(cards) |> List.length = 1
 
-    let _IsFullHouse(cards: Card list): bool = 
-        _getCounts(cards).Equals([2; 3]) 
+    let private IsFullHouse(cards: Card list): bool = 
+        getCounts(cards).Equals([2; 3]) 
 
-    let rec _checkConsecutive(cards: Card list): bool = 
+    let rec private checkConsecutive(cards: Card list): bool = 
         match cards.Tail with
         | [] -> true
-        | second::remainder -> second.IntValue() - cards.Head.IntValue() = 1 && _checkConsecutive(cards.Tail)
+        | second::_ -> int(second.NumericValue()) - int(cards.Head.NumericValue()) = 1 && checkConsecutive(cards.Tail)
 
-    let _IsStraight(cards: Card list): bool = 
-        cards.Length >= 5 && _checkConsecutive(cards)
+    let private IsStraight(cards: Card list): bool = 
+        cards.Length >= 5 && checkConsecutive(cards)
 
-    let _IsSubsequentPairs(cards: Card list): bool = 
-        let distinctCounts = _getCounts(cards) |> List.distinct 
+    let private IsSubsequentPairs(cards: Card list): bool = 
+        let distinctCounts = getCounts(cards) |> List.distinct 
         if not (cards.Length >= 4 && distinctCounts[0] = 2 && distinctCounts.Length = 1) then false
-        else _checkConsecutive(List.distinct cards)
+        else checkConsecutive(List.distinct cards)
         
+    let private replacePhoenix(card: Card): Card = 
+        match card with 
+        | Phoenix(Some(declaredCard), false) -> declaredCard
+        | _ -> card
+
     let ToCardSet(cards: Card list): CardSet = 
-        if (cards |> _IsMultiple) then Multiple(cards[0], cards.Length)
-        else if (cards |> _IsFullHouse) then FullHouse(cards[2])
-        else if (cards |> _IsStraight) then Straight(cards.Head, cards.Length)
-        else if (cards |> _IsSubsequentPairs) then SubsequentPairs(cards.Head, cards.Length/2)
+        let declaredCards = cards |> List.map(replacePhoenix)
+        if (declaredCards |> IsMultiple) then Multiple(declaredCards[0], cards.Length)
+        else if (declaredCards |> IsFullHouse) then FullHouse(declaredCards[2])
+        else if (declaredCards |> IsStraight) then Straight(declaredCards.Head, cards.Length)
+        else if (declaredCards |> IsSubsequentPairs) then SubsequentPairs(declaredCards.Head, cards.Length/2)
         else Invalid
 
     let IsSameTypeAs(setOne: CardSet)(setTwo: CardSet): bool = 
@@ -50,8 +56,8 @@ module CardSet =
         if not (setOne |> IsSameTypeAs(setTwo)) then failwith "different types of card sets are incomparable"
         
         match setOne, setTwo with
-        | Multiple(cardOne, _), Multiple(cardTwo, _) -> cardTwo.IntValue() > cardOne.IntValue()
-        | FullHouse(cardOne), FullHouse(cardTwo) -> cardTwo.IntValue() > cardOne.IntValue()
-        | Straight(lowestOne, _), Straight(lowestTwo, _) -> lowestTwo.IntValue() > lowestOne.IntValue()
-        | SubsequentPairs(lowestOne, _), SubsequentPairs(lowestTwo, _) -> lowestTwo.IntValue() > lowestOne.IntValue()
+        | Multiple(cardOne, _), Multiple(cardTwo, _) -> cardTwo.NumericValue() > cardOne.NumericValue()
+        | FullHouse(cardOne), FullHouse(cardTwo) -> cardTwo.NumericValue() > cardOne.NumericValue()
+        | Straight(lowestOne, _), Straight(lowestTwo, _) -> lowestTwo.NumericValue() > lowestOne.NumericValue()
+        | SubsequentPairs(lowestOne, _), SubsequentPairs(lowestTwo, _) -> lowestTwo.NumericValue() > lowestOne.NumericValue()
         | _, _ -> failwith "different types of card sets are incomparable"

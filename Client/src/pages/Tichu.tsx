@@ -4,5 +4,5 @@ import Start from "./Start";
 
 export default function Tichu() {
     const { gameState } = useTichuContext() 
-    return gameState ? <Play/> : <Start/>
+    return gameState? <Play/> : <Start/>;
 }

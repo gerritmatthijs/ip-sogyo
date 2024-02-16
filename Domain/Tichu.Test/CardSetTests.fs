@@ -4,7 +4,7 @@ open Xunit
 open Tichu
 
 let StringToCardSet(str: string) = 
-    str |> Card.StringToCardList |> CardSet.ToCardSet
+    str |> CardList.StringToCardList |> CardSet.ToCardSet
 
 [<Fact>]
 let ``Create Multiple CardSet`` () = 
@@ -101,6 +101,12 @@ let ``Higher Multiple is recognised as higher, but not conversely`` () =
     let tenTriple = "TTT" |> StringToCardSet
     Assert.True(kingTriple |> CardSet.IsHigherThen(tenTriple))
     Assert.False(tenTriple |> CardSet.IsHigherThen(kingTriple))
+
+[<Fact>]
+let ``Dragon is recognised as highest card`` () =
+    let ace = "A" |> StringToCardSet
+    let dragon = "D" |> StringToCardSet
+    Assert.True(dragon |> CardSet.IsHigherThen(ace))
 
 [<Fact>]
 let ``Higher Full House is recognised`` () =

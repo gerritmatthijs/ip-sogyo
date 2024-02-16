@@ -4,6 +4,7 @@ export type TichuGameState = {
     lastPlayed: string
     currentLeader: string
     turn: number
+    gameID: string
 }
 
 export type Player = {

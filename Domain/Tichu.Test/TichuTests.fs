@@ -4,25 +4,19 @@ open Xunit
 open Tichu
 
 let SetUpGame () = 
-    let playerOne = {name = "Gerrit"; hand = "2222333344445" |> Card.StringToCardList}
-    let playerTwo = {name = "Daniel"; hand = "5556666777788" |> Card.StringToCardList}
-    let playerThree = {name = "Wesley"; hand = "889999TTTTJJJ" |> Card.StringToCardList}
-    let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Card.StringToCardList}
-    new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichuFacade
+    let names = ["Gerrit"; "Daniel"; "Wesley"; "Hanneke"]
+    let hands = ["2222333344445"; "5556666777788"; "889999TTTTJJJ"; "JQQQQKKKKAAAA"]
+    new TichuFacade(names, hands, "", "", 0) :> ITichuFacade
 
 let SetUpGameEmptyHand() = 
-    let playerOne = {name = "Gerrit"; hand = "2222333344445" |> Card.StringToCardList}
-    let playerTwo = {name = "Daniel"; hand = "" |> Card.StringToCardList}
-    let playerThree = {name = "Wesley"; hand = "889999TTTTJJJ" |> Card.StringToCardList}
-    let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Card.StringToCardList}
-    new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichuFacade
+    let names = ["Gerrit"; "Daniel"; "Wesley"; "Hanneke"]
+    let hands = ["2222333344445"; ""; "889999TTTTJJJ"; "JQQQQKKKKAAAA"]
+    new TichuFacade(names, hands, "", "", 0) :> ITichuFacade
 
 let SetUpGameAlmostEmptyHand() = 
-    let playerOne = {name = "Gerrit"; hand = "4" |> Card.StringToCardList}
-    let playerTwo = {name = "Daniel"; hand = "5556666777788" |> Card.StringToCardList}
-    let playerThree = {name = "Wesley"; hand = "889999TTTTJJJ" |> Card.StringToCardList}
-    let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Card.StringToCardList}
-    new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichuFacade
+    let names = ["Gerrit"; "Daniel"; "Wesley"; "Hanneke"]
+    let hands = ["4"; "5556666777788"; "889999TTTTJJJ"; "JQQQQKKKKAAAA"]
+    new TichuFacade(names, hands, "", "", 0) :> ITichuFacade
 
 [<Fact>]
 let ``Get player name`` () = 
@@ -104,17 +98,14 @@ let ``Playing Full House removes all cards from hand`` () =
 
 [<Fact>]
 let ``Playing straight removes all cards from hand`` () =
-    let playerOne = {name = "Gerrit"; hand = "2222333444567" |> Card.StringToCardList}
-    let playerTwo = {name = "Daniel"; hand = "3455566677788" |> Card.StringToCardList}
-    let playerThree = {name = "Wesley"; hand = "6788999TTTJJJ" |> Card.StringToCardList}
-    let playerFour = {name = "Hanneke"; hand = "9TJQQQQKKKKAAAA" |> Card.StringToCardList}
-    let tichu = new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichuFacade
+    let names = ["Gerrit"; "Daniel"; "Wesley"; "Hanneke"]
+    let hands = ["2222333444567"; "3455566677788"; "889999TTTTJJJ"; "JQQQQKKKKAAAA"]
+    let tichu = new TichuFacade(names, hands, "", "", 0) :> ITichuFacade
 
     let gerritPlayed = tichu.DoTurn("234567")
     let danielPlayed = gerritPlayed.DoTurn("345678")
     Assert.Equal("2223344", gerritPlayed.GetPlayerHand("Gerrit"))
     Assert.Equal("5566778", danielPlayed.GetPlayerHand("Daniel"))
-
 
 [<Fact>]
 let ``Playing a set that is not allowed does not change the hand`` () = 
@@ -160,11 +151,9 @@ let ``Player with empty hand does not get a turn`` () =
 
 [<Fact>]
 let ``Two consecutive players with empty hands are both skipped`` () = 
-    let playerOne = {name = "Gerrit"; hand = "2222333344445" |> Card.StringToCardList}
-    let playerTwo = {name = "Daniel"; hand = "" |> Card.StringToCardList}
-    let playerThree = {name = "Wesley"; hand = "" |> Card.StringToCardList}
-    let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Card.StringToCardList}
-    let tichu = new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichuFacade
+    let names = ["Gerrit"; "Daniel"; "Wesley"; "Hanneke"]
+    let hands = ["2222333344445"; ""; ""; "JQQQQKKKKAAAA"]
+    let tichu = new TichuFacade(names, hands, "", "", 0) :> ITichuFacade
 
     let gerritPlayed = tichu.DoTurn("4")
     Assert.Equal(3, gerritPlayed.GetTurn())
@@ -194,11 +183,9 @@ let ``Check situation: a player is out and the next player wins a trick`` () =
 
 [<Fact>]
 let ``Check situation: a player is out and the next player wins a trick with their last cards`` () = 
-    let playerOne = {name = "Gerrit"; hand = "2222333344445" |> Card.StringToCardList}
-    let playerTwo = {name = "Daniel"; hand = "" |> Card.StringToCardList}
-    let playerThree = {name = "Wesley"; hand = "T" |> Card.StringToCardList}
-    let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Card.StringToCardList}
-    let tichu = new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichuFacade
+    let names = ["Gerrit"; "Daniel"; "Wesley"; "Hanneke"]
+    let hands = ["2222333344445"; ""; "T"; "JQQQQKKKKAAAA"]
+    let tichu = new TichuFacade(names, hands, "", "", 0) :> ITichuFacade
 
     let gerritPlayed = tichu.DoTurn("4")
     let wesleyPlayed = gerritPlayed.DoTurn("T")
@@ -210,11 +197,9 @@ let ``Check situation: a player is out and the next player wins a trick with the
 
 [<Fact>]
 let ``Check situation: a player is out and the previous player wins a trick with their last cards`` () = 
-    let playerOne = {name = "Gerrit"; hand = "2222333344445" |> Card.StringToCardList}
-    let playerTwo = {name = "Daniel"; hand = "6" |> Card.StringToCardList}
-    let playerThree = {name = "Wesley"; hand = "" |> Card.StringToCardList}
-    let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Card.StringToCardList}
-    let tichu = new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichuFacade
+    let names = ["Gerrit"; "Daniel"; "Wesley"; "Hanneke"]
+    let hands = ["2222333344445"; "6"; ""; "JQQQQKKKKAAAA"]
+    let tichu = new TichuFacade(names, hands, "", "", 0) :> ITichuFacade
 
     let gerritPlayed = tichu.DoTurn("4")
     let danielPlayed = gerritPlayed.DoTurn("6")
@@ -266,13 +251,22 @@ let ``Get alert when playing a lower or equal card`` () =
     let tichu = SetUpGame()
     let gerritPlayed = tichu.DoTurn("5")
     let danielTriedPlaying = gerritPlayed.DoTurn("5")
-    let danielPlayed = danielTriedPlaying.DoTurn("6")
-    let wesleyPlayed = danielPlayed.DoTurn("T")
-    let hannekePlayed = wesleyPlayed.DoTurn("K")
-    let gerritPlayedAgain = hannekePlayed.DoTurn("4")
+    let peoplePlayed = danielTriedPlaying.DoTurn("6").DoTurn("T").DoTurn("K")
+    let gerritPlayedAgain = peoplePlayed.DoTurn("4")
     
     Assert.Equal("Your card set has to be higher than the last played card set.", danielTriedPlaying.GetAlert())
     Assert.Equal("Your card set has to be higher than the last played card set.", gerritPlayedAgain.GetAlert())
+
+[<Fact>]
+let ``Get alert when playing lower or equal full house`` () =
+    let names = ["Gerrit"; "Daniel"; "Wesley"; "Hanneke"]
+    let hands = ["22333344445KK"; "5556666777788"; "889999TTTTJJJ"; "22JQQQQKKAAAA"]
+    let tichu = new TichuFacade(names, hands, "", "", 3) :> ITichuFacade
+
+    let hannekePlayed = tichu.DoTurn("22QQQ")
+    let gerritTriedPlaying = hannekePlayed.DoTurn("44433")
+    Assert.Equal("Your card set has to be higher than the last played card set.", gerritTriedPlaying.GetAlert())
+
 
 [<Fact>]
 let ``Get alert upon passing when starting a trick`` () = 
@@ -295,11 +289,10 @@ let ``Get alert upon playing invalid set`` () =
 
 [<Fact>]
 let ``Game ends when 3 players play all their cards`` () = 
-    let playerOne = {name = "Gerrit"; hand = "5" |> Card.StringToCardList}
-    let playerTwo = {name = "Daniel"; hand = "" |> Card.StringToCardList}
-    let playerThree = {name = "Wesley"; hand = "" |> Card.StringToCardList}
-    let playerFour = {name = "Hanneke"; hand = "JQQQQKKKKAAAA" |> Card.StringToCardList}
-    let tichu = new TichuFacade([playerOne; playerTwo; playerThree; playerFour]) :> ITichuFacade
+    let names = ["Gerrit"; "Daniel"; "Wesley"; "Hanneke"]
+    let hands = ["5"; ""; ""; "JQQQQKKKKAAAA"]
+    let tichu = new TichuFacade(names, hands, "", "", 0) :> ITichuFacade
+
     let gerritFinished = tichu.DoTurn("5")
     Assert.False(tichu.IsEndOfGame())
     Assert.True(gerritFinished.IsEndOfGame())
