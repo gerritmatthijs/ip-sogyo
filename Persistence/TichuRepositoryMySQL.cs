@@ -7,7 +7,7 @@ using Tichu;
 
 public class TichuRepositoryMySQL : ITichuRepository
 {
-    private readonly string connectionString = "server=localhost:3306;uid=admin;pwd=Adminpassword!23;database=tichu";
+    private readonly string connectionString = "Server=localhost;Port=3306;Database=tichu;Uid=admin;Pwd=Adminpassword!23";
     private readonly MySqlConnection conn;
     private readonly ITichuFactory factory;
 
@@ -19,81 +19,112 @@ public class TichuRepositoryMySQL : ITichuRepository
 
     public void SaveGame(string key, ITichuFacade tichu)
     {   
-        if (OpenConnection())
+        try
         {
-            string dbContainsGame = (string) new MySqlCommand("CALL containsGame('" + key + "');", conn).ExecuteScalar();
-            if (dbContainsGame == "1"){
-                MySqlCommand cmd = new(GetUpdateQuery(tichu), conn);
+            conn.Open();
+            var dbContainsGame = (int)(long) new MySqlCommand("CALL containsGame('" + key + "');", conn).ExecuteScalar();
+            Console.WriteLine("DB Contains game: " + dbContainsGame);
+            if (dbContainsGame == 1){
+                MySqlCommand cmd = new(GetUpdateQuery(tichu, key), conn);
                 cmd.ExecuteNonQuery();
             }
             else {
-                MySqlCommand cmd = new(GetSaveQuery(tichu), conn);
+                MySqlCommand cmd = new(GetSaveQuery(tichu, key), conn);
                 cmd.ExecuteNonQuery();
             }
-            CloseConnection();
+        }
+        catch (MySqlException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        finally{
+            conn.Close();
         }
     }
 
     public ITichuFacade GetGame(string key)
     {
-        if (OpenConnection())
+        try
         {
+            conn.Open();
             MySqlCommand cmd = new("CALL getGame('" + key +  "');", conn);
             MySqlDataReader reader = cmd.ExecuteReader();
+            reader.Read();
             string names = (string)reader["player_names"];
             string hands = (string)reader["player_hands"];
             string leader = (string)reader["leader_name"];
             string lastPlayed = (string)reader["last_played"];
-            int turn = int.Parse((string)reader["turn"]);
-            CloseConnection();
+            int turn = (int)reader["turn"];
 
             string[] nameList = names.Split(' ');
             string[] handList = hands.Split(' ');
             return factory.CreateExistingGame(nameList, handList, leader, lastPlayed, turn);
         }
-        throw new Exception("Connection to the database failed");
+        catch (MySqlException ex)
+        {
+            Console.WriteLine(ex.Message);
+            throw new Exception("Connection to the database failed");
+        }
+        finally{
+            conn.Close();
+        }
     }
 
     public void DeleteGame(string key)
     {
-        if (OpenConnection())
+        try
         {
+            conn.Open();
             MySqlCommand cmd = new("CALL deleteGame('" + key +  "');", conn);
             cmd.ExecuteNonQuery();
-            CloseConnection();
         }
+        catch (MySqlException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        finally{
+            conn.Close();
+        }
+
     }
 
     public bool ContainsGame(string key)
     {
-        if (OpenConnection())
+        try
         {
-            string dbContainsGame = (string)new MySqlCommand("CALL containsGame('" + key + "');", conn).ExecuteScalar();
-            CloseConnection();
-            return dbContainsGame.Equals("1");
+            conn.Open();
+            int dbContainsGame = (int)(long)new MySqlCommand("CALL containsGame('" + key + "');", conn).ExecuteScalar();
+            return dbContainsGame.Equals(1);
         }
-        Console.WriteLine("Could not access database");
-        return false;
+        catch (MySqlException ex)
+        {
+            Console.WriteLine(ex.Message);
+            throw new Exception("Connection to the database failed");
+
+        }
+        finally{
+            conn.Close();
+        }
     }
 
-    private static string GetSaveQuery(ITichuFacade tichu)
+    private static string GetSaveQuery(ITichuFacade tichu, string key)
     {
         string names = GetNames(tichu);
         string hands = GetHands(tichu);
         string leader = tichu.GetCurrentLeader();
         string lastPlayed = tichu.GetLastPlayed();
         string turn = tichu.GetTurn().ToString();
-        string query = CreateProcedureCall("saveGame", [names, hands, leader, lastPlayed, turn]);
+        string query = CreateProcedureCall("saveGame", [key, names, hands, leader, lastPlayed, turn]);
         return query;
     }
 
-    private static string GetUpdateQuery(ITichuFacade tichu)
+    private static string GetUpdateQuery(ITichuFacade tichu, string key)
     {
         string hands = GetHands(tichu);
         string leader = tichu.GetCurrentLeader();
         string lastPlayed = tichu.GetLastPlayed();
         string turn = tichu.GetTurn().ToString();
-        string query = CreateProcedureCall("updateGame", [hands, leader, lastPlayed, turn]);
+        string query = CreateProcedureCall("updateGame", [key, hands, leader, lastPlayed, turn]);
         return query;
     }
 
@@ -124,33 +155,4 @@ public class TichuRepositoryMySQL : ITichuRepository
     {
         return "CALL "  + procedure + "('" + string.Join("', '", data) + "');";
     }
-
-    private bool OpenConnection()
-    {
-        try
-        {
-            conn.Open();
-            return true;
-        }
-        catch (MySqlException ex)
-        {
-            Console.WriteLine(ex.Message);
-            return false;
-        }
-    }
-
-    private bool CloseConnection()
-    {
-        try
-        {
-            conn.Close();
-            return true;
-        }
-        catch (MySqlException ex)
-        {
-            Console.WriteLine(ex.Message);
-            return false;
-        }
-    }
-
 }

@@ -21,7 +21,10 @@ export default function ActiveHand(props: Props) {
     const activePlayer = gameState? gameState.players[gameState.turn].name : "";
 
     async function checkAllowedCardSet(newArray: Array<number>) {
-        const result = await parseCardSelection(newArray.map((i) => hand[i]).join(""));
+        const result = await parseCardSelection(
+            newArray.map((i) => hand[i]).join(""), 
+            gameState?.gameID as string
+            );
         if (isTichuGameState(result)){
             setHoverMessage(result.gameStatus.alert);
         }

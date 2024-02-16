@@ -36,12 +36,12 @@ export default function Play() {
     }
 
     async function onPlaySet(cardset: string){
-        const result = await playerAction(cardset);
+        const result = await playerAction(cardset, gameState?.gameID as string);
         updateState(result);
     }
 
     async function onPass(){
-        const result = await playerAction("pass");
+        const result = await playerAction("pass", gameState?.gameID as string);
         updateState(result);
     }
     

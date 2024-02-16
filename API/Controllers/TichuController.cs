@@ -8,10 +8,10 @@ namespace api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class TichuController(ITichuRepository DBrepository, ITichuRepository memoryRepository, ITichuFactory factory) : ControllerBase
+public class TichuController(List<ITichuRepository> repositories, ITichuFactory factory) : ControllerBase
 {
-    private readonly ITichuRepository _DBrepository = DBrepository;
-    private readonly ITichuRepository _memoryRepository = memoryRepository;
+    private readonly ITichuRepository _DBrepository = repositories[0];
+    private readonly ITichuRepository _memoryRepository = repositories[1];
     private readonly ITichuFactory _factory = factory;
     private const string SessionClientID = "_ClientId"; 
 
@@ -19,7 +19,7 @@ public class TichuController(ITichuRepository DBrepository, ITichuRepository mem
     [Consumes("application/json")]
     public IActionResult PlayCards(Dictionary<string, string> body)
     {
-        string gameID = HttpContext.Session.GetString(SessionClientID) ?? throw new Exception("Game ID not found in session.");
+        string gameID = HttpContext.Session.GetString(SessionClientID) ?? body["gameID"];
         ITichuFacade tichu = GetGameFromMemoryOrDB(gameID);
 
         ITichuFacade newTichu  = tichu.DoTurn(body["action"]);
@@ -43,6 +43,7 @@ public class TichuController(ITichuRepository DBrepository, ITichuRepository mem
         {
             return _memoryRepository.GetGame(gameID);
         }
+        Console.WriteLine("Game not found in memory; getting game from database");
         return _DBrepository.GetGame(gameID);
         
     }
@@ -51,7 +52,7 @@ public class TichuController(ITichuRepository DBrepository, ITichuRepository mem
     [Consumes("application/json")]
     public IActionResult ParseCardSelection(Dictionary<string, string> body)
     {
-        string gameID = HttpContext.Session.GetString(SessionClientID) ?? throw new Exception("Game ID not found in session.");
+        string gameID = HttpContext.Session.GetString(SessionClientID) ?? body["gameID"];
         ITichuFacade tichu = GetGameFromMemoryOrDB(gameID);
 
         return Ok(new TichuDTO(tichu.DoTurn(body["action"]), gameID));

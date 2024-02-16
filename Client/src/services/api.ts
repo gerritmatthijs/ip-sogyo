@@ -23,22 +23,34 @@ async function sendServerRequest(address: string, body: BodyInit | null | undefi
     });
 }
 
-export async function playerAction(action: string){
-    const response = await sendServerRequest("tichu/play", JSON.stringify({ action:action }));
+export async function playerAction(action: string, gameID: string){
+    const response = await sendServerRequest(
+        "tichu/play", 
+        JSON.stringify({ action:action, gameID:gameID })
+        );
     return parseResponse(response);
 }
 
-export async function parseCardSelection(action: string){
-    const response = await sendServerRequest("tichu/check", JSON.stringify({ action:action }));
+export async function parseCardSelection(action: string, gameID: string){
+    const response = await sendServerRequest(
+        "tichu/check", 
+        JSON.stringify({ action:action, gameID:gameID })
+        );
     return parseResponse(response);
 }
 
 export async function getGame(gameID: string){
-    const response = await sendServerRequest("tichu/getgame", JSON.stringify({ gameID:gameID }));
+    const response = await sendServerRequest(
+        "tichu/getgame", 
+        JSON.stringify({ gameID:gameID })
+        );
     return parseResponse(response);
 }
 
 export async function createGame(playerNames: string[]){
-    const response = await sendServerRequest("tichu/newgame", JSON.stringify({ names:playerNames.join(",") }));
+    const response = await sendServerRequest(
+        "tichu/newgame", 
+        JSON.stringify({ names:playerNames.join(",") })
+        );
     return parseResponse(response);
 }
