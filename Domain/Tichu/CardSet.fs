@@ -61,18 +61,3 @@ module CardSet =
         | Straight(lowestOne, _), Straight(lowestTwo, _) -> lowestTwo.NumericValue() > lowestOne.NumericValue()
         | SubsequentPairs(lowestOne, _), SubsequentPairs(lowestTwo, _) -> lowestTwo.NumericValue() > lowestOne.NumericValue()
         | _, _ -> failwith "different types of card sets are incomparable"
-
-    let private CreatesValidSetWith(set: Card list)(card: Card): bool = 
-        let joinedSet = card::set |> CardList.Sort
-        match ToCardSet(joinedSet) with 
-        | Invalid | Multiple(_, 4) -> false
-        | _ -> true
-
-    let GetPhoenixValue(set: Card list): Card = 
-        // Here the card list is the remainder of the set without the phoenix
-        let possibleCards = "23456789TJQKA" |> CardList.StringToCardList
-        try 
-            let declarationValue = possibleCards |> List.findBack(CreatesValidSetWith(set))
-            Phoenix(Some(declarationValue), false)
-        with 
-        | :? System.Collections.Generic.KeyNotFoundException -> Phoenix(None, false)

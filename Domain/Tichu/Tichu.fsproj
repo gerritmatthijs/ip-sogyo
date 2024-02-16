@@ -11,9 +11,10 @@
     <Compile Include="StatusText.fs" />
     <Compile Include="Card.fs" />
     <Compile Include="CardList.fs" />
-    <Compile Include="CardSet.fs" />
-    <Compile Include="Action.fs" />
     <Compile Include="Player.fs" />
+    <Compile Include="Action.fs" />
+    <Compile Include="CardSet.fs" />
+    <Compile Include="Phoenix.fs" />
     <Compile Include="Tichu.fs" />
     <Compile Include="TichuFacade.fs" />
     <Compile Include="TichuFactory.fs" />

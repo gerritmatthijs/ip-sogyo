@@ -35,26 +35,18 @@ module TichuGame =
         else if not (newSet |> CardSet.IsHigherThen(lastSet)) then "Your card set has to be higher than the last played card set."
         else "OK"
 
-    let private DeclareSet(set: Card list, tichu: TichuGame): Card list = 
-        if set.Equals([Phoenix(None, true)]) then [Card.GetSinglePhoenix(tichu.lastPlay |> Option.map(fst))]
-        else if set |> List.contains(Phoenix(None, true)) then 
-                let setWithoutPhoenix = set |> List.removeAt(set.Length - 1)
-                let declaredPhoenix = CardSet.GetPhoenixValue(setWithoutPhoenix)
-                declaredPhoenix::setWithoutPhoenix |> CardList.Sort
-        else set
-
     let private PlaySet(set: Card list)(tichu: TichuGame): TichuGame = 
         let updatedPlayer = tichu.GetActivePlayer() |> Player.PlayCards(set)
         let updatedPlayerList = tichu.players |> List.mapi(fun i p -> if i = tichu.turn then updatedPlayer else p)
         
         let status: StatusText = if updatedPlayer.hand.IsEmpty then Message(tichu.GetActivePlayer().name + " has played all their cards!") else NoText
         let nextTurn = if set.Equals([Hound]) then tichu.TurnAfterHound() else tichu.NextTurn()
-        let lastPlayed = DeclareSet(set, tichu)
+        let lastPlayed = Phoenix.DeclareSet(set, tichu.lastPlay |> Option.map(fst))
         
         {players = updatedPlayerList; lastPlay = Some(lastPlayed, updatedPlayer.name); turn = nextTurn; status = status}
 
     let private TryPlaySet(set: Card list)(tichu: TichuGame): TichuGame = 
-        let declaredSet = DeclareSet(set, tichu)
+        let declaredSet = Phoenix.DeclareSet(set, tichu.lastPlay |> Option.map(fst))
         let alertText = 
             if (declaredSet |> CardSet.ToCardSet).Equals(Invalid) then "Invalid card set." 
             else 
@@ -81,10 +73,6 @@ module TichuGame =
         
 
     let DoTurn(action: Action)(tichu: TichuGame): TichuGame = 
-        // let alertText = action |> Action.GetAlertTextOrOK(tichu.lastPlay |> Option.map(fst))
-        // if not (alertText.Equals "OK" )
-        //     then {tichu with status = Alert(alertText)} else
-
         match action with 
         | Pass -> tichu |> TryPass
         | Set(set) -> tichu |> TryPlaySet(set)

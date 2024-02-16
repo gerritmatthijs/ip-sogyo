@@ -46,8 +46,3 @@ module Card =
                 | x -> Normal(x)
 
         else failwith "Invalid card type"
-
-    let GetSinglePhoenix(lastSet: Option<Card list>) = 
-        match lastSet with 
-            | None -> Phoenix(Some(Mahjong), true)
-            | Some(set) -> Phoenix(Some(set[0]), true)
