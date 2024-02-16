@@ -63,7 +63,7 @@ module CardSet =
         | _, _ -> failwith "different types of card sets are incomparable"
 
     let private CreatesValidSetWith(set: Card list)(card: Card): bool = 
-        let joinedSet = List.append(set)([card]) |> List.sortBy(fun card -> card.NumericValue())
+        let joinedSet = card::set |> CardList.Sort
         match ToCardSet(joinedSet) with 
         | Invalid | Multiple(_, 4) -> false
         | _ -> true

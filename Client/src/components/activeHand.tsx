@@ -38,7 +38,6 @@ export default function ActiveHand(props: Props) {
         let newArray: Array<number>;
         if (index == -1){
             newArray = cardsClicked.concat(cardnumber);
-            newArray.sort((n,m) => n-m); // Sorting number arrays with default sort does not work in javascript
         }
         else {
             newArray = cardsClicked.slice(0, index).concat(cardsClicked.slice(index + 1));
@@ -77,7 +76,8 @@ export default function ActiveHand(props: Props) {
     <button className="play-button" onClick={onPlayButtonClicked} 
         disabled={hoverMessage.length>0 || cardsClicked.length==0}>
         Play Selected Cards</button>
-    {!endOfGame && <button className="pass-button" onClick={onPassButtonClicked} disabled={!lastPlayed}>Pass</button>}
+    {!endOfGame && <button className="pass-button" onClick={onPassButtonClicked} 
+        disabled={!lastPlayed || lastPlayed=="H"}>Pass</button>}
     <div className="hovertext">{hoverMessage}</div>
     </div>
 }

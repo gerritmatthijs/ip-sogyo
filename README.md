@@ -75,9 +75,17 @@ The project can be linked to a local MySQL Database. However, without such a dat
 
 To attach a local database, either make sure it listens on localhost:3306 and has an 'admin'@'localhost' account with password 'Adminpassword!23', or change the connectionString in the Persistence/TichuRepositoryMySQL.cs file. 
 
-Next, create a database named 'tichu' for which admin has insert, update, select and delete privileges. Create a table named 'tichu' using the following command:
+Next, create a database named 'tichu' for which admin has all privileges. Create a table named 'tichu' using the following query:
 ```bash
-TODO get from Terminal history
+CREATE TABLE tichu(
+    game_id varchar(255) NOT NULL,
+    player_names varchar(255) NOT NULL,
+    player_hands varchar(255) NOT NULL,
+    leader_name varchar(100),
+    last_played varchar(100),
+    turn int,
+    PRIMARY KEY(game_id)
+);
 ```
 Finally, run the scripts in the Persistence/SQLScripts folder using the tichu database. 
 
