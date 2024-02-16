@@ -1,10 +1,10 @@
-module HandTests
+module CardListTests
 
 open Xunit
 open Tichu
 
 let RemoveCardsStringVersion(hand: string, set: string): string = 
-    hand |> Card.StringToCardList |> CardList.RemoveCards(Card.StringToCardList set) |> Card.CardListToString
+    hand |> CardList.StringToCardList |> CardList.RemoveCards(CardList.StringToCardList set) |> CardList.CardListToString
 
 [<Fact>]
 let ``Remove a single card from a hand`` () = 
@@ -30,3 +30,15 @@ let ``Remove full house from hand`` () =
     let handstring = "333477889KK"
     let newHand = RemoveCardsStringVersion(handstring, "333KK")
     Assert.Equal("477889", newHand)
+
+[<Fact>]
+let ``Convert string to card list`` () = 
+    let handstring = "24TD"
+    let convertedHand = CardList.StringToCardList(handstring)
+    Assert.Equal<Card list>([Card.Card('2'); Card.Card('4'); Card.Card('T'); Card.Card('D')], convertedHand)
+
+[<Fact>]
+let ``Convert card list to string`` () =
+    let hand = [Card.Card('2'); Card.Card('4'); Card.Card('T'); Card.Card('D')]
+    let handstring = CardList.CardListToString(hand)
+    Assert.Equal("24TD", handstring)

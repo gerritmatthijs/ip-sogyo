@@ -70,7 +70,7 @@ module CardSet =
 
     let GetPhoenixValue(set: Card list): Card = 
         // Here the card list is the remainder of the set without the phoenix
-        let possibleCards = "23456789TJQKA" |> Card.StringToCardList
+        let possibleCards = "23456789TJQKA" |> CardList.StringToCardList
         try 
             let declarationValue = possibleCards |> List.findBack(CreatesValidSetWith(set))
             Phoenix(Some(declarationValue), false)

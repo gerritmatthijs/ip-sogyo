@@ -9,7 +9,7 @@ module Action =
     let ToAction(actionstring: string): Action = 
         match actionstring with 
             | "pass" -> Pass
-            | setstring -> Set(setstring |> Card.StringToCardList)
+            | setstring -> Set(setstring |> CardList.StringToCardList)
 
     // let _CheckSameTypeAndHigher(lastSet: CardSet, newSet: CardSet) = 
     //     if not (newSet |> CardSet.IsSameTypeAs(lastSet)) then "You can only play sets of the same type as the leading set."

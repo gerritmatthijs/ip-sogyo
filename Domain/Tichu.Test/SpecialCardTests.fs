@@ -21,6 +21,16 @@ let ``Player with the mahjong starts the game`` () =
     Assert.Equal(2, tichu.GetTurn())
 
 [<Fact>]
+let ``Mahjong can be played as a 1`` () =
+    let names = ["Gerrit"; "Daniel"; "Wesley"; "Hanneke"]
+    let hands = ["2222333344445D"; "5556666777788D"; "1889999TTTTJJJ"; "JQQQQKKKKAAAAD"]
+    let tichu = new TichuFacade(names, hands) :> ITichuFacade
+
+    let mahjongPlayed = tichu.DoTurn("1")
+    let twoPlayed = mahjongPlayed.DoTurn("pass").DoTurn("2")
+    Assert.Equal("", twoPlayed.GetAlert())
+
+[<Fact>]
 let ``Mahjong can be played in a straight`` () =
     let names = ["Gerrit"; "Daniel"; "Wesley"; "Hanneke"]
     let hands = ["12222333344445"; "5556666777788P"; "889999TTTTJJJH"; "JQQQQKKKKAAAAD"]

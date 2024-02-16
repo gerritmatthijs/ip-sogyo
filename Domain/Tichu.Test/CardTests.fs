@@ -18,15 +18,3 @@ let ``Card has correct integer Value`` () =
     Assert.Equal(11., jack.NumericValue())
     Assert.Equal(2., two.NumericValue())
     Assert.Equal(100., dragon.NumericValue())
-
-[<Fact>]
-let ``Convert string to card list and back`` () = 
-    let handstring = "24TD"
-    let convertedHand = Card.StringToCardList(handstring)
-    Assert.Equal<Card list>([Card.Card('2'); Card.Card('4'); Card.Card('T'); Card.Card('D')], convertedHand)
-
-[<Fact>]
-let ``Convert card list to string`` () =
-    let hand = [Card.Card('2'); Card.Card('4'); Card.Card('T'); Card.Card('D')]
-    let handstring = Card.CardListToString(hand)
-    Assert.Equal("24TD", handstring)

@@ -4,7 +4,7 @@ open Xunit
 open Tichu
 
 let StringToCardSet(str: string) = 
-    str |> Card.StringToCardList |> CardSet.ToCardSet
+    str |> CardList.StringToCardList |> CardSet.ToCardSet
 
 [<Fact>]
 let ``Create Multiple CardSet`` () = 

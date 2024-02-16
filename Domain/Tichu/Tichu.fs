@@ -40,7 +40,7 @@ module TichuGame =
         else if set |> List.contains(Phoenix(None, true)) then 
                 let setWithoutPhoenix = set |> List.removeAt(set.Length - 1)
                 let declaredPhoenix = CardSet.GetPhoenixValue(setWithoutPhoenix)
-                declaredPhoenix::setWithoutPhoenix |> List.sortBy(fun card -> card.NumericValue())
+                declaredPhoenix::setWithoutPhoenix |> CardList.Sort
         else set
 
     let private PlaySet(set: Card list)(tichu: TichuGame): TichuGame = 

@@ -10,7 +10,7 @@
     <Compile Include="ITichuFactory.fs" />
     <Compile Include="StatusText.fs" />
     <Compile Include="Card.fs" />
-    <Compile Include="Hand.fs" />
+    <Compile Include="CardList.fs" />
     <Compile Include="CardSet.fs" />
     <Compile Include="Action.fs" />
     <Compile Include="Player.fs" />

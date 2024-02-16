@@ -1,5 +1,4 @@
 namespace Tichu
-open System
 
 type Card = 
     | Normal of value: char
@@ -52,9 +51,3 @@ module Card =
         match lastSet with 
             | None -> Phoenix(Some(Mahjong), true)
             | Some(set) -> Phoenix(Some(set[0]), true)
-
-    let StringToCardList(handstring: string): Card list = 
-        handstring |> Seq.map(fun c -> Card(c)) |> Seq.toList |> List.sortBy(fun card -> card.NumericValue())
-
-    let CardListToString(hand: Card list): string = 
-        hand |> List.map(fun card -> card.CharValue()) |> String.Concat
