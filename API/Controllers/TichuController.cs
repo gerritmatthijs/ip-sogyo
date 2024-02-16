@@ -19,7 +19,7 @@ public class TichuController(List<ITichuRepository> repositories, ITichuFactory 
     [Consumes("application/json")]
     public IActionResult PlayCards(Dictionary<string, string> body)
     {
-        string gameID = HttpContext.Session.GetString(SessionClientID) ?? body["gameID"];
+        string gameID = body["gameID"];
         ITichuFacade tichu = GetGameFromMemoryOrDB(gameID);
 
         ITichuFacade newTichu  = tichu.DoTurn(body["action"]);
@@ -27,7 +27,6 @@ public class TichuController(List<ITichuRepository> repositories, ITichuFactory 
         {
             _DBrepository.DeleteGame(gameID);
             _memoryRepository.DeleteGame(gameID);
-            HttpContext.Session.Remove(SessionClientID);
         }
         else 
         {
@@ -52,7 +51,7 @@ public class TichuController(List<ITichuRepository> repositories, ITichuFactory 
     [Consumes("application/json")]
     public IActionResult ParseCardSelection(Dictionary<string, string> body)
     {
-        string gameID = HttpContext.Session.GetString(SessionClientID) ?? body["gameID"];
+        string gameID = body["gameID"];
         ITichuFacade tichu = GetGameFromMemoryOrDB(gameID);
 
         return Ok(new TichuDTO(tichu.DoTurn(body["action"]), gameID));
@@ -64,7 +63,6 @@ public class TichuController(List<ITichuRepository> repositories, ITichuFactory 
     {
         string gameID = body["gameID"];
         ITichuFacade tichu = GetGameFromMemoryOrDB(gameID);
-        HttpContext.Session.SetString(SessionClientID, gameID);
 
         return Ok(new TichuDTO(tichu, gameID));
     }
@@ -75,7 +73,6 @@ public class TichuController(List<ITichuRepository> repositories, ITichuFactory 
     {
         ITichuFacade tichu = _factory.CreateNewGame(body["names"].Split(","));
         string gameID = Guid.NewGuid().ToString();
-        HttpContext.Session.SetString(SessionClientID, gameID);
         _DBrepository.SaveGame(gameID, tichu);
         _memoryRepository.SaveGame(gameID, tichu);
 

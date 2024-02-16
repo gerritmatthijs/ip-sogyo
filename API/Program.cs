@@ -13,17 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddSingleton<List<ITichuRepository>>([DBRepository, memoryRepository]);
 builder.Services.AddSingleton(factory);
 
-// Needed to add info the the session
-builder.Services.AddDistributedMemoryCache();
-
-builder.Services.AddSession(options =>
-{
-    options.Cookie.IsEssential = true;
-});
-
 var app = builder.Build();
-
-app.UseSession();
 
 app.UseAuthentication();
 
