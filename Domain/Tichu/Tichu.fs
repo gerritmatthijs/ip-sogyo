@@ -29,16 +29,19 @@ type TichuGame =
     static member IncreasePlayerIndex(index: int) = (index + 1) % 4
     
 module TichuGame = 
-
-    let private handlePhoenix(set: Card list, tichu: TichuGame): Card list = 
-        match set with 
-            | [Phoenix(_)] -> [Card.GetSinglePhoenix(tichu.lastPlay |> Option.map(fst))]
-            | _ -> set
     
     let private CheckSameTypeAndHigher(lastSet: CardSet, newSet: CardSet) = 
         if not (newSet |> CardSet.IsSameTypeAs(lastSet)) then "You can only play sets of the same type as the leading set."
         else if not (newSet |> CardSet.IsHigherThen(lastSet)) then "Your card set has to be higher than the last played card set."
         else "OK"
+
+    let DeclareSet(set: Card list, tichu: TichuGame): Card list = 
+        if set.Equals([Phoenix(None)]) then [Card.GetSinglePhoenix(tichu.lastPlay |> Option.map(fst))]
+        else if set |> List.contains(Phoenix(None)) then 
+                let setWithoutPhoenix = set |> List.removeAt(set.Length - 1)
+                let declaredPhoenix = CardSet.GetPhoenixValue(setWithoutPhoenix)
+                setWithoutPhoenix |> List.append([Phoenix(declaredPhoenix)])
+        else set
 
     let private PlaySet(set: Card list)(tichu: TichuGame): TichuGame = 
         let updatedPlayer = tichu.GetActivePlayer() |> Player.PlayCards(set)
@@ -46,15 +49,16 @@ module TichuGame =
         
         let status: StatusText = if updatedPlayer.hand.IsEmpty then Message(tichu.GetActivePlayer().name + " has played all their cards!") else NoText
         let nextTurn = if set.Equals([Hound]) then tichu.TurnAfterHound() else tichu.NextTurn()
-        let lastPlayed = handlePhoenix(set, tichu)
+        let lastPlayed = DeclareSet(set, tichu)
         
         {players = updatedPlayerList; lastPlay = Some(lastPlayed, updatedPlayer.name); turn = nextTurn; status = status}
 
     let private TryPlaySet(set: Card list)(tichu: TichuGame): TichuGame = 
+        let declaredSet = DeclareSet(set, tichu)
         let alertText = 
-            if (set |> CardSet.ToCardSet).Equals(Invalid) then "Invalid card set." 
+            if (declaredSet |> CardSet.ToCardSet).Equals(Invalid) then "Invalid card set." 
             else 
-                match tichu.lastPlay, set with 
+                match tichu.lastPlay, declaredSet with 
                 | None, _ | Some([Hound], _), _ -> "OK"
                 | Some([Dragon], _), [Phoenix(_)] -> "Phoenix cannot be played over the dragon."
                 | Some(lastSet, _), _ -> CheckSameTypeAndHigher(lastSet |> CardSet.ToCardSet, set |> CardSet.ToCardSet)

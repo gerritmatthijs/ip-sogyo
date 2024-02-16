@@ -30,14 +30,13 @@ module CardSet =
         if not (cards.Length >= 4 && distinctCounts[0] = 2 && distinctCounts.Length = 1) then false
         else checkConsecutive(List.distinct cards)
         
-    let private DeclarePhoenix(card: Card): Card = 
+    let private replacePhoenix(card: Card): Card = 
         match card with 
         | Phoenix(Some(declaredCard)) -> declaredCard
-        | Phoenix(None) -> failwith "Set phoenix' declared target before transforming to CardSet."
         | _ -> card
 
     let ToCardSet(cards: Card list): CardSet = 
-        let declaredCards = if cards.Length = 1 then cards else cards |> List.map(DeclarePhoenix)
+        let declaredCards = if cards.Length = 1 then cards else cards |> List.map(replacePhoenix)
         if (declaredCards |> IsMultiple) then Multiple(declaredCards[0], cards.Length)
         else if (declaredCards |> IsFullHouse) then FullHouse(declaredCards[2])
         else if (declaredCards |> IsStraight) then Straight(declaredCards.Head, cards.Length)

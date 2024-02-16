@@ -103,3 +103,9 @@ let ``Phoenix is recognised as the higher alternative of a Full House`` () =
 let ``Phoenix is not recognised when no valid set can be made`` () =
     let gibberish = "56" |> Card.StringToCardList
     Assert.Equal(None, CardSet.GetPhoenixValue(gibberish))
+
+[<Fact>]
+let ``Phoenix can be played as a pair`` () =
+    let tichu = SetUpGame()
+    let pairWithPhoenixPlayed = tichu.DoTurn("4P")
+    Assert.Equal(1, pairWithPhoenixPlayed.GetTurn())
