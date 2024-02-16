@@ -15,9 +15,9 @@ let ``Card has correct integer Value`` () =
     let jack = Card.Card('J')
     let two = Card.Card('2')
     let dragon = Card.Card('D')
-    Assert.Equal(11, jack.IntValue())
-    Assert.Equal(2, two.IntValue())
-    Assert.Equal(100, dragon.IntValue())
+    Assert.Equal(11., jack.NumericValue())
+    Assert.Equal(2., two.NumericValue())
+    Assert.Equal(100., dragon.NumericValue())
 
 [<Fact>]
 let ``Convert string to card list and back`` () = 

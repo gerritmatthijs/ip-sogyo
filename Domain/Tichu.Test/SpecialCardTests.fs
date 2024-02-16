@@ -21,6 +21,14 @@ let ``Player with the mahjong starts the game`` () =
     Assert.Equal(2, tichu.GetTurn())
 
 [<Fact>]
+let ``Mahjong can be played in a straight`` () =
+    let names = ["Gerrit"; "Daniel"; "Wesley"; "Hanneke"]
+    let hands = ["12222333344445"; "5556666777788P"; "889999TTTTJJJH"; "JQQQQKKKKAAAAD"]
+    let tichu = new TichuFacade(names, hands) :> ITichuFacade
+    let gerritPlayedStraight = tichu.DoTurn("12345")
+    Assert.Equal("", gerritPlayedStraight.GetAlert())
+
+[<Fact>]
 let ``Playing hound gives turn to opposite player`` () =
     let tichu = HoundSetUp()
     let houndPlayed = tichu.DoTurn("H")
@@ -62,6 +70,7 @@ let ``Phoenix when played single is 'transparent'`` () =
     let peoplePlayed = tichu.DoTurn("4").DoTurn("7").DoTurn("J").DoTurn("Q")
     let phoenixPlayed = peoplePlayed.DoTurn("P")
     let kingPlayedOverPhoenix = phoenixPlayed.DoTurn("pass").DoTurn("pass").DoTurn("K")
+    Assert.Equal(1, phoenixPlayed.GetTurn())
     Assert.Equal(0, kingPlayedOverPhoenix.GetTurn())
     Assert.Equal("", kingPlayedOverPhoenix.GetAlert())
 
@@ -78,34 +87,58 @@ let ``Phoenix when played single at the start of the trick is higher than Mahjon
     Assert.Equal(2, twoPlayed.GetTurn())
 
 [<Fact>]
-let ``Phoenix is recognised as part of a multiple`` () =
-    let two = "2" |> Card.StringToCardList
-    let pairOfTens = "TT" |> Card.StringToCardList
-    Assert.Equal(Some(Card.Card('2')), CardSet.GetPhoenixValue(two))
-    Assert.Equal(Some(Card.Card('T')), CardSet.GetPhoenixValue(pairOfTens))
-
-[<Fact>]
-let ``Phoenix is not allowed as part of a 4 of a kind`` () =
-    let jackTriple = "JJJ" |> Card.StringToCardList
-    Assert.Equal(None, CardSet.GetPhoenixValue(jackTriple))
-
-[<Fact>]
-let ``Phoenix is recognised as part of a straight`` () = 
-    let straightWithGap = "5689TJ" |> Card.StringToCardList
-    Assert.Equal(Some(Card.Card('7')), CardSet.GetPhoenixValue(straightWithGap))
-
-[<Fact>]
-let ``Phoenix is recognised as the higher alternative of a Full House`` () =
-    let twoPair = "66TT" |> Card.StringToCardList
-    Assert.Equal(Some(Card.Card('T')), CardSet.GetPhoenixValue(twoPair))
-
-[<Fact>]
-let ``Phoenix is not recognised when no valid set can be made`` () =
-    let gibberish = "56" |> Card.StringToCardList
-    Assert.Equal(None, CardSet.GetPhoenixValue(gibberish))
-
-[<Fact>]
 let ``Phoenix can be played as a pair`` () =
     let tichu = SetUpGame()
     let pairWithPhoenixPlayed = tichu.DoTurn("4P")
     Assert.Equal(1, pairWithPhoenixPlayed.GetTurn())
+
+[<Fact>]
+let ``Pair can be played over pair with phoenix`` () =
+    let tichu = SetUpGame()
+    let gerritPlayedPhoenixPair = tichu.DoTurn("4P")
+    let danielPlayedPair = gerritPlayedPhoenixPair.DoTurn("77")
+    Assert.Equal(2, danielPlayedPair.GetTurn())
+
+[<Fact>]
+let ``Pair with phoenix can be played over another pair`` () =
+    let names = ["Gerrit"; "Daniel"; "Wesley"; "Hanneke"]
+    let hands = ["12222333344445"; "5556666777788P"; "889999TTTTJJJH"; "JQQQQKKKKAAAAD"]
+    let tichu = new TichuFacade(names, hands) :> ITichuFacade
+
+    let pairPlayed = tichu.DoTurn("44")
+    let phoenixPairPlayed = pairPlayed.DoTurn("6P")
+    Assert.Equal("", phoenixPairPlayed.GetAlert())
+
+[<Fact>]
+let ``Phoenix is not allowed as part of a 4 of a kind`` () =
+    let tichu = SetUpGame()
+    let gerritTriedBombWithPhoenix = tichu.DoTurn("333P")
+    Assert.Equal("Invalid card set.", gerritTriedBombWithPhoenix.GetAlert())
+
+[<Fact>]
+let ``Phoenix can be played as part of a straight`` () =
+    let tichu = SetUpGame()
+    let gerritPlaysStraight = tichu.DoTurn("1234P")
+    Assert.Equal("", gerritPlaysStraight.GetAlert())
+
+[<Fact>]
+let ``Phoenix can be played as part of a full house`` () =
+    let tichu = SetUpGame()
+    let gerritPlaysFullHouse = tichu.DoTurn("3334P")
+    Assert.Equal("", gerritPlaysFullHouse.GetAlert())
+
+[<Fact>]
+let ``Phoenix is played as higher option in a full house`` () =
+    let names = ["Gerrit"; "Daniel"; "Wesley"; "Hanneke"]
+    let hands = ["1222233334477P"; "44555566667788"; "889999TTTTJJJH"; "JQQQQKKKKAAAAD"]
+    let tichu = new TichuFacade(names, hands) :> ITichuFacade
+
+    let fullHouseSevensPlayed = tichu.DoTurn("2277P")
+    let danielTriedFullHouseFives = fullHouseSevensPlayed.DoTurn("55566")
+    Assert.Equal("Your card set has to be higher than the last played card set.", danielTriedFullHouseFives.GetAlert())
+
+[<Fact>]
+let ``Set with phoenix can be invalid`` () =
+    let tichu = SetUpGame()
+    let gerritPlaysGibberish = tichu.DoTurn("34P")
+    Assert.Equal("Invalid card set.", gerritPlaysGibberish.GetAlert())

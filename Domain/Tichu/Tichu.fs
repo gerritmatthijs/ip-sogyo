@@ -35,12 +35,12 @@ module TichuGame =
         else if not (newSet |> CardSet.IsHigherThen(lastSet)) then "Your card set has to be higher than the last played card set."
         else "OK"
 
-    let DeclareSet(set: Card list, tichu: TichuGame): Card list = 
-        if set.Equals([Phoenix(None)]) then [Card.GetSinglePhoenix(tichu.lastPlay |> Option.map(fst))]
-        else if set |> List.contains(Phoenix(None)) then 
+    let private DeclareSet(set: Card list, tichu: TichuGame): Card list = 
+        if set.Equals([Phoenix(None, true)]) then [Card.GetSinglePhoenix(tichu.lastPlay |> Option.map(fst))]
+        else if set |> List.contains(Phoenix(None, true)) then 
                 let setWithoutPhoenix = set |> List.removeAt(set.Length - 1)
                 let declaredPhoenix = CardSet.GetPhoenixValue(setWithoutPhoenix)
-                setWithoutPhoenix |> List.append([Phoenix(declaredPhoenix)])
+                declaredPhoenix::setWithoutPhoenix |> List.sortBy(fun card -> card.NumericValue())
         else set
 
     let private PlaySet(set: Card list)(tichu: TichuGame): TichuGame = 
@@ -60,8 +60,8 @@ module TichuGame =
             else 
                 match tichu.lastPlay, declaredSet with 
                 | None, _ | Some([Hound], _), _ -> "OK"
-                | Some([Dragon], _), [Phoenix(_)] -> "Phoenix cannot be played over the dragon."
-                | Some(lastSet, _), _ -> CheckSameTypeAndHigher(lastSet |> CardSet.ToCardSet, set |> CardSet.ToCardSet)
+                | Some([Dragon], _), [Phoenix(_, _)] -> "Phoenix cannot be played over the dragon."
+                | Some(lastSet, _), _ -> CheckSameTypeAndHigher(lastSet |> CardSet.ToCardSet, declaredSet |> CardSet.ToCardSet)
         match alertText with 
         | "OK" -> tichu |> PlaySet(set)
         | _ -> {tichu with status = Alert(alertText)}

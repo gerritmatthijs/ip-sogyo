@@ -4,7 +4,7 @@ open Xunit
 open Tichu
 
 let RemoveCardsStringVersion(hand: string, set: string): string = 
-    hand |> Card.StringToCardList |> Hand.RemoveCards(Card.StringToCardList set) |> Card.CardListToString
+    hand |> Card.StringToCardList |> CardList.RemoveCards(Card.StringToCardList set) |> Card.CardListToString
 
 [<Fact>]
 let ``Remove a single card from a hand`` () = 

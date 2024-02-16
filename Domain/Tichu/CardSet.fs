@@ -20,7 +20,7 @@ module CardSet =
     let rec private checkConsecutive(cards: Card list): bool = 
         match cards.Tail with
         | [] -> true
-        | second::remainder -> second.IntValue() - cards.Head.IntValue() = 1 && checkConsecutive(cards.Tail)
+        | second::_ -> int(second.NumericValue()) - int(cards.Head.NumericValue()) = 1 && checkConsecutive(cards.Tail)
 
     let private IsStraight(cards: Card list): bool = 
         cards.Length >= 5 && checkConsecutive(cards)
@@ -32,11 +32,11 @@ module CardSet =
         
     let private replacePhoenix(card: Card): Card = 
         match card with 
-        | Phoenix(Some(declaredCard)) -> declaredCard
+        | Phoenix(Some(declaredCard), false) -> declaredCard
         | _ -> card
 
     let ToCardSet(cards: Card list): CardSet = 
-        let declaredCards = if cards.Length = 1 then cards else cards |> List.map(replacePhoenix)
+        let declaredCards = cards |> List.map(replacePhoenix)
         if (declaredCards |> IsMultiple) then Multiple(declaredCards[0], cards.Length)
         else if (declaredCards |> IsFullHouse) then FullHouse(declaredCards[2])
         else if (declaredCards |> IsStraight) then Straight(declaredCards.Head, cards.Length)
@@ -56,22 +56,23 @@ module CardSet =
         if not (setOne |> IsSameTypeAs(setTwo)) then failwith "different types of card sets are incomparable"
         
         match setOne, setTwo with
-        | Multiple(cardOne, _), Multiple(cardTwo, _) -> cardTwo.IntValue() > cardOne.IntValue()
-        | FullHouse(cardOne), FullHouse(cardTwo) -> cardTwo.IntValue() > cardOne.IntValue()
-        | Straight(lowestOne, _), Straight(lowestTwo, _) -> lowestTwo.IntValue() > lowestOne.IntValue()
-        | SubsequentPairs(lowestOne, _), SubsequentPairs(lowestTwo, _) -> lowestTwo.IntValue() > lowestOne.IntValue()
+        | Multiple(cardOne, _), Multiple(cardTwo, _) -> cardTwo.NumericValue() > cardOne.NumericValue()
+        | FullHouse(cardOne), FullHouse(cardTwo) -> cardTwo.NumericValue() > cardOne.NumericValue()
+        | Straight(lowestOne, _), Straight(lowestTwo, _) -> lowestTwo.NumericValue() > lowestOne.NumericValue()
+        | SubsequentPairs(lowestOne, _), SubsequentPairs(lowestTwo, _) -> lowestTwo.NumericValue() > lowestOne.NumericValue()
         | _, _ -> failwith "different types of card sets are incomparable"
 
     let private CreatesValidSetWith(set: Card list)(card: Card): bool = 
-        let joinedSet = List.append(set)([card]) |> List.sortBy(fun card -> card.IntValue())
+        let joinedSet = List.append(set)([card]) |> List.sortBy(fun card -> card.NumericValue())
         match ToCardSet(joinedSet) with 
         | Invalid | Multiple(_, 4) -> false
         | _ -> true
 
-    let GetPhoenixValue(set: Card list): Option<Card> = 
+    let GetPhoenixValue(set: Card list): Card = 
         // Here the card list is the remainder of the set without the phoenix
         let possibleCards = "23456789TJQKA" |> Card.StringToCardList
         try 
-            Some(possibleCards |> List.findBack(CreatesValidSetWith(set)))
+            let declarationValue = possibleCards |> List.findBack(CreatesValidSetWith(set))
+            Phoenix(Some(declarationValue), false)
         with 
-        | :? System.Collections.Generic.KeyNotFoundException -> None
+        | :? System.Collections.Generic.KeyNotFoundException -> Phoenix(None, false)
