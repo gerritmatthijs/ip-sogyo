@@ -4,9 +4,13 @@ The architecture of the project is roughly described by the following diagram:
 
 ![image](architecture-diagram.drawio.png)
 
-This diagram shows how the project is divided into a Client layer, API layer, domain layer and persistence layer. The front-end server deals with the Client layer, and the back-end server deals with the rest. The start entity is the place where the project is executed. The entry point of the user into the front-end server is represented by the user entity. 
+## Overview of API and communication between layers.
 
-# Domain layout
+This diagram shows how the project is divided into a Client layer, API layer, domain layer and persistence layer. The front-end server deals with the Client layer, and the back-end server deals with the rest. The Start circle represents the entry point when starting up the back-end server. The Program file is executed and creates a TichuController. 
+
+The entry point of the user into the front-end server is represented by the User circle. The front-end sends server requests that are received by the TichuController. The controller then either creates a new game via the ITichuFactory, gets a game from in-memory storage, or gets the game from the database if it is not contained in the in-memory storage. It then sends the request over to the domain layer for some operation if necessary, and returs the result in the format of a DTO.
+
+## Overview of domain
 
 The ITichuFacade and ITichuFactory are the only parts of the domain exposed to the other layers. The interface ITichuFacade consists of several information getters and a DoTurn funtion. The data communicated by these methods are simple string and integer formats (and the interface itself), so that C# can call these methods without issues. The TichuFacade object's main job is to implement these interface members and convert between basic formats and F#-specific objects such as records (or product types) and discrimated unions (or sum types). 
 
@@ -14,10 +18,12 @@ In particular, the TichuGame object defined in the Tichu file is nothing but a r
 
 The logic of the DoTurn function is spread over several modules, each representing some smaller object of the game state. For example, the logic for determing the type of a set of cards (pair, straight, full house, etc) as well as the logic for comparing these types is contained in the 'CardSet' module. The logic for removing a set of cards from a hand (i.e. a list of cards) and sorting a list of cards is contained in the CardList module. 
 
-The cards themselves are represented by a discrimanted union type 'Card'. A Card is one of the special cases or the 'Normal' case. The Normal case contains a char value representing the card ('2' for two, 'T' for ten, 'J' for jack, etc.). If I get around to implementing suits, it will also have a suit value. 
+The cards themselves are represented by a special discrimanted union type 'Card'. They do not have suits yet, although I hope to implement that if I still have some time. The Card type has a member function returning a numeric value of the card, which is used to compare card sets and to order cards in a card list (i.e. so that a hand is ordered in the UI).
 
-The Phoenix case is a bit special: it contains 2 values to represent in what way it is being played. The 'isSingle' value represents if it is played as a single or as part of a set. The 'valueCopied' value represents what card it is being declared as. If it is played as a single, it instead represents the previous card of the trick. The logic for this declaration is contained in a separate module 'Phoenix'.
+The Phoenix case deserves some extra attention. It contains 2 values to represent in what way it is being played. The behaviour of the phoenix is different depending on whether it is played as a single or as part of a set: as a single, it is one half higher than the previously played card; as part of a set it functions as a joker that can be declared as a (normal!) card of choice. The 'isSingle' value represents this information, and is (arbitrarily) set to true before the phoenix is played. If the phoenix is played as part of a set, the 'valueCopied' field represents what card it is being declared as. If the phoenix is played as a single, the field instead represents the previous card of the trick. The logic for setting this field is contained in a separate module 'Phoenix'.
 
-The Card type has a member function returning the numeric value of the card: 11 for jack, 12 for queen, etc. This is used to compare the height of sets, and to order cards in a card list. The dragon is given a value of 100, since it's the highest single card. The hound/dog does not really have a numeric value, but since my personal preference is to order it all the way to the right of my hand, I gave it a very high value. The phoenix has a value of 99 before being declared for ordering purposes. After being declared, it takes on the numeric value of the card it is being declared as, or 1/2 higher than the previous card if it is played as a single. 
+## Overview of front-end
 
-Let us walk through what happens when the DoTurn function is called. 
+The front-end uses the React useContext functionality to provide the game state to each of its components. If the gameState is already set, the Play page displaying the game is loaded. After some user action, the appropriate component calls a function of the Client-side api, which sends a request to the back-end server. The gameState is then updated by the component, and React re-renders the page. 
+
+If the gameState is not yet set, the start screen is loaded instead. Here the user can fill in the player names and start a new game. If a game was still in progress, a Continue Previous Game button is shown. This button loads the last gameID from the localstorage and requests the gameState from the back-end. This can be useful if the page was refreshed for instance. The user can also go back to the start screen at any time and then continue where they left off. However, if a new game is started, the old game is lost. 
