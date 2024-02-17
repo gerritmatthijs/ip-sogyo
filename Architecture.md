@@ -2,7 +2,7 @@
 
 The architecture of the project is roughly described by the following diagram:
 
-![image](architecture-diagram.drawio.png)
+![image](architecture-diagram.png)
 
 ## Overview of API and communication between layers.
 
