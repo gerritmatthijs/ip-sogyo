@@ -8,13 +8,13 @@
   <ItemGroup>
     <Compile Include="ITichuFacade.fs" />
     <Compile Include="ITichuFactory.fs" />
-    <Compile Include="StatusText.fs" />
-    <Compile Include="Card.fs" />
-    <Compile Include="CardList.fs" />
-    <Compile Include="Player.fs" />
-    <Compile Include="Action.fs" />
-    <Compile Include="CardSet.fs" />
-    <Compile Include="Phoenix.fs" />
+    <Compile Include="Modules\StatusText.fs" />
+    <Compile Include="Modules\Card.fs" />
+    <Compile Include="Modules\CardList.fs" />
+    <Compile Include="Modules\Player.fs" />
+    <Compile Include="Modules\Action.fs" />
+    <Compile Include="Modules\CardSet.fs" />
+    <Compile Include="Modules\Phoenix.fs" />
     <Compile Include="Tichu.fs" />
     <Compile Include="TichuFacade.fs" />
     <Compile Include="TichuFactory.fs" />
