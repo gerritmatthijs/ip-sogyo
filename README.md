@@ -20,34 +20,34 @@ The goal of this project is the development of a full-stack web application for 
 # Moscow requirements
 
 **Must**
-* UI with clickable cards
-* API layer
-* Domain layer
-* Working game flow (someone plays a set of cards, the next person can play a higher version of the same set of cards or pass)
-* If everyone passes, the last person to play starts the next round
-* A player who has played all their cards does not get turns anymore
-* End of game when all players except 1 played all their cards
+- [x] UI with clickable cards
+- [x] API layer
+- [x] Domain layer
+- [x] Working game flow (someone plays a set of cards, the next person can play a higher version of the same set of cards or pass)
+- [x] If everyone passes, the last person to play starts the next round
+- [x] A player who has played all their cards does not get turns anymore
+- [x] End of game when all players except 1 played all their cards
 
 **Should**
-* Persistence via a database
-* More possible sets (subsequent pairs, street, full house)
-* 4 special cards: mahjong (simplified), dog, dragon (simplified), phoenix
-* Cards in different colors & set 'street of the same color'
+- [x] Persistence via a database
+- [x] More possible sets (subsequent pairs, street, full house)
+- [x] 4 special cards: mahjong (simplified), dog, dragon (simplified), phoenix
+- [ ] Cards in different colors & set 'street of the same color'
 
 **Could**
-* Host game on a site, multiplayer functionality
-* Bomb (4 of a kind or street of the same color) can be played on any trick (at any moment)
-* Points (5 for 5, 10 for 10 & king, 25 for dragon, -25 for phoenix)
-* Teams (being the first 2 out = 200 points & 0 points for the opponent)
-* Special rules dragon & mahjong
-* Small & great tichu
-* Last player out with cards: hand goes to opponent, tricks to winner
-* Passing cards around at the start of each round
+- [ ] Host game on a site, multiplayer functionality
+- [ ] Bomb (4 of a kind or street of the same color) can be played on any trick (at any moment)
+- [ ] Points (5 for 5, 10 for 10 & king, 25 for dragon, -25 for phoenix)
+- [ ] Teams (being the first 2 out = 200 points & 0 points for the opponent)
+- [ ] Special rules dragon & mahjong
+- [ ] Small & great tichu
+- [ ] Last player out with cards: hand goes to opponent, tricks to winner
+- [ ] Passing cards around at the start of each round
 
 **Won't**
-* Fancy UI design
-* Player ratings
-* AI
+- [ ] Fancy UI design
+- [ ] Player ratings
+- [ ] AI
 
 # Framework & Set-up
 
