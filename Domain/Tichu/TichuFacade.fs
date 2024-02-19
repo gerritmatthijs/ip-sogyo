@@ -23,8 +23,8 @@ type TichuFacade(tichu: TichuGame) =
         member _.GetPlayerName(playerNumber: int): string = 
             tichu.players[playerNumber].name
 
-        member _.GetPlayerHand(name: string): string = 
-            CardList.CardListToString(tichu.GetPlayer(name).hand)
+        member _.GetPlayerHand(playerNumber: int): string = 
+            CardList.CardListToString(tichu.players[playerNumber].hand)
 
         member _.GetLastPlayed(): string = 
             match tichu.lastPlay with 

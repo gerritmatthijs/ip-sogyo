@@ -29,10 +29,10 @@ let ``Get player name`` () =
 [<Fact>]
 let ``Get player hand`` () = 
     let tichu = SetUpGame()
-    Assert.Equal("2222333344445", tichu.GetPlayerHand("Gerrit"))
-    Assert.Equal("5556666777788", tichu.GetPlayerHand("Daniel"))
-    Assert.Equal("889999TTTTJJJ", tichu.GetPlayerHand("Wesley"))
-    Assert.Equal("JQQQQKKKKAAAA", tichu.GetPlayerHand("Hanneke"))
+    Assert.Equal("2222333344445", tichu.GetPlayerHand(0))
+    Assert.Equal("5556666777788", tichu.GetPlayerHand(1))
+    Assert.Equal("889999TTTTJJJ", tichu.GetPlayerHand(2))
+    Assert.Equal("JQQQQKKKKAAAA", tichu.GetPlayerHand(3))
 
 [<Fact>]
 let ``Get last played card before and after first play`` () = 
@@ -77,24 +77,24 @@ let ``Play single card removes it from hand`` () =
     let tichu = SetUpGame()
     let gerritPlayed = tichu.DoTurn("4")
     let danielPlayed = gerritPlayed.DoTurn("6")
-    Assert.Equal("222233334445", danielPlayed.GetPlayerHand("Gerrit"))
-    Assert.Equal("555666777788", danielPlayed.GetPlayerHand("Daniel"))
+    Assert.Equal("222233334445", danielPlayed.GetPlayerHand(0))
+    Assert.Equal("555666777788", danielPlayed.GetPlayerHand(1))
 
 [<Fact>]
 let ``Play sets removes all  cards from hand`` () =
     let tichu = SetUpGame()
     let gerritPlayed = tichu.DoTurn("444")
     let danielPlayed = gerritPlayed.DoTurn("666")
-    Assert.Equal("2222333345", danielPlayed.GetPlayerHand("Gerrit"))
-    Assert.Equal("5556777788", danielPlayed.GetPlayerHand("Daniel"))
+    Assert.Equal("2222333345", danielPlayed.GetPlayerHand(0))
+    Assert.Equal("5556777788", danielPlayed.GetPlayerHand(1))
 
 [<Fact>]
 let ``Playing Full House removes all cards from hand`` () = 
     let tichu = SetUpGame()
     let gerritPlayed = tichu.DoTurn("33444")
     let danielPlayed = gerritPlayed.DoTurn("66677")
-    Assert.Equal("22223345", gerritPlayed.GetPlayerHand("Gerrit"))
-    Assert.Equal("55567788", danielPlayed.GetPlayerHand("Daniel"))
+    Assert.Equal("22223345", gerritPlayed.GetPlayerHand(0))
+    Assert.Equal("55567788", danielPlayed.GetPlayerHand(1))
 
 [<Fact>]
 let ``Playing straight removes all cards from hand`` () =
@@ -104,29 +104,29 @@ let ``Playing straight removes all cards from hand`` () =
 
     let gerritPlayed = tichu.DoTurn("234567")
     let danielPlayed = gerritPlayed.DoTurn("345678")
-    Assert.Equal("2223344", gerritPlayed.GetPlayerHand("Gerrit"))
-    Assert.Equal("5566778", danielPlayed.GetPlayerHand("Daniel"))
+    Assert.Equal("2223344", gerritPlayed.GetPlayerHand(0))
+    Assert.Equal("5566778", danielPlayed.GetPlayerHand(1))
 
 [<Fact>]
 let ``Playing a set that is not allowed does not change the hand`` () = 
     let tichu = SetUpGame()
     let gerritPlayed = tichu.DoTurn("5")
     let danielPlayed = gerritPlayed.DoTurn("5")
-    Assert.Equal(13, danielPlayed.GetPlayerHand("Daniel").Length)
+    Assert.Equal(13, danielPlayed.GetPlayerHand(1).Length)
 
 [<Fact>]
 let ``Playing the wrong type of set does not change the hand`` () = 
     let tichu = SetUpGame()
     let gerritPlayed = tichu.DoTurn("444")
     let danielPlayed = gerritPlayed.DoTurn("66")
-    Assert.Equal(13, danielPlayed.GetPlayerHand("Daniel").Length)
+    Assert.Equal(13, danielPlayed.GetPlayerHand(1).Length)
 
 [<Fact>]
 let ``Passing doesn't change last action or player's hand but does change turn`` () =
     let tichu = SetUpGame()
     let gerritPlayed = tichu.DoTurn("4")
     let danielPassed = gerritPlayed.DoTurn("pass")
-    Assert.Equal(13, danielPassed.GetPlayerHand("Daniel").Length)
+    Assert.Equal(13, danielPassed.GetPlayerHand(1).Length)
     Assert.Equal(2, danielPassed.GetTurn())
     Assert.Equal("Gerrit", danielPassed.GetCurrentLeader())
     Assert.Equal("4", danielPassed.GetLastPlayed())

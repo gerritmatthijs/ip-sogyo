@@ -13,7 +13,7 @@ namespace api.Models
 
         public TichuDTO(ITichuFacade tichu, string gameID){
             for (int i = 0; i < 4; i++){
-                Players[i] = new PlayerDTO(tichu, tichu.GetPlayerName(i));
+                Players[i] = new PlayerDTO(tichu, i);
             }
             GameStatus = new GameStatusDTO(tichu);
             LastPlayed = tichu.GetLastPlayed();

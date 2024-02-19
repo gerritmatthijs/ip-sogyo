@@ -3,9 +3,6 @@ namespace Tichu
 type TichuGame = 
     {players: Player list; lastPlay: Option<Card list * string>; turn: int; status: StatusText}
 
-    member x.GetPlayer(name: string): Player = 
-        x.players |> List.find(fun player -> player.name.Equals name)
-
     member x.GetActivePlayer(): Player = x.players[x.turn]
 
     member x.TurnAfterHound(): int = 

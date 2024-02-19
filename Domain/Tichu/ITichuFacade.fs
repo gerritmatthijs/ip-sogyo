@@ -3,7 +3,7 @@
 type ITichuFacade = 
     abstract member GetPlayerName: playerNumber: int -> string
 
-    abstract member GetPlayerHand: name: string -> string
+    abstract member GetPlayerHand: playerNumber: int -> string
 
     abstract member GetLastPlayed: unit -> string
 

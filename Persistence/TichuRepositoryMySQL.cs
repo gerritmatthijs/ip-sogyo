@@ -132,8 +132,7 @@ public class TichuRepositoryMySQL : ITichuRepository
         StringBuilder handsBuilder = new();
         for (int i = 0; i < 4; i++)
         {
-            string name = tichu.GetPlayerName(i);
-            handsBuilder.Append(' ').Append(tichu.GetPlayerHand(name));
+            handsBuilder.Append(' ').Append(tichu.GetPlayerHand(i));
         }
         string hands = handsBuilder.ToString()[1..];
         return hands;
