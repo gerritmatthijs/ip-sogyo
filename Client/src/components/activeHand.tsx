@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTichuContext } from '../context/TichuGameContext.tsx';
 import { getPicture } from './card.tsx';
 import { parseCardSelection } from '../services/api.ts';
-import { isTichuGameState, isTichuGameStatus } from '../types.ts';
+import { isTichuGameStatus } from '../types.ts';
 
 type Props = {
     onPlay: (cardset: string) => void;
