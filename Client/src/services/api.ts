@@ -1,9 +1,21 @@
-import { TichuGameState } from "../types";
+import { GameStatus, TichuGameState } from "../types";
 
-async function parseResponse(response: Response){
+async function parseResponseGameState(response: Response){
     if (response.ok){
         const result = await response.json();
         return result as TichuGameState;
+    } else {
+        return {
+            statusCode: response.status,
+            statusText: response.statusText
+        };
+    }
+}
+
+async function parseResponseGameStatus(response: Response){
+    if (response.ok){
+        const result = await response.json();
+        return result as GameStatus;
     } else {
         return {
             statusCode: response.status,
@@ -28,7 +40,7 @@ export async function playerAction(action: string, gameID: string){
         "tichu/play", 
         JSON.stringify({ action:action, gameID:gameID })
         );
-    return parseResponse(response);
+    return parseResponseGameState(response);
 }
 
 export async function parseCardSelection(action: string, gameID: string){
@@ -36,7 +48,7 @@ export async function parseCardSelection(action: string, gameID: string){
         "tichu/check", 
         JSON.stringify({ action:action, gameID:gameID })
         );
-    return parseResponse(response);
+    return parseResponseGameStatus(response);
 }
 
 export async function getGame(gameID: string){
@@ -44,7 +56,7 @@ export async function getGame(gameID: string){
         "tichu/getgame", 
         JSON.stringify({ gameID:gameID })
         );
-    return parseResponse(response);
+    return parseResponseGameState(response);
 }
 
 export async function createGame(playerNames: string[]){
@@ -52,5 +64,5 @@ export async function createGame(playerNames: string[]){
         "tichu/newgame", 
         JSON.stringify({ names:playerNames.join(",") })
         );
-    return parseResponse(response);
+    return parseResponseGameState(response);
 }

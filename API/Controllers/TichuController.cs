@@ -54,7 +54,7 @@ public class TichuController(List<ITichuRepository> repositories, ITichuFactory 
         string gameID = body["gameID"];
         ITichuFacade tichu = GetGameFromMemoryOrDB(gameID);
 
-        return Ok(new TichuDTO(tichu.DoTurn(body["action"]), gameID));
+        return Ok(new GameStatusDTO(tichu.DoTurn(body["action"])));
     }
 
     [HttpPost("getgame")]

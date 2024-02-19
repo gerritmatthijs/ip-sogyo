@@ -3,9 +3,6 @@ namespace Tichu
 type TichuGame = 
     {players: Player list; lastPlay: Option<Card list * string>; turn: int; status: StatusText}
 
-    member x.GetPlayer(name: string): Player = 
-        x.players |> List.find(fun player -> player.name.Equals name)
-
     member x.GetActivePlayer(): Player = x.players[x.turn]
 
     member x.TurnAfterHound(): int = 
@@ -66,7 +63,7 @@ module TichuGame =
         else 
             {tichu with turn = tichu.NextTurn(); status = NoText}
 
-    let TryPass(tichu: TichuGame): TichuGame = 
+    let private TryPass(tichu: TichuGame): TichuGame = 
         match tichu.lastPlay with 
         | None | Some([Hound], _) -> {tichu with status = Alert("You cannot pass when opening a trick.")}
         | _ -> tichu |> Pass

@@ -60,4 +60,4 @@ module CardSet =
         | FullHouse(cardOne), FullHouse(cardTwo) -> cardTwo.NumericValue() > cardOne.NumericValue()
         | Straight(lowestOne, _), Straight(lowestTwo, _) -> lowestTwo.NumericValue() > lowestOne.NumericValue()
         | SubsequentPairs(lowestOne, _), SubsequentPairs(lowestTwo, _) -> lowestTwo.NumericValue() > lowestOne.NumericValue()
-        | _, _ -> failwith "different types of card sets are incomparable"
+        | _, _ -> failwith "different types of card sets are incomparable" // This line cannot be reached

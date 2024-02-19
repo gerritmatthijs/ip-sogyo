@@ -21,3 +21,7 @@ export type GameStatus = {
 export function isTichuGameState(gameState: unknown): gameState is TichuGameState {
     return (gameState as TichuGameState).players !== undefined;
 }
+
+export function isTichuGameStatus(gameStatus: unknown): gameStatus is GameStatus {
+    return (gameStatus as GameStatus).message != undefined;
+}
