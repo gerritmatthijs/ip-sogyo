@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTichuContext } from '../context/TichuGameContext.tsx';
 import { getPicture } from './card.tsx';
 import { parseCardSelection } from '../services/api.ts';
-import { isTichuGameState } from '../types.ts';
+import { isTichuGameState, isTichuGameStatus } from '../types.ts';
 
 type Props = {
     onPlay: (cardset: string) => void;
@@ -25,8 +25,8 @@ export default function ActiveHand(props: Props) {
             newArray.map((i) => hand[i]).join(""), 
             gameState?.gameID as string
             );
-        if (isTichuGameState(result)){
-            setHoverMessage(result.gameStatus.alert);
+        if (isTichuGameStatus(result)){
+            setHoverMessage(result.alert);
         }
         else {
             onAlert(result);

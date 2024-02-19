@@ -66,7 +66,7 @@ module TichuGame =
         else 
             {tichu with turn = tichu.NextTurn(); status = NoText}
 
-    let TryPass(tichu: TichuGame): TichuGame = 
+    let private TryPass(tichu: TichuGame): TichuGame = 
         match tichu.lastPlay with 
         | None | Some([Hound], _) -> {tichu with status = Alert("You cannot pass when opening a trick.")}
         | _ -> tichu |> Pass
