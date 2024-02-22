@@ -14,6 +14,14 @@ let HoundSetUp() =
     new TichuFacade(names, hands, "", "", 2) :> ITichuFacade
 
 [<Fact>]
+let ``Special cards are correctly converted to char`` () =
+    let tichu = SetUpGame()
+    Assert.Equal("1222233334444P", tichu.GetPlayerHand(0))
+    Assert.Equal("55556666777788", tichu.GetPlayerHand(1))
+    Assert.Equal("889999TTTTJJJH", tichu.GetPlayerHand(2))
+    Assert.Equal("JQQQQKKKKAAAAD", tichu.GetPlayerHand(3))
+
+[<Fact>]
 let ``Player with the mahjong starts the game`` () =
     let names = ["Gerrit"; "Daniel"; "Wesley"; "Hanneke"]
     let hands = ["2222333344445D"; "5556666777788D"; "1889999TTTTJJJ"; "JQQQQKKKKAAAAD"]
