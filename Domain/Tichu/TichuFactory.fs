@@ -12,9 +12,6 @@ type TichuFactory() =
             array.[i] <- array.[j]
             array.[j] <- pom
         array |> Array.toSeq |> String.Concat
-    
-    let GetPlayers(names: string seq, hands: seq<list<Card>>): Player list = 
-        Seq.map2(fun name hand -> {name = name; hand = hand}) names hands |> Seq.toList
 
     interface ITichuFactory with
         member _.CreateNewGame(playerNames: string seq): ITichuFacade = 

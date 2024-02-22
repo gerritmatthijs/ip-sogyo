@@ -3,9 +3,6 @@ namespace Tichu
 // The TichuFacade implements the ITichu interface and is mostly meant to translate F#-specific objects to strings and vice versa
 type TichuFacade(tichu: TichuGame) = 
 
-    let GetPlayers(names: string seq, hands: seq<list<Card>>): Player list = 
-        Seq.map2(fun name hand -> {name = name; hand = hand}) names hands |> Seq.toList
-
     new(playerNames: string list, playerHands: string list, leader: string, lastPlayed: string, turn: int) = 
         let hands = playerHands |> List.map(CardList.StringToCardList)
         let players = List.map2(fun name hand -> {name = name; hand = hand}) playerNames hands

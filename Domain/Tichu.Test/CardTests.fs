@@ -18,3 +18,7 @@ let ``Card has correct integer Value`` () =
     Assert.Equal(11., jack.NumericValue())
     Assert.Equal(2., two.NumericValue())
     Assert.Equal(100., dragon.NumericValue())
+
+[<Fact>]
+let ``Creating nonexistant card throws`` () =
+    Assert.Throws<System.Exception>(fun () -> Card.Card('Y') :> obj)
